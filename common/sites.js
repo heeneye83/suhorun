@@ -16,6 +16,7 @@ window.SUHO = {
       who: '전포 가게 쿠폰 · 쿠폰북 추첨',
       season: { id: 's1-jeonpo', name: '시즌 1 · 전포카페거리 스탬프 투어', ends: '' },
       // 스탬프 7개(가게 6 + 수호 완료)를 모은 사람 중 추첨 → 큰 혜택은 당첨자 수만큼만 나감
+      lastStage: 2,   // 마지막 스테이지(밤) 보스를 물리치면 '수호 완료' 도장
       grand: { name: '전포 쿠폰북', desc: '참여 가게 6곳 대표 메뉴 1개씩 무료', winners: 30 },
       stores: [
         { name: '모카골목 로스터리', benefit: '샷 추가', pin: '1111', color: '#2f8f83' },
