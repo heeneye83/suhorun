@@ -1,6 +1,6 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>전포 수호런</title>
-<meta name="description" content="전포 수호자와 전포봇이 전포카페거리를 달리며 탄원두에게서 가게를 구하는 러너 게임 · 퍼펙트 쿠폰과 쿠폰북 추첨">
+<meta name="description" content="진수호와 볼트가 전포카페거리를 달리며 탄원두에게서 가게를 구하는 러너 게임 · 퍼펙트 쿠폰과 쿠폰북 추첨">
 <link rel="icon" href="../common/sprites/bot_happy.png">
 <script src="../common/sites.js"></script>
 <script src="../common/wallet.js"></script>
@@ -210,8 +210,8 @@ h1{white-space:nowrap}
 <section class="cast">
   <div class="who">
     <h3>출연</h3>
-    <p><b>전포 수호자</b>AI 프로그램 속 전포 거리를 지키는 검은 정장의 수호자. 쿨한 척하지만 어딘가 허당. 가슴엔 스패너, 손엔 커피. 플레이어가 조종해요.</p>
-    <p><b>전포봇</b>수호자 곁을 날아다니는 AI 비행로봇. 구덩이에 빠지면 구조 빔으로 끌어올리고, 전기충격파로 빌런을 쓸어내요.</p>
+    <p><b>진수호</b>AI 프로그램 속 부산진구 거리를 지키는 검은 정장의 수호 요원. 쿨한 척하지만 어딘가 허당. 가슴엔 스패너, 손엔 커피. 플레이어가 조종해요.</p>
+    <p><b>볼트</b>진수호 곁을 날아다니는 AI 비행로봇. 구덩이에 빠지면 구조 빔으로 끌어올리고, 전기충격파로 빌런을 쓸어내요.</p>
     <p><b>먹구름</b>전포 거리 프로그램에 끼어든 버그 구름. 카페거리에 탄원두와 악플러를 풀어놓았어요.</p>
   </div>
   <div class="keys">
@@ -226,7 +226,7 @@ h1{white-space:nowrap}
     <span><b>밟으면 −50</b>구르는 꽃 · 착한 꽃이라 피해서 지나가요</span>
     <span><b>장애물</b>공구통 · 컵 탑</span>
     <span><b>라멘 · 레몬에이드</b>각 +80</span>
-    <span><b>공사 구멍</b>빠지면 전포봇이 구조 빔으로 구조 · 구조 배터리가 없으면 하트 −1</span>
+    <span><b>공사 구멍</b>빠지면 볼트가 구조 빔으로 구조 · 구조 배터리가 없으면 하트 −1</span>
     <span><b>하트</b>가끔 길에 떨어져 있어요 · 주우면 +1(최대 3개) · 가득 차 있으면 +100점</span>
     <span><b>발도장 금화</b>+10</span>
     <span><b>줄무늬 은화</b>+5</span>
@@ -246,7 +246,7 @@ h1{white-space:nowrap}
     <span><b>시즌</b>정해진 기간에만 열리고, 다음 시즌은 새 가게·새 테마(예: 맥주 축제)로 바뀌어요</span>
   </div>
 </section>
-<p class="credit">전포 수호자·전포봇은 시연용 오리지널 캐릭터 시안입니다. 등장하는 가게 6곳과 쿠폰 혜택은 시연을 위한 가상의 예시이며, 부산진구 협의 후 실제 참여 가게로 바뀝니다.</p>
+<p class="credit">진수호·볼트는 시연용 오리지널 캐릭터 시안입니다. 등장하는 가게 6곳과 쿠폰 혜택은 시연을 위한 가상의 예시이며, 부산진구 협의 후 실제 참여 가게로 바뀝니다.</p>
 
 <script>
 (()=>{
@@ -280,7 +280,7 @@ const CONFIG={
     {kind:'wine',sign:'전포 수제맥주',seed:21,w:280},{kind:'pocha',sign:'호프 & 치킨',seed:22,w:270},{kind:'records',sign:'라이브 펍',seed:23,w:280},{kind:'wine',sign:'비어 가든',seed:24,w:270}],
   maxHearts:3,             // 하트 최대 개수
   heartEvery:28,           // 하트 아이템이 나오는 간격(초) · 하트가 1개면 조금 더 자주
-  charmAt:66,              // 구조 배터리(전포봇 구조 +1) 등장 시점
+  charmAt:66,              // 구조 배터리(볼트 구조 +1) 등장 시점
   ginsengAt:[20,44,70],    // 바삭 치킨(먹으면 약 4초 무적) 등장 시점
   ginsengTime:4.2,
   dongcheonTime:10,        // 동천 보너스 물속 구간 길이(초)
@@ -760,7 +760,7 @@ function drawGacha(){const g=S.gacha;if(!g)return;
       if(pz.k==='special'){ctx.font=`16px ${FD}`;ctx.fillText('★ 스페셜 쿠폰 당첨! ★',cx,by+26);ctx.font=`28px ${FD}`;ctx.fillStyle=pz.color;ctx.fillText(pz.store,cx,by+64);
         ctx.fillStyle='#3a230f';ctx.font=`22px ${FD}`;ctx.fillText(pz.benefit,cx,by+100);ctx.font=`13px ${FD}`;ctx.fillText('쿠폰함에 저장됐어요',cx,by+130)}
       else{ctx.font=`30px ${FD}`;ctx.fillText(pz.k==='points'?`+${fmt(pz.pts*mult())}점`:pz.k==='heart'?'하트 +1':'구조 배터리 +1',cx,by+40);
-        ctx.font=`14px ${FD}`;ctx.fillStyle='#7a5a3a';ctx.fillText(pz.k==='points'?'코인 보너스':pz.k==='heart'?'체력 회복':'전포봇 구조 +1',cx,by+72)}
+        ctx.font=`14px ${FD}`;ctx.fillStyle='#7a5a3a';ctx.fillText(pz.k==='points'?'코인 보너스':pz.k==='heart'?'체력 회복':'볼트 구조 +1',cx,by+72)}
       ctx.globalAlpha=1}}
   ctx.fillStyle='#fff6e0';ctx.font=`18px ${FD}`;ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText(t<1?'동전 넣는 중…':t<2.35?'드르륵 드르륵…':t>2.9?(touchMode?'화면을 누르면 계속':'스페이스로 계속'):'',W/2,40)}
@@ -1347,7 +1347,7 @@ function spawnStore(){
   addEggs(x+120,3,30,GROUND-90);
   banner(`${st.name}에 탄원두가 나타났어요!`,2.2,st.color);
   const lend=S.bolts<1;if(lend)S.bolts=1;
-  setTimeout(()=>{const pk=S.packs[id];if(phase==='play'&&pk&&!pk.done&&!pk.failed)banner(lend?'전포봇이 충격파 1회를 충전해 줬어요 · 4마리 다 잡으면 스탬프, 안 맞으면 쿠폰까지!':'4마리 다 잡으면 스탬프 · 한 대도 안 맞으면 퍼펙트 쿠폰!',2,'#517aa4')},2300);
+  setTimeout(()=>{const pk=S.packs[id];if(phase==='play'&&pk&&!pk.done&&!pk.failed)banner(lend?'볼트가 충격파 1회를 충전해 줬어요 · 4마리 다 잡으면 스탬프, 안 맞으면 쿠폰까지!':'4마리 다 잡으면 스탬프 · 한 대도 안 맞으면 퍼펙트 쿠폰!',2,'#517aa4')},2300);
   S.gap=980;
 }
 function spawnShoe(){S.shoe++;S.items.push({type:'shoe',x:W+150,y:GROUND-118,ph:0});addEggs(W+10,3,20,GROUND-80);S.gap=560}
@@ -1562,7 +1562,7 @@ function kill(e,how){
   if(how==='stomp'&&e.kind==='bean'){S.roar=Math.min(100,S.roar+6);
     const need=S.stage==='boss'?1:3;S.charge++;
     if(S.charge>=need){S.charge=0;if(S.bolts<3){S.bolts++;sfx('charge');floatText('충격파 충전!',S.hb.x,S.hb.y-50,'#9ff7e6');
-      if(!S.seenHelp.bolt){S.seenHelp.bolt=1;banner(touchMode?'충격파 버튼으로 전포봇 전기충격파!':'X 키로 전포봇 전기충격파!',1.8,'#2f8f86')}}}}
+      if(!S.seenHelp.bolt){S.seenHelp.bolt=1;banner(touchMode?'충격파 버튼으로 볼트 전기충격파!':'X 키로 볼트 전기충격파!',1.8,'#2f8f86')}}}}
   if(e.pack){const pk=S.packs[e.pack];if(pk&&!pk.failed&&!pk.done){pk.left--;if(pk.left<=0){pk.done=true;rescueStore(pk)}}}
 }
 /* 시즌 스탬프: 가게마다 한 번만 · 이 브라우저에 저장(정식 버전은 서버) */
@@ -1595,8 +1595,8 @@ function hurt(){if(S.inv>0||S.roarT>0||S.carry>0||S.stage==='clear')return;spoil
   if(S.hearts<=0)gameOver()}
 function fall(){spoilPerfect();
   S.carry=1.25;S.gap=Math.max(S.gap,380);p.vy=0;p.jumps=1;
-  if(S.rescues>0){S.rescues--;sfx('rescue');banner('전포봇 구조 빔!',1.3,'#2f8f86')}
-  else{S.hearts--;sfx('hit');S.shake=.3;banner('전포봇이 겨우 끌어올렸어요 ♥ −1',1.5,'#8a7472');if(S.hearts<=0){gameOver();return}}
+  if(S.rescues>0){S.rescues--;sfx('rescue');banner('볼트 구조 빔!',1.3,'#2f8f86')}
+  else{S.hearts--;sfx('hit');S.shake=.3;banner('볼트가 겨우 끌어올렸어요 ♥ −1',1.5,'#8a7472');if(S.hearts<=0){gameOver();return}}
 }
 function useBolt(){
   if(phase!=='play'||S.bolts<=0||S.stage==='clear'||S.gacha)return;
@@ -1770,7 +1770,7 @@ function update(dt){
         else if(it.type==='lemonade'){S.lemonades++;addBonus(80,it.x,iy-30,'#fff27a');sfx('menu');burst(it.x,iy,12,['#ffe65c','#fff6e0','#b8e07a'],200,'star')}
         else if(it.type==='heart'){if(S.hearts<CONFIG.maxHearts){S.hearts++;banner('하트 +1',1.1,'#d9483b');sfx('rescue')}else{addBonus(100,it.x,iy-30,'#ff8a7a');sfx('egg')}burst(it.x,iy,16,['#ff5b4d','#fff6e0','#ffb3a8'],220,'star')}
         else if(it.type==='shoe'){S.shoeT=CONFIG.shoeTime;S.roarT=CONFIG.shoeTime;S.roarMax=CONFIG.shoeTime;sfx('shoe');banner('장인의 구두! 코인 자석 질주',1.6,'#8a4f2a');burst(it.x,iy,24,['#ffdc66','#c98f5a','#fff6e0'],300,'star')}
-        else if(it.type==='charm'){S.rescues++;sfx('rescue');banner('구조 배터리! 전포봇 구조 +1',1.5,'#2f8f86');burst(it.x,iy,16,['#6ff2d6','#fff6e0','#8a4a22'],220,'star')}}}
+        else if(it.type==='charm'){S.rescues++;sfx('rescue');banner('구조 배터리! 볼트 구조 +1',1.5,'#2f8f86');burst(it.x,iy,16,['#6ff2d6','#fff6e0','#8a4a22'],220,'star')}}}
   }
 
   // cleanup
@@ -1820,7 +1820,7 @@ function drawCat(){
   // 그림을 못 불러왔을 때 임시 모양
   ctx.save();ctx.translate(x,y);rr(-20,-90,40,90,16);ctx.fillStyle='#23222b';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#1a120c';ctx.stroke();ctx.restore();
 }
-// 전포봇: 캔버스 130x110, 몸통 가운데가 (65,58)
+// 볼트: 캔버스 130x110, 몸통 가운데가 (65,58)
 function botImg(k,x,y,sc,rot){const im=SPR[k];if(!im)return false;ctx.save();ctx.translate(x,y);if(rot)ctx.rotate(rot);ctx.scale(sc,sc);ctx.drawImage(im,-65,-58,130,110);ctx.restore();return true}
 function drawHalbae(){
   const x=S.hb.x,y=S.hb.y,bob=Math.sin(S.tAll*3)*3,fr=Math.floor(S.tAll*24)%2;
@@ -2153,8 +2153,8 @@ function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;',
 // 보스를 물리친 스테이지의 다음 스테이지부터 바로 시작할 수 있음
 function unlockedLvs(){const a=[];for(let i=1;i<CONFIG.stages.length;i++){if(bossCleared(i-1))a.push(i);else break}return a}
 function showTitle(){
-  card.innerHTML=`<div class="tl"><div class="duo"><img src="../common/sprites/bot_happy.png" alt="전포봇" style="height:clamp(30px,10cqw,110px);align-self:center"><img src="../common/sprites/g_hero.png" alt="전포 수호자"></div>
-  <div class="tcol"><p class="eyebrow">전포 수호자와 전포봇</p>
+  card.innerHTML=`<div class="tl"><div class="duo"><img src="../common/sprites/bot_happy.png" alt="볼트" style="height:clamp(30px,10cqw,110px);align-self:center"><img src="../common/sprites/g_hero.png" alt="진수호"></div>
+  <div class="tcol"><p class="eyebrow">진수호와 볼트</p>
   <h2>전포카페거리를 지켜라!</h2>
   <p class="story">먹구름이 카페거리에 탄원두를 풀었어요. 한 대도 안 맞고 가게를 구하면 퍼펙트 쿠폰! 스탬프 7개를 모으면 쿠폰북 추첨까지.</p>
   <p class="stampline">${esc(CONFIG.season.name)} · 스탬프 <b>${stampAll()}/${STAMP_TOTAL}</b>${seasonDone()?(STP.entered?' · 응모 완료':' · 완성! 결과 화면에서 응모'):''}</p>
