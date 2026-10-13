@@ -96,8 +96,18 @@ section h2 .sp{flex:1}
     </section>
 
     <section>
-      <h2>경품 응모자<span class="sp"></span><button class="btn small ghost" id="unmask" type="button">연락처 전체 보기</button><button class="btn small ghost" id="csvE" type="button">응모자 내려받기(CSV)</button></h2>
+      <h2>쿠폰북 추첨 응모자<span class="sp"></span><button class="btn small ghost" id="unmask" type="button">연락처 전체 보기</button><button class="btn small ghost" id="csvE" type="button">응모자 내려받기(CSV)</button></h2>
       <div class="tw"><table class="tbl" id="entries"></table></div>
+    </section>
+
+    <section>
+      <h2>쿠폰북 추첨<span class="sp"></span><button class="btn small ghost" id="csvW" type="button" hidden>당첨자 내려받기(CSV)</button></h2>
+      <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:12px">
+        <p class="sub" id="drawInfo"></p>
+        <div class="lookup"><label class="sub" for="nWin" style="align-self:center">당첨 인원</label><input id="nWin" type="number" min="1" style="max-width:110px;font-family:inherit;text-transform:none">
+          <button class="btn small" id="doDraw" type="button">추첨하기</button><button class="btn small ghost" id="clrDraw" type="button" hidden>추첨 결과 지우기</button></div>
+        <div id="drawRes"></div>
+      </div>
     </section>
 
     <section>
@@ -138,7 +148,7 @@ section h2 .sp{flex:1}
     const ABC='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',code=()=>'JP-'+[0,0].map(()=>Array.from({length:4},()=>ABC[rnd(0,31)]).join('')).join('-');
     const weight=[1,.86,.74,.62,.55,.47];
     for(let i=0;i<1240;i++){const t=new Date(now-rnd(0,20*864e5)).toISOString();d.plays.push({site:'jeonpo',season:site.season.id,score:rnd(300,26000),stage:rnd(1,3),clear:Math.random()<.18,at:t})}
-    site.stores.forEach((st,i)=>{const n=Math.round(rnd(380,420)*weight[i]);for(let k=0;k<n;k++){const t=now-rnd(0,20*864e5);
+    site.stores.forEach((st,i)=>{const n=Math.round(rnd(150,175)*weight[i]);for(let k=0;k<n;k++){const t=now-rnd(0,20*864e5);
       d.coupons.push({code:code(),site:'jeonpo',season:site.season.id,store:st.name,benefit:st.benefit,color:st.color,issuedAt:new Date(t).toISOString(),usedAt:Math.random()<.32+.06*(5-i)/5?new Date(t+rnd(1,4)*864e5).toISOString():null})}});
     for(let i=0;i<87;i++)d.entries.push({id:'S'+i,site:'jeonpo',season:site.season.id,name:`시연${String(i+1).padStart(2,'0')}`,phone:`0100000${String(i).padStart(4,'0')}`,at:new Date(now-rnd(0,15*864e5)).toISOString()});
     return d;
@@ -164,7 +174,7 @@ section h2 .sp{flex:1}
       ['발급 쿠폰',fmt(C.length),'가게를 처음 구했을 때'],
       ['사용 쿠폰',fmt(used),'가게에서 PIN으로 처리'],
       ['쿠폰 사용률',rate+'%','사용 ÷ 발급'],
-      ['경품 응모',fmt(E.length),'스탬프 완성자'],
+      ['추첨 응모',fmt(E.length),'스탬프 7개 완성자'],
     ].map(([l,v,s])=>`<div class="card kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
 
     // 가게별
@@ -185,7 +195,27 @@ section h2 .sp{flex:1}
       :'<tbody><tr><td class="empty">아직 응모자가 없어요.</td></tr></tbody>';
     const mb=$('more');if(mb)mb.onclick=()=>{MORE=!MORE;render()};
     $('unmask').textContent=UNMASK?'연락처 가리기':'연락처 전체 보기';
+    drawView(E,mask,nm);
   }
+  // ---------- 쿠폰북 추첨 ----------
+  const grandSite=()=>SITES.find(s=>s.grand&&(!$('fsite').value||s.id===$('fsite').value));
+  const DKEY=s=>'suhorun.draw.'+s.season.id+(SAMPLE?'.sample':'');
+  function drawView(E,mask,nm){
+    const gs=grandSite();if(!gs){$('drawInfo').textContent='이 명소에는 쿠폰북 추첨이 없어요.';$('doDraw').disabled=true;$('drawRes').innerHTML='';return}
+    $('doDraw').disabled=false;const pool=E.filter(e=>e.site===gs.id&&e.season===gs.season.id);
+    $('drawInfo').innerHTML=`<b style="font-family:var(--display);font-weight:400;color:var(--cream)">${esc(gs.grand.name)}</b> · ${esc(gs.grand.desc)} · 응모자 ${fmt(pool.length)}명 중 추첨`;
+    if(!$('nWin').value)$('nWin').value=gs.grand.winners;
+    let d=null;try{d=JSON.parse(localStorage.getItem(DKEY(gs)))}catch(e){}
+    $('clrDraw').hidden=$('csvW').hidden=!d;
+    $('drawRes').innerHTML=d?`<p class="sub">${new Date(d.at).toLocaleString('ko-KR')} 추첨 · 당첨 ${d.win.length}명</p><div class="tw" style="margin-top:8px"><table class="tbl"><thead><tr><th>#</th><th>이름</th><th>연락처</th><th>응모 시각</th></tr></thead><tbody>${d.win.map((e,i)=>`<tr><td class="muted">${i+1}</td><td>${esc(nm(e.name))}</td><td>${esc(mask(e.phone))}</td><td class="muted">${new Date(e.at).toLocaleString('ko-KR')}</td></tr>`).join('')}</tbody></table></div>`:'';
+    $('doDraw').onclick=()=>{if(!pool.length){$('drawRes').innerHTML='<p class="sub">아직 응모자가 없어요.</p>';return}
+      if(d&&!confirmBox())return;const n=Math.max(1,Math.min(pool.length,parseInt($('nWin').value,10)||gs.grand.winners));
+      const a=pool.slice(),r=new Uint32Array(a.length);crypto.getRandomValues(r);for(let i=a.length-1;i>0;i--){const j=r[i]%(i+1);[a[i],a[j]]=[a[j],a[i]]}
+      try{localStorage.setItem(DKEY(gs),JSON.stringify({at:new Date().toISOString(),win:a.slice(0,n)}))}catch(e){}render()};
+    $('clrDraw').onclick=()=>{try{localStorage.removeItem(DKEY(gs))}catch(e){}render()};
+    $('csvW').onclick=()=>{if(d)csv(`${gs.grand.name}_당첨자.csv`,['순번','이름','연락처','응모시각'],d.win.map((e,i)=>[i+1,e.name,e.phone,e.at]))};
+  }
+  let askAgain=0;function confirmBox(){if(Date.now()-askAgain<4000)return true;askAgain=Date.now();$('drawRes').insertAdjacentHTML('afterbegin','<p class="sub" style="color:#ffb4a2">이미 추첨한 결과가 있어요. 다시 추첨하려면 4초 안에 한 번 더 눌러 주세요.</p>');return false}
 
   // ---------- CSV ----------
   function csv(name,head,rows){const q=v=>`"${String(v==null?'':v).replace(/"/g,'""')}"`;

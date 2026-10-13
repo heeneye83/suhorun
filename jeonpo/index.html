@@ -1,6 +1,6 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>전포 수호런</title>
-<meta name="description" content="전포 수호자와 전포봇이 전포카페거리를 달리며 탄원두에게서 가게를 구하는 러너 게임 · 가게 쿠폰과 시즌 경품">
+<meta name="description" content="전포 수호자와 전포봇이 전포카페거리를 달리며 탄원두에게서 가게를 구하는 러너 게임 · 퍼펙트 쿠폰과 쿠폰북 추첨">
 <link rel="icon" href="../common/sprites/bot_happy.png">
 <script src="../common/sites.js"></script>
 <script src="../common/wallet.js"></script>
@@ -234,12 +234,12 @@ h1{white-space:nowrap}
     <span><b>무적 아이템</b>낮에는 백양산 산삼, 밤에는 바삭 치킨 · 먹으면 약 4초 무적 질주</span>
     <span><b>동천 보너스</b>금빛 물웅덩이에 빠지면 수달을 말처럼 타고 헤엄 · 누르면 위로, 떼면 아래로</span>
     <span><b>동천 속</b>물고기 +25 · 황금 잉어 +100 · 피라니아에 물리거나 바위·통나무에 부딪히면 하트 −1</span>
-    <span><b>가게 스탬프</b>습격한 탄원두 3마리를 모두 잡으면 그 가게 스탬프 · 이미 받은 스탬프는 다시 안 줘요</span>
+    <span><b>가게 스탬프</b>습격한 탄원두 4마리를 모두 잡으면 그 가게 스탬프 · 이미 받은 스탬프는 다시 안 줘요</span>
     <span><b>시그니처 메뉴</b>먹으면 5초간 점수 2배</span>
     <span><b>스테이지</b>낮 전포카페거리와 밤의 전포거리가 번갈아 계속 · 스테이지마다 빨라지고 보스도 강해져요</span>
     <span><b>보스</b>낮 스테이지 대형 탄원두 · 밤 스테이지 대형 악플러(더 강해요: 체력이 많고 낮은 악플과 높은 악플을 섞어 던져요) · 충격파 한 방에 체력 2칸 · 보스전에서는 탄원두를 밟으면 바로 충격파 충전</span>
-    <span><b>가게 쿠폰</b>가게를 처음 구하면 그 가게 쿠폰이 쿠폰함에 들어가요 · 가게에서 보여 주고 사장님이 사용 처리</span>
-    <span><b>스탬프 투어</b>가게 6곳 스탬프 + 마지막 보스를 물리친 '수호 완료' 도장을 모으면 시즌 경품 응모(1인 1회) · 스탬프는 저장돼서 다음 판에 이어서 모아요</span>
+    <span><b>퍼펙트 쿠폰</b>탄원두 4마리를 한 대도 안 맞고 모두 잡으면 그 가게 쿠폰(샷 추가·사이즈업·토핑 추가·500원 할인) · 메뉴 주문 시 가게에서 보여 주면 사장님이 사용 처리</span>
+    <span><b>스탬프 투어</b>가게 6곳 스탬프 + 마지막 보스를 물리친 '수호 완료' 도장을 모으면(스탬프 7개) 쿠폰북 추첨 응모(1인 1회) · 스탬프는 저장돼서 다음 판에 이어서 모아요</span>
     <span><b>스테이지 열기</b>보스를 물리치면 다음 판부터 그다음 스테이지에서 바로 시작할 수 있어요</span>
     <span><b>시즌</b>정해진 기간에만 열리고, 다음 시즌은 새 가게·새 테마(예: 맥주 축제)로 바뀌어요</span>
   </div>
@@ -287,6 +287,7 @@ const CONFIG={
 };
 const SITE_ID='jeonpo';
 const WALLET=window.SuhoWallet||null;
+const GRAND=(WALLET&&WALLET.site(SITE_ID)&&WALLET.site(SITE_ID).grand)||{name:'쿠폰북',desc:'참여 가게 혜택 모음',winners:30};
 
 const runFrame=()=>Math.floor(p.anim*.95*8/3)%8;   // 수호자 달리기 8프레임
 const TOTAL_STORES=CONFIG.stages.reduce((a,x)=>a+x.stores.length,0);
@@ -1150,14 +1151,14 @@ function spawnPattern(){
 }
 function spawnStore(){
   const st=ST().stores[S.storeIdx++];const x=W+40;
-  const id=++S.packN;S.packs[id]={st,left:3,failed:false,done:false};
+  const id=++S.packN;S.packs[id]={st,left:4,failed:false,done:false,perfect:true};
   S.shops.push({x,w:320,st,pack:id});
-  for(let i=0;i<3;i++)bean(x+210+i*165,{pack:id,vx:-28});
+  for(let i=0;i<4;i++)bean(x+200+i*140,{pack:id,vx:-28});
   S.items.push({type:'menu',x:x+330,y:GROUND-170,st,ph:0});
   addEggs(x+120,3,30,GROUND-90);
   banner(`${st.name}에 탄원두가 나타났어요!`,2.2,st.color);
   const lend=S.bolts<1;if(lend)S.bolts=1;
-  setTimeout(()=>{const pk=S.packs[id];if(phase==='play'&&pk&&!pk.done&&!pk.failed)banner(lend?'전포봇이 충격파 1회를 충전해 줬어요 · 3마리 다 잡으면 스탬프!':'3마리를 모두 잡으면 가게 스탬프!',2,'#517aa4')},2300);
+  setTimeout(()=>{const pk=S.packs[id];if(phase==='play'&&pk&&!pk.done&&!pk.failed)banner(lend?'전포봇이 충격파 1회를 충전해 줬어요 · 4마리 다 잡으면 스탬프, 안 맞으면 쿠폰까지!':'4마리 다 잡으면 스탬프 · 한 대도 안 맞으면 퍼펙트 쿠폰!',2,'#517aa4')},2300);
   S.gap=980;
 }
 function spawnShoe(){S.shoe++;S.items.push({type:'shoe',x:W+150,y:GROUND-118,ph:0});addEggs(W+10,3,20,GROUND-80);S.gap=560}
@@ -1389,19 +1390,21 @@ const hasStamp=st=>!!STP.got[st.name];
 const stampN=()=>ALL_STORES.filter(hasStamp).length;
 const seasonDone=()=>stampN()>=ALL_STORES.length&&guardDone();
 function rescueStore(pk){const has=S.coupons.some(c=>c.name===pk.st.name);if(!has)S.coupons.push(pk.st);
-  if(WALLET){const r=WALLET.issue(SITE_ID,pk.st.name);if(r&&r.isNew){S.issued.push(r.coupon);setTimeout(()=>{if(phase==='play')banner(`${pk.st.name} 쿠폰이 쿠폰함에 들어왔어요!`,2.2,pk.st.color)},2500);updCp()}}S.rescued++;addBonus(300,W/2,200,'#ffdc66');sfx('coupon');
+  if(WALLET&&pk.perfect){const r=WALLET.issue(SITE_ID,pk.st.name);if(r&&r.isNew){S.issued.push(r.coupon);setTimeout(()=>{if(phase==='play')banner(`퍼펙트! ${pk.st.name} 쿠폰(${r.coupon.benefit})이 쿠폰함에 쏙`,2.4,pk.st.color)},2500);updCp()}}
+  else if(WALLET&&!pk.perfect&&!WALLET.coupons(SITE_ID).some(c=>c.store===pk.st.name))setTimeout(()=>{if(phase==='play')banner('한 대도 안 맞고 구하면 그 가게 쿠폰도 받아요!',2,'#8a7472')},2500);S.rescued++;addBonus(300,W/2,200,'#ffdc66');sfx('coupon');
   const st=pk.st;
   if(!hasStamp(st)){STP.got[st.name]=Date.now();saveStamps();S.newStamps.push(st);S.stampFx={st,t0:S.tAll};
     banner(`${st.name} 스탬프 획득! (${stampAll()}/${STAMP_TOTAL})`,2.2,st.color);
-    if(seasonDone())setTimeout(()=>{if(phase==='play')banner('스탬프 완성! 시즌 경품 응모 자격을 얻었어요',2.8,'#c99a1e')},2400);
+    if(seasonDone())setTimeout(()=>{if(phase==='play')banner('스탬프 7개 완성! 쿠폰북 추첨 응모 자격을 얻었어요',2.8,'#c99a1e')},2400);
     else if(stampN()>=ALL_STORES.length)setTimeout(()=>{if(phase==='play')banner('가게 스탬프 완성! 마지막 보스를 물리치면 수호 완료',2.6,'#c99a1e')},2400)}
   else banner(`${st.name} 또 구출! 스탬프는 이미 받았어요 · +300점`,2,st.color);
   burst(W/2,170,30,['#ffdc66','#fff6e0',st.color],320,'star')}
 function failStore(pk){pk.failed=true;sfx('fail');banner(`아쉬워요! ${pk.st.name} 구출 실패`,1.6,'#8a7472')}
-function hurt(){if(S.inv>0||S.roarT>0||S.carry>0||S.stage==='clear')return;
+function spoilPerfect(){for(const k in S.packs){const q=S.packs[k];if(!q.done&&!q.failed&&q.perfect){q.perfect=false;floatText('퍼펙트 실패',p.x,p.y-120,'#ffb4a2')}}}
+function hurt(){if(S.inv>0||S.roarT>0||S.carry>0||S.stage==='clear')return;spoilPerfect();
   S.hearts--;S.inv=1.4;S.shake=.35;S.hurtFx=.35;sfx('hit');burst(p.x,p.y-30,10,['#ff6b5b','#fff6e0'],200);floatText('♥ −1',p.x,p.y-(p.water?78:96),'#ff8a7a');
   if(S.hearts<=0)gameOver()}
-function fall(){
+function fall(){spoilPerfect();
   S.carry=1.25;S.gap=Math.max(S.gap,380);p.vy=0;p.jumps=1;
   if(S.rescues>0){S.rescues--;sfx('rescue');banner('전포봇 구조 빔!',1.3,'#2f8f86')}
   else{S.hearts--;sfx('hit');S.shake=.3;banner('전포봇이 겨우 끌어올렸어요 ♥ −1',1.5,'#8a7472');if(S.hearts<=0){gameOver();return}}
@@ -1425,7 +1428,7 @@ function bossDown(){
   S.obs=S.obs.filter(o=>o.type==='box'||o.type==='cups');
   banner(`${S.level+1}스테이지 클리어! ${(S.level+1)%2?'밤이 찾아와요':'아침이 밝았어요'}`,2.4,'#c99a1e');sfx('clear');musicStop();
   const si=S.level%CONFIG.stages.length,first=!bossCleared(si);if(first){STP.boss[si]=Date.now();saveStamps();S.newBoss=si}
-  if(si===LAST_STG&&first){S.stampFx={st:{name:'수호 완료',color:'#c99a1e',guard:true},t0:S.tAll+.4};setTimeout(()=>{if(phase==='play')banner(seasonDone()?'수호 완료! 시즌 경품 응모 자격을 얻었어요':'수호 완료 도장 획득! 남은 가게 스탬프도 모아요',2.6,'#c99a1e')},1400)}
+  if(si===LAST_STG&&first){S.stampFx={st:{name:'수호 완료',color:'#c99a1e',guard:true},t0:S.tAll+.4};setTimeout(()=>{if(phase==='play')banner(seasonDone()?'수호 완료! 쿠폰북 추첨 응모 자격을 얻었어요':'수호 완료 도장 획득! 남은 가게 스탬프도 모아요',2.6,'#c99a1e')},1400)}
   else if(first&&si<LAST_STG)setTimeout(()=>{if(phase==='play')banner(`${si+2}스테이지가 열렸어요 · 다음 판부터 바로 시작 가능`,2.2,'#517aa4')},2500)
 }
 function nextStage(){
@@ -1817,7 +1820,7 @@ function drawShop(s){
    else{ctx.fillStyle='rgba(28,18,10,.55)';ctx.beginPath();ctx.arc(0,0,20,0,7);ctx.fill();ctx.setLineDash([3,3]);ctx.strokeStyle='#ffdc66';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,17,0,7);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#ffdc66';ctx.font=`11px ${FD}`;ctx.fillText('스탬프',0,1)}
    ctx.restore()}
   // 말풍선
-  const txt=pk&&pk.done?'고마워요!':pk&&pk.failed?'으앙…':'도와줘요!';
+  const txt=pk&&pk.done?(pk.perfect?'퍼펙트! 고마워요':'고마워요!'):pk&&pk.failed?'으앙…':'도와줘요!';
   ctx.font=`16px ${FD}`;const tw=ctx.measureText(txt).width+24;const bx=x+90,by=GROUND-im.shopH-24+Math.sin(S.tAll*4)*2;
   ctx.fillStyle='#fff';rr(bx-tw/2,by-17,tw,32,15);ctx.fill();ctx.beginPath();ctx.moveTo(bx-6,by+13);ctx.lineTo(bx+5,by+13);ctx.lineTo(bx-9,by+26);ctx.fill();
   ctx.lineWidth=2.5;ctx.strokeStyle='#3a230f';rr(bx-tw/2,by-17,tw,32,15);ctx.stroke();ctx.fillStyle=pk&&pk.done?s.st.color:'#3a230f';ctx.fillText(txt,bx,by-1);
@@ -1962,10 +1965,10 @@ function showTitle(){
   card.innerHTML=`<div class="tl"><div class="duo"><img src="../common/sprites/bot_happy.png" alt="전포봇" style="height:clamp(30px,10cqw,110px);align-self:center"><img src="../common/sprites/g_hero.png" alt="전포 수호자"></div>
   <div class="tcol"><p class="eyebrow">전포 수호자와 전포봇</p>
   <h2>전포카페거리를 지켜라!</h2>
-  <p class="story">먹구름이 카페거리에 탄원두를 풀었어요. 전포봇과 함께 달리며 가게를 구하면 그 가게 쿠폰을 받아요.</p>
+  <p class="story">먹구름이 카페거리에 탄원두를 풀었어요. 한 대도 안 맞고 가게를 구하면 퍼펙트 쿠폰! 스탬프 7개를 모으면 쿠폰북 추첨까지.</p>
   <p class="stampline">${esc(CONFIG.season.name)} · 스탬프 <b>${stampAll()}/${STAMP_TOTAL}</b>${seasonDone()?(STP.entered?' · 응모 완료':' · 완성! 결과 화면에서 응모'):''}</p>
   <div class="row"><button class="go" id="go" type="button">게임 시작하기</button>${unlockedLvs().map(i=>`<button class="go ghost lv" data-lv="${i}" type="button">${i+1}스테이지 ${esc(CONFIG.stages[i].name)}부터</button>`).join('')}</div>
-  <p class="hint">${touchMode?'화면 탭으로 점프 · 시작하면 휴대폰을 가로로 돌려 주세요':'스페이스 · ↑ 점프 · X 전기충격파'} · 가게 ${ALL_STORES.length}곳 스탬프 + 마지막 보스 '수호 완료' 도장을 모으면 시즌 경품 응모 · <button class="linkbtn" id="resetSt" type="button">스탬프 초기화(시연용)</button></p></div></div>`;
+  <p class="hint">${touchMode?'화면 탭으로 점프 · 시작하면 휴대폰을 가로로 돌려 주세요':'스페이스 · ↑ 점프 · X 전기충격파'} · 가게 ${ALL_STORES.length}곳 스탬프 + 마지막 보스 '수호 완료' 도장을 모으면 쿠폰북 추첨 응모 · <button class="linkbtn" id="resetSt" type="button">스탬프 초기화(시연용)</button></p></div></div>`;
   ovl.hidden=false;$('go').onclick=()=>start(0);card.querySelectorAll('.lv').forEach(b=>b.onclick=()=>start(+b.dataset.lv));$('resetSt').onclick=()=>{STP={got:{},boss:{},entered:false};saveStamps();showTitle()};$('go').focus({preventScroll:true});
 }
 
@@ -2026,8 +2029,8 @@ function showResult(){
     <div class="scorecol">
       <p class="big">${fmt(s)}점</p>
       <p class="sub">발도장 금화 ${S.eggs} · 은화 ${S.silver} · 라멘 ${S.lemons} · 레몬에이드 ${S.lemonades} · 물고기 ${S.fish} · 물리친 빌런 ${S.kills} · 구출한 가게 ${S.rescued}/${TOTAL_STORES}${R.clear?` · 남은 하트 보너스 ${fmt(S.clearBonus)}`:''}</p>
-      ${ok?`<div class="ticket">스탬프 완성! 시즌 경품 응모 자격<small>${esc(CONFIG.season.name)} · 1인 1회 응모</small></div>`:done?`<div class="ticket">시즌 경품 응모 완료<small>다음 시즌에 새 가게·새 테마로 찾아올게요</small></div>`:nNew?`<div class="ticket">새 스탬프 ${nNew}개 획득<small>스탬프 ${stampAll()}/${STAMP_TOTAL}${left?` · 남은 가게 ${left}곳`:''}${gd?'':' · 마지막 보스 남음'}</small></div>`:`<p class="sub">스탬프 ${stampAll()}/${STAMP_TOTAL} · 다음 가게까지 가 보세요</p>`}
-      <div class="row">${ok?'<button class="go" id="enter" type="button">경품 응모하기</button>':''}<button class="go${ok?' ghost':''}" id="go" type="button">다시 하기</button>${touchMode?'<button class="go ghost" id="quit" type="button">나가기</button>':''}</div>
+      ${ok?`<div class="ticket">스탬프 7개 완성! ${esc(GRAND.name)} 추첨 응모 자격<small>${esc(GRAND.desc)} · 당첨 ${GRAND.winners}명 · 1인 1회 응모</small></div>`:done?`<div class="ticket">${esc(GRAND.name)} 추첨 응모 완료<small>다음 시즌에 새 가게·새 테마로 찾아올게요</small></div>`:nNew?`<div class="ticket">새 스탬프 ${nNew}개 획득<small>스탬프 ${stampAll()}/${STAMP_TOTAL}${left?` · 남은 가게 ${left}곳`:''}${gd?'':' · 마지막 보스 남음'}</small></div>`:`<p class="sub">스탬프 ${stampAll()}/${STAMP_TOTAL} · 다음 가게까지 가 보세요</p>`}
+      <div class="row">${ok?'<button class="go" id="enter" type="button">쿠폰북 추첨 응모하기</button>':''}<button class="go${ok?' ghost':''}" id="go" type="button">다시 하기</button>${touchMode?'<button class="go ghost" id="quit" type="button">나가기</button>':''}</div>
     </div>
     <div>
       <div class="box"><h3>${esc(CONFIG.season.name)}</h3>${coupons}</div>
@@ -2040,11 +2043,11 @@ function showResult(){
     hf.addEventListener('submit',e=>{e.preventDefault();saveName()})}
 }
 function showEntry(){
-  card.innerHTML=`<p class="eyebrow">시즌 경품 응모 · 스탬프 ${stampAll()}/${STAMP_TOTAL}</p><h2>응모 정보</h2>
+  card.innerHTML=`<p class="eyebrow">${esc(GRAND.name)} 추첨 응모 · 스탬프 ${stampAll()}/${STAMP_TOTAL}</p><h2>응모 정보</h2>
   <form class="form" id="entryForm" novalidate>
     <label for="rName">이름<input type="text" id="rName" maxlength="20" autocomplete="name" placeholder="홍길동"></label>
     <label for="rPhone">연락처<input type="tel" id="rPhone" maxlength="13" autocomplete="tel" placeholder="010-0000-0000"></label>
-    <label class="agree" for="rAgree"><input type="checkbox" id="rAgree"><span>경품 발송을 위해 이름과 연락처를 수집하며, 이벤트 종료 후 즉시 파기하는 데 동의합니다.</span></label>
+    <label class="agree" for="rAgree"><input type="checkbox" id="rAgree"><span>당첨 안내와 쿠폰북 발송을 위해 이름과 연락처를 수집하며, 이벤트 종료 후 즉시 파기하는 데 동의합니다.</span></label>
     <p class="err" id="rErr"></p>
     <div class="row"><button class="go" type="submit">응모하기</button><button class="go ghost" id="back" type="button">돌아가기</button></div>
   </form>`;

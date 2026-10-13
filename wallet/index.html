@@ -61,7 +61,7 @@ dialog::backdrop{background:rgba(20,12,6,.75)}
 <div class="wrap">
   <nav class="topbar"><a class="home" href="../"><img src="../common/sprites/bot_a.png" alt="">수호런 홈</a><a class="btn small ghost" href="../jeonpo/">게임하러 가기</a></nav>
   <h1>내 쿠폰함</h1>
-  <p class="sub" id="sub">가게에서 쿠폰을 누르고 화면을 보여 주세요. 사장님이 가게 PIN을 넣으면 사용 처리돼요.</p>
+  <p class="sub" id="sub">게임에서 퍼펙트로 구한 가게의 쿠폰이에요. 메뉴를 주문할 때 쿠폰을 누르고 화면을 보여 주세요.</p>
   <div class="tabs" role="tablist">
     <button role="tab" aria-selected="true" data-t="open">사용 가능</button>
     <button role="tab" aria-selected="false" data-t="used">사용 완료</button>
@@ -85,7 +85,7 @@ dialog::backdrop{background:rgba(20,12,6,.75)}
       const n=all.filter(c=>b.dataset.t==='open'?!c.usedAt:!!c.usedAt).length;b.textContent=(b.dataset.t==='open'?'사용 가능':'사용 완료')+(n?` ${n}`:'')});
     if(!list.length){
       $('list').innerHTML=tab==='open'
-        ?`<div class="card empty"><img src="../common/sprites/bot_blink.png" alt=""><p>아직 쓸 수 있는 쿠폰이 없어요.<br>게임에서 탄원두에게 습격당한 가게를 구하면 그 가게 쿠폰을 받아요.</p><a class="btn" href="../">게임 고르러 가기</a></div>`
+        ?`<div class="card empty"><img src="../common/sprites/bot_blink.png" alt=""><p>아직 쓸 수 있는 쿠폰이 없어요.<br>게임에서 탄원두 4마리를 한 대도 안 맞고 잡으면(퍼펙트) 그 가게 쿠폰을 받아요.</p><a class="btn" href="../">게임 고르러 가기</a></div>`
         :`<div class="card empty"><p class="muted">아직 사용한 쿠폰이 없어요.</p></div>`;
     }else{
       $('list').innerHTML=list.map(c=>{const s=W.site(c.site);return `<article class="cp${c.usedAt?' used':''}" style="--c:${esc(c.color||'#ffdc66')}">
@@ -97,14 +97,14 @@ dialog::backdrop{background:rgba(20,12,6,.75)}
     // 명소별 스탬프 진행
     $('prog').innerHTML='<h2>스탬프 투어</h2>'+W.sites().filter(s=>s.status==='open').map(s=>{const st=W.stamps(s.id)||{done:0,total:1};const pct=Math.round(st.done/st.total*100);
       return `<div class="card pg"><span><b>${esc(s.name)}</b> <span class="muted" style="font-size:13px">${esc(s.season.name)}</span></span><span class="bar"><i style="width:${pct}%"></i></span>
-        <span>${st.done}/${st.total}${W.entered(s.id)?' · 경품 응모 완료':st.done>=st.total?' · 응모 가능!':''}</span></div>`}).join('');
+        <span>${st.done}/${st.total}${W.entered(s.id)?' · 추첨 응모 완료':st.done>=st.total?' · 응모 가능!':''}</span>${s.grand?`<span class="muted" style="flex-basis:100%;font-size:13px">7개를 다 모으면 <b>${esc(s.grand.name)}</b> 추첨 응모 · ${esc(s.grand.desc)} · 당첨 ${s.grand.winners}명</span>`:''}</div>`}).join('');
     $('foot').textContent=W.remote()?'쿠폰은 운영 서버에도 저장돼요.':'시연 버전이라 쿠폰은 이 기기(브라우저)에만 저장돼요. 다른 휴대폰이나 브라우저에서는 보이지 않아요.';
   }
   function openUse(code){
     const c=W.coupons().find(x=>x.code===code);if(!c)return;
     const demo=!W.remote()?(()=>{const st=W.storeOf(c.site,c.store);return st?`<p class="demo">시연용 가게 PIN: ${esc(st.pin)}</p>`:''})():'';
     $('sheet').innerHTML=`<span class="store">${esc(c.store)}</span><span class="benefit">${esc(c.benefit)}</span><span class="bigcode">${esc(c.code)}</span>
-      <p class="say">사장님께 이 화면을 보여 주세요.<br>사장님이 가게 PIN 4자리를 넣으면 사용 처리돼요.</p>
+      <p class="say">메뉴를 주문하면서 사장님께 이 화면을 보여 주세요.<br>사장님이 가게 PIN 4자리를 넣으면 사용 처리돼요.<br><small>${esc(window.SUHO.couponRule||'')}</small></p>
       <form id="pinf" novalidate><input id="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="가게 PIN 4자리" placeholder="····"></form>
       <p class="err" id="perr" role="alert"></p>
       <div class="row"><button class="btn" id="ok" type="button">사용 처리</button><button class="btn ghost" id="cancel" type="button">닫기</button></div>${demo}`;
