@@ -1761,7 +1761,7 @@ function update(dt){
     const b=S.boss;
     if(b&&b.hp>0&&S.stage==='boss'){if(Math.abs(b.x-p.x)<70&&Math.abs(b.y-(p.y-26))<90)hurt()}
     for(const it of S.items){if(it.got)continue;const iy=it.y+Math.sin(it.ph*3)*4;
-      if(Math.abs(it.x-p.x)<(it.type==='egg'?24:32)&&iy>pt-16&&iy<pb+10){it.got=true;
+      if(Math.abs(it.x-p.x)<(it.type==='egg'?28:36)&&iy>p.y-100&&iy<pb+10){it.got=true;
         if(it.type==='egg'){if(it.silver){S.silver++;S.roar=Math.min(100,S.roar+1);addBonus(5);burst(it.x,iy,5,['#dfe6ee','#fff'],120)}else{S.eggs++;S.roar=Math.min(100,S.roar+2);addBonus(10);burst(it.x,iy,5,['#ffdc66','#fff6e0'],120)}sfx('egg');}
         else if(it.type==='menu'){S.boost=5;addBonus(50,it.x,iy-30,it.st.color);sfx('menu');banner(`${it.st.name} ${it.st.item}! 5초간 점수 2배`,1.6,it.st.color);burst(it.x,iy,16,[it.st.color,'#fff6e0','#ffdc66'],220,'star')}
         else if(it.type==='ginseng'){S.roarT=CONFIG.ginsengTime;S.roarMax=CONFIG.ginsengTime;sfx('power');banner(ST().time==='낮'?'백양산 산삼! 잠깐 무적 질주':'바삭 치킨! 잠깐 무적 질주',1.6,ST().time==='낮'?'#3f7d4e':'#b8651c');burst(it.x,iy,24,['#ffdc66','#f2a94a','#7fbf6a','#fff6e0'],300,'star')}
