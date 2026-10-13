@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>부산진구 수호런</title>
+<meta name="description" content="부산진구 명소를 달리는 러너 게임. 가게를 구하면 그 가게 쿠폰을 받고, 스탬프를 모으면 시즌 경품에 응모해요.">
+<meta property="og:title" content="부산진구 수호런">
+<meta property="og:description" content="명소를 골라 달리고, 구한 가게의 쿠폰을 받아 가세요.">
+<meta property="og:image" content="common/img/jeonpo.webp">
+<link rel="icon" href="common/sprites/bot_happy.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
+<link rel="stylesheet" href="common/suho.css">
+<script src="common/sites.js"></script>
+<script src="common/wallet.js"></script>
+<style>
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;padding:12px 0 26px}
+.hero h1{font-size:clamp(40px,9vw,76px);color:var(--cream);text-shadow:0 4px 0 var(--yellow-deep),0 8px 0 rgba(0,0,0,.25);margin:8px 0 12px}
+.hero h1 b{font-weight:400;color:var(--yellow)}
+.hero .lead{font-size:clamp(15px,2.2vw,18px);color:var(--cream);max-width:34em;word-break:keep-all}
+.hero .cast{position:relative;width:clamp(150px,26vw,250px);aspect-ratio:1/1}
+.hero .cast .g{position:absolute;right:4%;bottom:0;height:100%}
+.hero .cast .b{position:absolute;left:0;top:0;width:52%;animation:hover 2.6s ease-in-out infinite}
+@keyframes hover{50%{transform:translateY(-8px) rotate(-3deg)}}
+.walletbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 16px;margin-bottom:26px;
+  background:linear-gradient(90deg,rgba(111,242,214,.14),rgba(111,242,214,.04));border:1px solid rgba(111,242,214,.35);border-radius:16px}
+.walletbar .t{font-family:var(--display);font-size:18px}
+.walletbar .t small{display:block;font-family:var(--body);font-size:13px;color:var(--muted)}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 12px}
+.sec-h h2{font-size:24px;color:var(--yellow)}
+.sites{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
+.site{display:flex;flex-direction:column;overflow:hidden;text-decoration:none;transition:transform .15s ease}
+a.site:hover{transform:translateY(-3px)}
+.site .pic{position:relative;aspect-ratio:16/9;background:#1a110a}
+.site .pic img{width:100%;height:100%;object-fit:cover;display:block}
+.site .pic .chip{position:absolute;left:10px;top:10px;background:rgba(28,18,10,.72)}
+.site.soon .pic img{filter:saturate(.55) brightness(.75)}
+.site .soonbadge{position:absolute;inset:auto 10px 10px auto;font-family:var(--display);font-size:14px;background:var(--cream);color:#3a230f;border-radius:999px;padding:3px 12px}
+.site .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.site h3{font-size:24px;color:var(--cream)}
+.site h3 i{font-style:normal;display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:8px;vertical-align:.15em}
+.site .pitch{font-size:14px;color:var(--muted);word-break:keep-all}
+.site .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:6px}
+.site .who{font-size:13px;color:var(--cream)}
+.site .prog{font-size:13px;color:var(--mint)}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:34px 0 0;padding:0;list-style:none;counter-reset:s}
+.steps li{padding:14px;border-radius:14px;background:rgba(255,246,224,.05);border:1px solid var(--faint);font-size:14px;color:var(--muted);word-break:keep-all}
+.steps li b{display:block;font-family:var(--display);font-weight:400;font-size:17px;color:var(--cream);margin-bottom:4px}
+.steps li b::before{counter-increment:s;content:counter(s);display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;
+  background:var(--yellow);color:#3a230f;font-size:13px;margin-right:8px;vertical-align:.1em}
+@media (max-width:760px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.hero{grid-template-columns:1fr}.hero .cast{order:-1;width:150px;justify-self:end;margin:-6px 0 -40px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <p class="eyebrow">부산진구 · 동네를 달리는 게임</p>
+      <h1>부산진구 <b>수호런</b></h1>
+      <p class="lead">명소를 골라 달려 보세요. 탄원두에게 습격당한 가게를 구하면 그 가게 쿠폰이 내 쿠폰함에 들어오고, 스탬프를 다 모으면 시즌 경품에 응모할 수 있어요.</p>
+    </div>
+    <div class="cast" aria-hidden="true">
+      <img class="b" src="common/sprites/bot_happy.png" alt="">
+      <img class="g" src="common/sprites/g_hero.png" alt="">
+    </div>
+  </section>
+
+  <a class="walletbar" href="wallet/" style="text-decoration:none">
+    <span class="t">내 쿠폰함<small id="wsub">게임에서 받은 가게 쿠폰을 여기서 보여 주세요</small></span>
+    <span class="btn mint small" id="wbtn">쿠폰함 열기</span>
+  </a>
+
+  <div class="sec-h"><h2>어디를 달릴까요?</h2><span class="muted" style="font-size:13px">명소마다 다른 게임이에요</span></div>
+  <div class="sites" id="sites"></div>
+
+  <ol class="steps" aria-label="이용 방법">
+    <li><b>명소 고르기</b>가고 싶은 동네의 수호런을 눌러 시작해요.</li>
+    <li><b>가게 구하기</b>가게를 습격한 탄원두 3마리를 모두 밟으면 그 가게 쿠폰을 받아요.</li>
+    <li><b>가게에서 쓰기</b>쿠폰함을 열어 보여 주면 사장님이 PIN을 눌러 사용 처리해요.</li>
+    <li><b>경품 응모</b>시즌 스탬프를 다 모으고 보스를 물리치면 경품 응모 자격이 생겨요.</li>
+  </ol>
+
+  <p class="foot">부산진구 협의용 시연본입니다. 전포 수호자·전포봇은 오리지널 캐릭터 시안이고, 게임 속 가게와 쿠폰 혜택은 시연을 위한 가상의 예시예요.
+    시연 버전에서는 쿠폰과 응모 정보가 이 기기에만 저장됩니다. · <a href="admin/">운영자 화면</a></p>
+</main>
+<script>
+(function(){
+  const W=window.SuhoWallet,esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const box=document.getElementById('sites');
+  box.innerHTML=W.sites().map(s=>{
+    const open=s.status==='open',st=open?W.stamps(s.id):null,n=open?W.coupons(s.id).length:0;
+    const inner=`<div class="pic"><img src="${esc(s.thumb)}" alt="" loading="lazy"><span class="chip">${esc(s.place)}</span>${open?'':'<span class="soonbadge">준비 중</span>'}</div>
+      <div class="body"><h3><i style="--c:${s.color}"></i>${esc(s.name)}</h3><p class="pitch">${esc(s.pitch)}</p>
+      <div class="row"><span class="who">${esc(s.who)}</span>${open?`<span class="prog">${st?`스탬프 ${st.done}/${st.total}`:''}${n?` · 쿠폰 ${n}장`:''}</span>`:''}</div>
+      ${open?'<span class="btn" style="margin-top:6px">지금 달리기 →</span>':''}</div>`;
+    return open?`<a class="site card" href="${esc(s.url)}" aria-label="${esc(s.name)} 시작하기">${inner}</a>`:`<div class="site card soon" aria-disabled="true">${inner}</div>`;
+  }).join('');
+  const u=W.unused();
+  if(u){document.getElementById('wsub').textContent=`사용하지 않은 쿠폰 ${u}장이 있어요`;document.getElementById('wbtn').textContent=`쿠폰 ${u}장 보기`}
+})();
+</script>
+</body>
+</html>

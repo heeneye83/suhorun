@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>내 쿠폰함 · 수호런</title>
+<meta name="description" content="수호런에서 받은 가게 쿠폰과 스탬프 진행 상황">
+<link rel="icon" href="../common/sprites/bot_happy.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
+<link rel="stylesheet" href="../common/suho.css">
+<script src="../common/sites.js"></script>
+<script src="../common/wallet.js"></script>
+<style>
+.wrap{width:min(100% - 32px,720px)}
+h1{font-size:32px;margin:4px 0 6px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:18px}
+.tabs{display:flex;gap:8px;margin:0 0 14px}
+.tabs button{font:inherit;font-family:var(--display);font-size:15px;color:var(--muted);background:transparent;border:1px solid var(--faint);border-radius:999px;padding:6px 14px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--cream);color:#3a230f;border-color:var(--cream)}
+.list{display:flex;flex-direction:column;gap:12px}
+.cp{position:relative;display:grid;grid-template-columns:10px minmax(0,1fr) auto;align-items:stretch;background:var(--cream);color:#3a230f;border-radius:16px;overflow:hidden;
+  box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.cp::before{content:"";background:var(--c,#ffdc66)}
+.cp .main{padding:14px 14px 12px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.cp .store{font-family:var(--display);font-size:15px;color:var(--c,#3a230f);filter:brightness(.8)}
+.cp .benefit{font-family:var(--display);font-size:22px;line-height:1.2;word-break:keep-all}
+.cp .meta{font-size:12px;opacity:.7;display:flex;gap:10px;flex-wrap:wrap}
+.cp .code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}
+.cp .act{display:flex;align-items:center;padding:0 14px;border-left:2px dashed rgba(58,35,15,.25)}
+.cp.used{opacity:.62}
+.cp.used .act{font-family:var(--display);color:var(--red);transform:rotate(-8deg);font-size:18px}
+.empty{padding:28px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.empty img{height:90px}
+.prog{margin-top:28px;display:flex;flex-direction:column;gap:10px}
+.prog h2{font-size:20px;color:var(--yellow)}
+.pg{padding:14px 16px;display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap}
+.pg .bar{flex:1;min-width:140px;height:10px;border-radius:999px;background:var(--faint);overflow:hidden}
+.pg .bar i{display:block;height:100%;background:var(--mint)}
+.pg b{font-family:var(--display);font-weight:400}
+/* 사용 화면 */
+dialog{border:0;padding:0;background:transparent;color:inherit;width:min(100% - 24px,440px)}
+dialog::backdrop{background:rgba(20,12,6,.75)}
+.sheet{background:var(--cream);color:#3a230f;border-radius:22px;padding:22px 20px 20px;display:flex;flex-direction:column;gap:12px;text-align:center}
+.sheet .store{font-family:var(--display);font-size:20px}
+.sheet .benefit{font-family:var(--display);font-size:30px;line-height:1.15;word-break:keep-all}
+.sheet .bigcode{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:24px;letter-spacing:.08em;background:#fff;border:2px dashed rgba(58,35,15,.3);border-radius:12px;padding:10px}
+.sheet .say{font-size:14px;opacity:.8}
+.sheet input{color:#3a230f;background:#fff;border-color:rgba(58,35,15,.35);text-align:center;font-size:22px;letter-spacing:.4em}
+.sheet .err{color:var(--red);font-size:14px;min-height:1.4em}
+.sheet .row{display:flex;gap:10px;justify-content:center}
+.sheet .btn.ghost{color:#3a230f;box-shadow:inset 0 0 0 2px rgba(58,35,15,.35)}
+.sheet .demo{font-size:12px;opacity:.6}
+.stampok{font-family:var(--display);font-size:34px;color:var(--red);border:4px solid var(--red);border-radius:50%;width:150px;height:150px;margin:6px auto;
+  display:flex;align-items:center;justify-content:center;transform:rotate(-12deg);animation:pop .35s ease-out;white-space:nowrap;font-size:30px}
+@keyframes pop{from{transform:rotate(-12deg) scale(1.6);opacity:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="topbar"><a class="home" href="../"><img src="../common/sprites/bot_a.png" alt="">수호런 홈</a><a class="btn small ghost" href="../jeonpo/">게임하러 가기</a></nav>
+  <h1>내 쿠폰함</h1>
+  <p class="sub" id="sub">가게에서 쿠폰을 누르고 화면을 보여 주세요. 사장님이 가게 PIN을 넣으면 사용 처리돼요.</p>
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-t="open">사용 가능</button>
+    <button role="tab" aria-selected="false" data-t="used">사용 완료</button>
+  </div>
+  <div class="list" id="list" role="tabpanel"></div>
+  <section class="prog" id="prog"></section>
+  <p class="foot" id="foot"></p>
+</div>
+
+<dialog id="dlg"><div class="sheet" id="sheet"></div></dialog>
+
+<script>
+(function(){
+  const W=window.SuhoWallet,$=id=>document.getElementById(id);
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const day=iso=>{const d=new Date(iso);return `${d.getMonth()+1}.${d.getDate()}`};
+  let tab='open';
+  function render(){
+    const all=W.coupons().slice().reverse(),list=all.filter(c=>tab==='open'?!c.usedAt:!!c.usedAt);
+    document.querySelectorAll('.tabs button').forEach(b=>{b.setAttribute('aria-selected',b.dataset.t===tab);
+      const n=all.filter(c=>b.dataset.t==='open'?!c.usedAt:!!c.usedAt).length;b.textContent=(b.dataset.t==='open'?'사용 가능':'사용 완료')+(n?` ${n}`:'')});
+    if(!list.length){
+      $('list').innerHTML=tab==='open'
+        ?`<div class="card empty"><img src="../common/sprites/bot_blink.png" alt=""><p>아직 쓸 수 있는 쿠폰이 없어요.<br>게임에서 탄원두에게 습격당한 가게를 구하면 그 가게 쿠폰을 받아요.</p><a class="btn" href="../">게임 고르러 가기</a></div>`
+        :`<div class="card empty"><p class="muted">아직 사용한 쿠폰이 없어요.</p></div>`;
+    }else{
+      $('list').innerHTML=list.map(c=>{const s=W.site(c.site);return `<article class="cp${c.usedAt?' used':''}" style="--c:${esc(c.color||'#ffdc66')}">
+        <div class="main"><span class="store">${esc(c.store)}</span><span class="benefit">${esc(c.benefit)}</span>
+        <span class="meta"><span>${esc(s?s.name:c.site)}</span><span class="code">${esc(c.code)}</span><span>${c.usedAt?`${day(c.usedAt)} 사용`:`${day(c.issuedAt)} 받음`}</span></span></div>
+        <div class="act">${c.usedAt?'사용 완료':`<button class="btn small" data-code="${esc(c.code)}" type="button">사용하기</button>`}</div></article>`}).join('');
+      $('list').querySelectorAll('button[data-code]').forEach(b=>b.onclick=()=>openUse(b.dataset.code));
+    }
+    // 명소별 스탬프 진행
+    $('prog').innerHTML='<h2>스탬프 투어</h2>'+W.sites().filter(s=>s.status==='open').map(s=>{const st=W.stamps(s.id)||{done:0,total:1};const pct=Math.round(st.done/st.total*100);
+      return `<div class="card pg"><span><b>${esc(s.name)}</b> <span class="muted" style="font-size:13px">${esc(s.season.name)}</span></span><span class="bar"><i style="width:${pct}%"></i></span>
+        <span>${st.done}/${st.total}${W.entered(s.id)?' · 경품 응모 완료':st.done>=st.total?' · 응모 가능!':''}</span></div>`}).join('');
+    $('foot').textContent=W.remote()?'쿠폰은 운영 서버에도 저장돼요.':'시연 버전이라 쿠폰은 이 기기(브라우저)에만 저장돼요. 다른 휴대폰이나 브라우저에서는 보이지 않아요.';
+  }
+  function openUse(code){
+    const c=W.coupons().find(x=>x.code===code);if(!c)return;
+    const demo=!W.remote()?(()=>{const st=W.storeOf(c.site,c.store);return st?`<p class="demo">시연용 가게 PIN: ${esc(st.pin)}</p>`:''})():'';
+    $('sheet').innerHTML=`<span class="store">${esc(c.store)}</span><span class="benefit">${esc(c.benefit)}</span><span class="bigcode">${esc(c.code)}</span>
+      <p class="say">사장님께 이 화면을 보여 주세요.<br>사장님이 가게 PIN 4자리를 넣으면 사용 처리돼요.</p>
+      <form id="pinf" novalidate><input id="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="가게 PIN 4자리" placeholder="····"></form>
+      <p class="err" id="perr" role="alert"></p>
+      <div class="row"><button class="btn" id="ok" type="button">사용 처리</button><button class="btn ghost" id="cancel" type="button">닫기</button></div>${demo}`;
+    const dlg=$('dlg');dlg.showModal();setTimeout(()=>$('pin').focus(),50);
+    const go=()=>{const pin=$('pin').value.trim();if(!/^\d{4}$/.test(pin)){$('perr').textContent='PIN 4자리를 넣어 주세요.';return}
+      $('ok').disabled=true;W.redeem(code,pin).then(r=>{$('ok').disabled=false;
+        if(!r.ok){$('perr').textContent=r.msg;$('pin').select();return}
+        $('sheet').innerHTML=`<span class="store">${esc(c.store)}</span><div class="stampok">사용 완료</div><span class="benefit">${esc(c.benefit)}</span><p class="say">맛있게 드세요! 전포를 지켜 줘서 고마워요.</p><div class="row"><button class="btn" id="cancel" type="button">확인</button></div>`;
+        $('cancel').onclick=()=>{dlg.close();render()}})};
+    $('ok').onclick=go;$('pinf').onsubmit=e=>{e.preventDefault();go()};$('cancel').onclick=()=>dlg.close();
+  }
+  document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;render()});
+  $('dlg').addEventListener('close',render);
+  render();
+})();
+</script>
+</body>
+</html>

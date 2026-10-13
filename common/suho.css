@@ -1,0 +1,39 @@
+/* 부산진구 수호런 — 공통 스타일 (홈·쿠폰함·운영자 화면) */
+:root{
+  --ground:#24160d; --ground-2:#3a2416; --panel:#2f1d11; --panel-2:#3b2617;
+  --cream:#fff6e0; --muted:#d9c4a6; --faint:rgba(255,246,224,.14);
+  --yellow:#ffdc66; --yellow-deep:#c99a1e; --mint:#6ff2d6; --mint-deep:#1d5c55; --red:#d8352a;
+  --display:"Jua","Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --body:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--ground);background-image:radial-gradient(120% 60% at 50% 0%,var(--ground-2),var(--ground) 70%);
+  color:var(--cream);font-family:var(--body);font-size:15px;line-height:1.55}
+a{color:inherit}
+.wrap{width:min(100% - 32px,1080px);margin:0 auto}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;line-height:1.15;word-break:keep-all}
+p{margin:0}
+.eyebrow{font-size:12px;letter-spacing:.18em;color:var(--yellow)}
+.muted{color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--display);font-size:17px;color:#3a230f;background:var(--yellow);
+  border:0;border-radius:999px;padding:10px 20px;cursor:pointer;text-decoration:none;box-shadow:0 4px 0 var(--yellow-deep);white-space:nowrap}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--yellow-deep)}
+.btn.ghost{background:transparent;color:var(--cream);box-shadow:inset 0 0 0 2px rgba(255,246,224,.4)}
+.btn.mint{background:var(--mint);color:#123b36;box-shadow:0 4px 0 var(--mint-deep)}
+.btn.small{font-size:14px;padding:7px 14px}
+.btn[disabled]{opacity:.45;cursor:default}
+.btn:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 10px;border-radius:999px;background:var(--faint);color:var(--cream);white-space:nowrap}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0}
+.topbar .home{font-family:var(--display);font-size:20px;color:var(--yellow);text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.topbar .home img{height:30px}
+.card{background:var(--panel);border:1px solid var(--faint);border-radius:18px}
+input[type=text],input[type=tel],input[type=password],input[type=search],select{font:inherit;color:var(--cream);background:rgba(255,246,224,.08);
+  border:1px solid rgba(255,246,224,.3);border-radius:10px;padding:9px 12px;width:100%}
+select option{background:var(--panel)}
+.foot{font-size:12px;color:var(--muted);opacity:.85;padding:28px 0 36px;line-height:1.7}
+.foot a{color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
