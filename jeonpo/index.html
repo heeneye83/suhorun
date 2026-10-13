@@ -239,6 +239,7 @@ h1{white-space:nowrap}
     <span><b>스테이지</b>낮 전포카페거리와 밤의 전포거리가 번갈아 계속 · 스테이지마다 빨라지고 보스도 강해져요</span>
     <span><b>보스</b>낮 스테이지 대형 탄원두 · 밤 스테이지 대형 악플러(더 강해요: 체력이 많고 낮은 악플과 높은 악플을 섞어 던져요) · 충격파 한 방에 체력 2칸 · 보스전에서는 탄원두를 밟으면 바로 충격파 충전</span>
     <span><b>퍼펙트 쿠폰</b>탄원두 4마리를 한 대도 안 맞고 모두 잡으면 그 가게 쿠폰(샷 추가·사이즈업·토핑 추가·500원 할인) · 메뉴 주문 시 가게에서 보여 주면 사장님이 사용 처리</span>
+    <span><b>캡슐 뽑기</b>가끔(스테이지마다 많아야 한 번) 길에 뽑기 기계가 나와요 · 부딪히면 동전 넣고 돌려서 점수·하트·구조 배터리, 낮은 확률로 이벤트 가게 스페셜 쿠폰</span>
     <span><b>스탬프 투어</b>가게 6곳 스탬프 + 마지막 보스를 물리친 '수호 완료' 도장을 모으면(스탬프 7개) 쿠폰북 추첨 응모(1인 1회) · 스탬프는 저장돼서 다음 판에 이어서 모아요</span>
     <span><b>스테이지 열기</b>보스를 물리치면 다음 판부터 그다음 스테이지에서 바로 시작할 수 있어요</span>
     <span><b>시즌</b>정해진 기간에만 열리고, 다음 시즌은 새 가게·새 테마(예: 맥주 축제)로 바뀌어요</span>
@@ -665,6 +666,84 @@ function drawFireworks(){if(!S.fw.length)return;ctx.save();ctx.globalCompositeOp
       ctx.globalAlpha=a;ctx.fillStyle=Math.random()<.15?'#fff':f.c;ctx.beginPath();ctx.arc(f.x,f.y,2,0,7);ctx.fill();ctx.globalAlpha=1}
     else if(f.k==='ring'){const k=1-f.life/f.max,r=30+k*60,g=ctx.createRadialGradient(f.x,f.y,0,f.x,f.y,r);g.addColorStop(0,f.c);g.addColorStop(1,'rgba(0,0,0,0)');ctx.globalAlpha=.6*(1-k);ctx.fillStyle=g;ctx.beginPath();ctx.arc(f.x,f.y,r,0,7);ctx.fill();ctx.globalAlpha=1}}
   ctx.restore()}
+
+/* ================= 캡슐 뽑기 이벤트 (스테이지당 최대 1번, 가끔) ================= */
+const GACHA={chance:.7,from:22,to:70,odds:[['points',.55],['heart',.2],['battery',.17],['special',.08]]};
+const CAPS=['#ff6fb1','#5ec8ff','#ffd84d','#9dff7a','#c99aff','#ff9a5e'];
+function planGacha(){S.gachaAt=Math.random()<GACHA.chance?rand(GACHA.from,GACHA.to):Infinity}
+function spawnGacha(){S.gachaAt=Infinity;S.items.push({type:'gacha',x:W+80,y:GROUND-46,ph:0});S.gap=Math.max(S.gap,520);
+  setTimeout(()=>{if(phase==='play'&&!S.gacha)banner('캡슐 뽑기 기계 발견! 부딪히면 동전 넣고 돌려요',2,'#c8553d')},400)}
+function rollPrize(){
+  let r=Math.random(),k='points';for(const[n,w]of GACHA.odds){if(r<w){k=n;break}r-=w}
+  if(k==='special'){const s=WALLET&&WALLET.site(SITE_ID),ev=(s&&s.eventStores)||[];
+    const left=ev.filter(e=>!WALLET.coupons(SITE_ID).some(c=>c.store===e.name));
+    if(left.length){const e=pickArr(left);const r2=WALLET.issue(SITE_ID,e.name);if(r2&&r2.isNew){S.issued.push(r2.coupon);updCp();return{k,store:e.name,benefit:e.benefit,color:e.color}}}
+    k='points'}
+  if(k==='heart'&&S.hearts>=CONFIG.maxHearts)k='battery';
+  return{k,pts:k==='points'?pickArr([500,800,1000]):0}}
+function startGacha(it){S.gacha={t:0,x:it.x,prize:rollPrize(),cap:pickArr(CAPS),applied:false};sfx('charge');held=false;p.hold=false}
+function applyGacha(){const g=S.gacha,pz=g.prize;if(g.applied)return;g.applied=true;
+  if(pz.k==='points'){addBonus(pz.pts);sfx('coupon')}
+  else if(pz.k==='heart'){S.hearts=Math.min(CONFIG.maxHearts,S.hearts+1);sfx('rescue')}
+  else if(pz.k==='battery'){S.rescues++;sfx('rescue')}
+  else{sfx('clear')}
+  burst(W/2,H/2-10,pz.k==='special'?46:26,pz.k==='special'?['#ffd84d','#fff6e0',pz.color,'#ff6fb1']:[g.cap,'#fff6e0','#ffdc66'],pz.k==='special'?380:260,'star')}
+function updateGacha(dt){const g=S.gacha;g.t+=dt;
+  if(g.t>=.55&&!g.coin){g.coin=1;sfx('egg')}
+  if(g.t>=1.0&&!g.crank){g.crank=1;sfx('menu')}
+  if(g.t>=2.35)applyGacha();
+  for(const q of S.parts){q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=300*dt;q.life-=dt}S.parts=S.parts.filter(q=>q.life>0);
+  if(g.t>(g.prize.k==='special'?5.2:4)){S.gacha=null;S.inv=Math.max(S.inv,1);last=performance.now()}}
+function gachaSkip(){const g=S.gacha;if(g&&g.t>2.9)g.t=99}
+// 뽑기 기계 그림 (원점 = 바닥 가운데)
+function drawGachaMachine(x,y,s,crank,shake,glow){ctx.save();ctx.translate(x,y);ctx.scale(s,s);
+  if(glow){const g=ctx.createRadialGradient(0,-60,10,0,-60,90);g.addColorStop(0,'rgba(255,220,102,.45)');g.addColorStop(1,'rgba(255,220,102,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,-60,90,0,7);ctx.fill()}
+  ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.ellipse(0,2,36,6,0,0,7);ctx.fill();
+  // 몸통
+  const bg=ctx.createLinearGradient(-30,0,30,0);bg.addColorStop(0,'#ff6b5b');bg.addColorStop(.6,'#d8352a');bg.addColorStop(1,'#a8251c');ctx.fillStyle=bg;rr(-30,-58,60,58,8);ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle='#3a1a12';ctx.stroke();
+  ctx.fillStyle='#fff6e0';rr(-22,-50,44,14,4);ctx.fill();ctx.fillStyle='#d8352a';ctx.font=`11px ${FD}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('캡슐 뽑기',0,-43);
+  // 동전 투입구 + 손잡이
+  ctx.fillStyle='#3a1a12';rr(12,-30,10,4,2);ctx.fill();
+  ctx.save();ctx.translate(-8,-24);ctx.rotate(crank||0);ctx.fillStyle='#e8e8ea';ctx.beginPath();ctx.arc(0,0,8,0,7);ctx.fill();ctx.strokeStyle='#6b737d';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='#9aa3ad';ctx.fillRect(-9,-2.5,18,5);ctx.restore();
+  // 배출구
+  ctx.fillStyle='#3a1a12';rr(-12,-12,24,10,3);ctx.fill();
+  // 유리 돔 + 캡슐
+  ctx.save();ctx.beginPath();ctx.arc(0,-84,30,0,7);ctx.closePath();ctx.clip();
+  ctx.fillStyle='rgba(220,240,255,.55)';ctx.fillRect(-32,-116,64,64);
+  for(let i=0;i<11;i++){const cx=-20+(i%4)*13+(Math.floor(i/4)%2)*6+Math.sin((shake||0)*30+i)*(shake?2:0),cy=-64-Math.floor(i/4)*12+Math.cos((shake||0)*25+i)*(shake?2:0);
+    ctx.fillStyle=CAPS[i%CAPS.length];ctx.beginPath();ctx.arc(cx,cy,6,Math.PI,0);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx,cy,6,0,Math.PI);ctx.fill();ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,6,0,7);ctx.stroke()}
+  ctx.restore();
+  ctx.lineWidth=3;ctx.strokeStyle='#3a1a12';ctx.beginPath();ctx.arc(0,-84,30,0,7);ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.7)';ctx.beginPath();ctx.ellipse(-12,-98,6,10,-.5,0,7);ctx.fill();
+  ctx.fillStyle='#d8352a';rr(-8,-120,16,8,3);ctx.fill();ctx.strokeStyle='#3a1a12';ctx.lineWidth=2;ctx.stroke();
+  ctx.restore()}
+function drawCapsule(x,y,r,col,open){ctx.save();ctx.translate(x,y);
+  const o=open||0;ctx.fillStyle=col;ctx.beginPath();ctx.arc(0,-o*r*.5,r,Math.PI,0);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#fffaf0';ctx.beginPath();ctx.arc(0,o*r*.25,r,0,Math.PI);ctx.closePath();ctx.fill();
+  ctx.lineWidth=Math.max(2,r*.08);ctx.strokeStyle='rgba(58,35,15,.6)';ctx.beginPath();ctx.arc(0,-o*r*.5,r,Math.PI,0);ctx.stroke();ctx.beginPath();ctx.arc(0,o*r*.25,r,0,Math.PI);ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.55)';ctx.beginPath();ctx.ellipse(-r*.35,-r*.45-o*r*.5,r*.18,r*.3,-.5,0,7);ctx.fill();ctx.restore()}
+function drawGacha(){const g=S.gacha;if(!g)return;const t=g.t,pz=g.prize;
+  ctx.fillStyle=`rgba(20,12,6,${Math.min(.62,t*2)})`;ctx.fillRect(0,0,W,H);
+  const mx=W/2-150,my=H-40,s=2.6;
+  const crank=t<1?0:Math.min(1,(t-1)/.8)*Math.PI*2;
+  drawGachaMachine(mx,my,s,crank,t>1&&t<1.8?t:0,true);
+  if(t>.3&&t<.9){const k=(t-.3)/.6;ctx.fillStyle='#ffcf3a';ctx.beginPath();ctx.ellipse(mx+17*s,my-28*s-60*(1-k),8,8,0,0,7);ctx.fill();ctx.strokeStyle='#a8701a';ctx.lineWidth=2;ctx.stroke()}
+  if(t>=1.8){let cx,cy,r=16,op=0;
+    if(t<2.1){const k=(t-1.8)/.3;cx=mx;cy=my-7*s+Math.abs(Math.sin(k*Math.PI*2))*-18}
+    else{const k=Math.min(1,(t-2.1)/.25),e=k*k*(3-2*k);cx=mx+(W/2+40-mx)*e;cy=(my-7*s)+((H/2-60)-(my-7*s))*e;r=16+46*e}
+    if(t>2.35)op=Math.min(1,(t-2.35)/.25);
+    if(op>0){const gl=ctx.createRadialGradient(cx,cy,10,cx,cy,170);gl.addColorStop(0,pz.k==='special'?'rgba(255,220,90,.75)':'rgba(255,246,224,.5)');gl.addColorStop(1,'rgba(255,246,224,0)');ctx.fillStyle=gl;ctx.beginPath();ctx.arc(cx,cy,170,0,7);ctx.fill()}
+    drawCapsule(cx,cy,r,pz.k==='special'?'#ffcf3a':g.cap,op*1.6);
+    if(op>.3){ctx.globalAlpha=Math.min(1,(op-.3)/.5);const cw=330,ch=pz.k==='special'?150:96,bx=cx-cw/2,by=cy+58;
+      ctx.fillStyle=pz.k==='special'?'#ffdc66':'#fff6e0';rr(bx,by,cw,ch,18);ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=pz.k==='special'?'#a8701a':'#3a230f';ctx.stroke();
+      ctx.fillStyle='#3a230f';ctx.textAlign='center';ctx.textBaseline='middle';
+      if(pz.k==='special'){ctx.font=`16px ${FD}`;ctx.fillText('★ 스페셜 쿠폰 당첨! ★',cx,by+26);ctx.font=`28px ${FD}`;ctx.fillStyle=pz.color;ctx.fillText(pz.store,cx,by+64);
+        ctx.fillStyle='#3a230f';ctx.font=`22px ${FD}`;ctx.fillText(pz.benefit,cx,by+100);ctx.font=`13px ${FD}`;ctx.fillText('쿠폰함에 저장됐어요',cx,by+130)}
+      else{ctx.font=`30px ${FD}`;ctx.fillText(pz.k==='points'?`+${fmt(pz.pts*mult())}점`:pz.k==='heart'?'하트 +1':'구조 배터리 +1',cx,by+40);
+        ctx.font=`14px ${FD}`;ctx.fillStyle='#7a5a3a';ctx.fillText(pz.k==='points'?'코인 보너스':pz.k==='heart'?'체력 회복':'전포봇 구조 +1',cx,by+72)}
+      ctx.globalAlpha=1}}
+  ctx.fillStyle='#fff6e0';ctx.font=`18px ${FD}`;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(t<1?'동전 넣는 중…':t<2.35?'드르륵 드르륵…':t>2.9?(touchMode?'화면을 누르면 계속':'스페이스로 계속'):'',W/2,40)}
 function drawBg(){
   const d=S.dark,N=S.night,base=GROUND-30;
   const g=ctx.createLinearGradient(0,0,0,GROUND);
@@ -1111,9 +1190,9 @@ function newGame(){
   S={t:0,tAll:S?S.tAll:0,dist:0,v:330,bonus:0,hearts:3,inv:0,rescues:1,bolts:0,charge:0,roar:0,roarT:0,boost:0,
     eggs:0,kills:0,coupons:[],newStamps:[],newBoss:-1,stampFx:null,rescued:0,packs:{},packN:0,ens:[],obs:[],items:[],pits:[],shops:[],parts:[],zaps:[],
     banner:null,gap:500,storeIdx:0,charm:false,gin:0,shoe:0,shoeT:0,nextHeart:10,roarMax:6,lemonades:0,silver:0,level:0,lt:0,night:0,water:0,w:null,dcCool:10,dcCount:0,fish:0,lemons:0,stage:'run',introT:0,boss:null,carry:0,dark:0,shake:0,flash:0,groundOff:0,
-    hb:{x:100,y:140},fw:[],fwT:2,issued:[],seenHelp:{},clearBonus:0,endT:0,result:null};
+    hb:{x:100,y:140},fw:[],fwT:2,issued:[],gacha:null,gachaAt:Infinity,seenHelp:{},clearBonus:0,endT:0,result:null};
   p={x:200,y:GROUND,vy:0,on:true,jumps:0,hold:false,holdT:0,anim:0,prevY:GROUND};
-  initBg();
+  initBg();planGacha();
 }
 newGame();
 
@@ -1434,12 +1513,13 @@ function bossDown(){
 function nextStage(){
   S.level++;S.lt=0;S.stage='run';S.boss=null;S.storeIdx=0;S.charm=false;S.gin=0;S.shoe=0;S.dcCool=12;S.dcCount=0;S.gap=700;S.dark=0;
   S.ens=[];S.obs=[];S.items=[];S.pits=[];S.shops=[];
-  S.nextHeart=10;if(S.hearts<CONFIG.maxHearts){S.hearts++;floatText('♥ +1',p.x,p.y-100,'#ff8a7a')}
+  planGacha();S.nextHeart=10;if(S.hearts<CONFIG.maxHearts){S.hearts++;floatText('♥ +1',p.x,p.y-100,'#ff8a7a')}
   banner(`${S.level+1}스테이지 · ${ST().name} · 속도 UP`,2.6,S.level%2?'#3b3a6b':'#c97a2a');musicTrack(S.level%2?'night':'street');musicStart();sfx('start');
 }
 
 /* ================= update ================= */
 function update(dt){
+  if(S.gacha){updateGacha(dt);return}
   S.t+=dt;S.lt+=dt;updateFireworks(dt);
   S.night+=(((S.stage==='clear'?S.level+1:S.level)%2)-S.night)*Math.min(1,dt*.7);
   S.shoeT=Math.max(0,S.shoeT-dt);
@@ -1468,6 +1548,7 @@ function update(dt){
     else if(S.gap<=0){
       const st=ST().stores[S.storeIdx];
       if(st&&S.lt>=st.at)spawnStore();
+      else if(S.lt>=S.gachaAt&&S.water<=0&&!activePack())spawnGacha();
       else if(!S.charm&&S.lt>=CONFIG.charmAt)spawnCharm();
       else if(S.gin<CONFIG.ginsengAt.length&&S.lt>=CONFIG.ginsengAt[S.gin])spawnGinseng();
       else if(S.shoe<CONFIG.shoeAt.length&&S.lt>=CONFIG.shoeAt[S.shoe])spawnShoe();
@@ -1573,6 +1654,7 @@ function update(dt){
         if(it.type==='egg'){if(it.silver){S.silver++;S.roar=Math.min(100,S.roar+1);addBonus(5);burst(it.x,iy,5,['#dfe6ee','#fff'],120)}else{S.eggs++;S.roar=Math.min(100,S.roar+2);addBonus(10);burst(it.x,iy,5,['#ffdc66','#fff6e0'],120)}sfx('egg');}
         else if(it.type==='menu'){S.boost=5;addBonus(50,it.x,iy-30,it.st.color);sfx('menu');banner(`${it.st.name} ${it.st.item}! 5초간 점수 2배`,1.6,it.st.color);burst(it.x,iy,16,[it.st.color,'#fff6e0','#ffdc66'],220,'star')}
         else if(it.type==='ginseng'){S.roarT=CONFIG.ginsengTime;S.roarMax=CONFIG.ginsengTime;sfx('power');banner(S.level===0?'백양산 산삼! 잠깐 무적 질주':'바삭 치킨! 잠깐 무적 질주',1.6,S.level===0?'#3f7d4e':'#b8651c');burst(it.x,iy,24,['#ffdc66','#f2a94a','#7fbf6a','#fff6e0'],300,'star')}
+        else if(it.type==='gacha'){startGacha(it)}
         else if(it.type==='lemon'){S.lemons++;addBonus(80,it.x,iy-30,'#ffd27a');sfx('menu');burst(it.x,iy,12,['#f2c27a','#fff6e0','#c8553d'],200,'star')}
         else if(it.type==='lemonade'){S.lemonades++;addBonus(80,it.x,iy-30,'#fff27a');sfx('menu');burst(it.x,iy,12,['#ffe65c','#fff6e0','#b8e07a'],200,'star')}
         else if(it.type==='heart'){if(S.hearts<CONFIG.maxHearts){S.hearts++;banner('하트 +1',1.1,'#d9483b');sfx('rescue')}else{addBonus(100,it.x,iy-30,'#ff8a7a');sfx('egg')}burst(it.x,iy,16,['#ff5b4d','#fff6e0','#ffb3a8'],220,'star')}
@@ -1753,6 +1835,7 @@ function drawObs(o){
     ctx.fillStyle='#4e2f13';rr(o.x-17,GROUND-60,34,6,3);ctx.fill()}
 }
 function drawItem(it){
+  if(it.type==='gacha'){drawGachaMachine(it.x,GROUND,1,Math.sin(it.ph*3)*.3,0,true);if(Math.floor(it.ph*3)%2){ctx.fillStyle='#ffdc66';ctx.font=`14px ${FD}`;ctx.textAlign='center';ctx.fillText('뽑기!',it.x,GROUND-132)}return}
   const y=it.y+Math.sin(it.ph*3)*4;
   if(it.type==='egg'){ // 호랑이 발도장 코인(금) · 줄무늬 코인(은)
     const sx=Math.abs(Math.cos(it.ph*2.2))*.75+.25;ctx.save();ctx.translate(it.x,y);ctx.scale(sx,1);coinIcon(0,0,it.silver?11.5:12.5,it.silver);ctx.restore();
@@ -1948,6 +2031,7 @@ function render(){
   }
   drawZaps();drawParts();
   ctx.restore();
+  drawGacha();
   if(S.flash>0){ctx.fillStyle=`rgba(230,244,255,${S.flash*1.6})`;ctx.fillRect(0,0,W,H)}
   if(S.hurtFx>0){ctx.fillStyle=`rgba(255,60,40,${S.hurtFx*.7})`;ctx.fillRect(0,0,W,H)}
   if(phase!=='title')drawHUD();
@@ -2067,7 +2151,7 @@ function showEntry(){
 
 /* ================= input ================= */
 let held=false;
-function press(){if(held)return;held=true;if(phase!=='play'||S.carry>0||S.stage==='clear')return;
+function press(){if(held)return;held=true;if(S&&S.gacha){gachaSkip();return}if(phase!=='play'||S.carry>0||S.stage==='clear')return;
   if(p.on){p.vy=-640;p.on=false;p.jumps=1;p.hold=true;p.holdT=0;sfx('jump')}
   else if(p.jumps<2){p.vy=-600;p.jumps=2;p.hold=true;p.holdT=0;sfx('dbl');burst(p.x,p.y,8,['#fff6e0','#ffdc66'],140)}}
 function release(){held=false;p.hold=false;if(p.vy<-320)p.vy*=.6}

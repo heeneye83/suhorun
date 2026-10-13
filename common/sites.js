@@ -25,6 +25,11 @@ window.SUHO = {
         { name: '네온 LP카페', benefit: '500원 할인', pin: '5555', color: '#d94f8a' },
         { name: '전포 야식 떡볶이', benefit: '토핑 추가', pin: '6666', color: '#e0702c' },
       ],
+      // 캡슐 뽑기 이벤트 가게: 구하는 가게가 아니라, 게임 중 가끔 나오는 뽑기 기계에서 낮은 확률로 나오는 스페셜 쿠폰
+      eventStores: [
+        { name: '전포 수제버거', benefit: '감자튀김 무료', pin: '7777', color: '#d9822b' },
+        { name: '젤라또 전포', benefit: '젤라또 1스쿱 추가', pin: '8888', color: '#3fa99a' },
+      ],
     },
     {
       id: 'seomyeon', name: '서면 수호런', place: '서면 1번가 · 2번가', status: 'soon',

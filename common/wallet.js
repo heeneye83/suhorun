@@ -40,7 +40,9 @@
   window.addEventListener('online', flush);
 
   const site = (id) => cfg().sites.find(s => s.id === id) || null;
-  const storeOf = (siteId, name) => { const s = site(siteId); return s && s.stores ? s.stores.find(x => x.name === name) || null : null; };
+  const storeOf = (siteId, name) => { const s = site(siteId); if (!s) return null;
+    const st = (s.stores || []).find(x => x.name === name); if (st) return st;
+    const ev = (s.eventStores || []).find(x => x.name === name); return ev ? Object.assign({ special: true }, ev) : null; };
 
   const W = {
     site, storeOf,
@@ -55,7 +57,7 @@
       const had = d.coupons.find(c => c.site === siteId && c.season === season && c.store === storeName);
       if (had) return { coupon: had, isNew: false };
       const c = { code: `${PREFIX[siteId] || 'SR'}-${rid(4)}-${rid(4)}`, site: siteId, season, store: storeName, benefit: st.benefit,
-        color: st.color, issuedAt: now(), usedAt: null };
+        color: st.color, kind: st.special ? 'special' : 'perfect', issuedAt: now(), usedAt: null };
       d.coupons.push(c); save(d); send('coupon', c);
       return { coupon: c, isNew: true };
     },
