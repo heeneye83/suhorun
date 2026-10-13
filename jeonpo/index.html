@@ -277,7 +277,7 @@ const CONFIG={
   dongcheonTime:10,        // 동천 보너스 물속 구간 길이(초)
   sprites:{                // 캐릭터 그림 (../common/sprites)
     enabled:true, base:'../common/sprites/',
-    files:Object.fromEntries(['g_run1','g_run2','g_run3','g_run4','g_run5','g_run6','g_run7','g_run8','g_jump','g_fall','g_hero','g_ride','g_horse','g_horse2',
+    files:Object.fromEntries(['g_run1','g_run2','g_run3','g_run4','g_run5','g_run6','g_run7','g_run8','g_jump','g_fall','g_hero','g_ride','g_horse','g_horse2','g_shoe','g_shoe2',
       'bot_a','bot_b','bot_blink','bot_happy','bot_zap_a','bot_zap_b','battery'].map(k=>[k,k+'.png']))
   },
   mids:[                   // 거리 뒤쪽 건물 (간판 있는 테마 가게)
@@ -1610,7 +1610,13 @@ function drawCat(){
   if(S.shoeT>0&&S.carry<=0){const b=p.on?Math.abs(Math.sin(S.tAll*18))*3:0;
     ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.ellipse(x,(p.on?y:GROUND)+2,40,6,0,0,7);ctx.fill();
     ctx.strokeStyle='rgba(255,220,102,.5)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y-34,120+Math.sin(S.tAll*10)*6,0,7);ctx.stroke();
-    drawShoe(x+2,y+2-b,1.05);guard('g_ride',x-2,y-26-b);return}
+    // 구두 슈퍼카: 수호자를 먼저 그리고 구두를 앞에 덮어 다리를 숨김
+    const sx=x+6,sy=y+2-b;
+    for(let i=0;i<3;i++){const px=sx-72-i*14-((S.tAll*240)%14),py=sy-8+Math.sin(S.tAll*40+i)*2;ctx.fillStyle=`rgba(255,246,224,${.5-i*.14})`;ctx.beginPath();ctx.arc(px,py,6-i*1.4,0,7);ctx.fill()}
+    const rb=RAINBOW;RAINBOW=false;guard(Math.floor(S.tAll*10)%2?'g_shoe2':'g_shoe',sx-20,sy-6,0,.8);RAINBOW=rb;
+    drawShoe(sx,sy,1.35);
+    ctx.fillStyle='#ffdc66';for(let i=0;i<2;i++){ctx.beginPath();ctx.arc(sx+72,sy-10+i*6,2.6,0,7);ctx.fill()}
+    return}
   ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.ellipse(x,(p.on?y:GROUND)+2,p.on?24:16,5,0,0,7);ctx.fill();
   if(S.carry>0){guard('g_fall',x,y);return}
   if(!p.on){if(p.vy<0)guard('g_jump',x,y,-clamp(p.vy/-3000,0,.12));else guard('g_fall',x,y,clamp(p.vy/4000,0,.1));return}
