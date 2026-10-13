@@ -692,20 +692,21 @@ function rollPrize(){
     k='points'}
   if(k==='heart'&&S.hearts>=CONFIG.maxHearts)k='battery';
   return{k,pts:k==='points'?pickArr([500,800,1000]):0}}
-function startGacha(it){S.gacha={t:0,x:it.x,prize:rollPrize(),cap:pickArr(CAPS),applied:false};sfx('charge');held=false;p.hold=false}
+function startGacha(it){S.gacha={t:0,go:false,idle:0,x:it.x,prize:null,cap:pickArr(CAPS),applied:false};sfx('menu');held=false;p.hold=false}
+function gachaGo(){const g=S.gacha;if(!g||g.go)return;g.go=true;g.t=0;g.prize=rollPrize();sfx('charge')}
 function applyGacha(){const g=S.gacha,pz=g.prize;if(g.applied)return;g.applied=true;
   if(pz.k==='points'){addBonus(pz.pts);sfx('coupon')}
   else if(pz.k==='heart'){S.hearts=Math.min(CONFIG.maxHearts,S.hearts+1);sfx('rescue')}
   else if(pz.k==='battery'){S.rescues++;sfx('rescue')}
   else{sfx('clear')}
   burst(W/2,H/2-10,pz.k==='special'?46:26,pz.k==='special'?['#ffd84d','#fff6e0',pz.color,'#ff6fb1']:[g.cap,'#fff6e0','#ffdc66'],pz.k==='special'?380:260,'star')}
-function updateGacha(dt){const g=S.gacha;g.t+=dt;
+function updateGacha(dt){const g=S.gacha;if(!g.go){g.idle+=dt;return}g.t+=dt;
   if(g.t>=.55&&!g.coin){g.coin=1;sfx('egg')}
   if(g.t>=1.0&&!g.crank){g.crank=1;sfx('menu')}
   if(g.t>=2.35)applyGacha();
   for(const q of S.parts){q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=300*dt;q.life-=dt}S.parts=S.parts.filter(q=>q.life>0);
   if(g.t>(g.prize.k==='special'?5.2:4)){S.gacha=null;S.inv=Math.max(S.inv,1);last=performance.now()}}
-function gachaSkip(){const g=S.gacha;if(g&&g.t>2.9)g.t=99}
+function gachaSkip(){const g=S.gacha;if(!g)return;if(!g.go){gachaGo();return}if(g.t>2.9)g.t=99}
 // 뽑기 기계 그림 (원점 = 바닥 가운데)
 function drawGachaMachine(x,y,s,crank,shake,glow){ctx.save();ctx.translate(x,y);ctx.scale(s,s);
   if(glow){const g=ctx.createRadialGradient(0,-60,10,0,-60,90);g.addColorStop(0,'rgba(255,220,102,.45)');g.addColorStop(1,'rgba(255,220,102,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,-60,90,0,7);ctx.fill()}
@@ -733,7 +734,15 @@ function drawCapsule(x,y,r,col,open){ctx.save();ctx.translate(x,y);
   ctx.fillStyle='#fffaf0';ctx.beginPath();ctx.arc(0,o*r*.25,r,0,Math.PI);ctx.closePath();ctx.fill();
   ctx.lineWidth=Math.max(2,r*.08);ctx.strokeStyle='rgba(58,35,15,.6)';ctx.beginPath();ctx.arc(0,-o*r*.5,r,Math.PI,0);ctx.stroke();ctx.beginPath();ctx.arc(0,o*r*.25,r,0,Math.PI);ctx.stroke();
   ctx.fillStyle='rgba(255,255,255,.55)';ctx.beginPath();ctx.ellipse(-r*.35,-r*.45-o*r*.5,r*.18,r*.3,-.5,0,7);ctx.fill();ctx.restore()}
-function drawGacha(){const g=S.gacha;if(!g)return;const t=g.t,pz=g.prize;
+function drawGacha(){const g=S.gacha;if(!g)return;
+  if(!g.go){ctx.fillStyle=`rgba(20,12,6,${Math.min(.62,g.idle*2)})`;ctx.fillRect(0,0,W,H);const mx=W/2-150,my=H-40,pul=1+Math.sin(g.idle*6)*.04;
+    drawGachaMachine(mx,my,2.6*pul,Math.sin(g.idle*3)*.15,0,true);
+    const bx=W/2+40,by=H/2-70;ctx.fillStyle='#fff6e0';rr(bx,by,330,120,18);ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#3a230f';ctx.stroke();
+    ctx.fillStyle='#d8352a';ctx.font=`26px ${FD}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('캡슐 뽑기 발견!',bx+165,by+36);
+    ctx.fillStyle='#3a230f';ctx.font=`17px ${FD}`;ctx.fillText(touchMode?'화면을 눌러 동전 넣고 돌리기':'클릭 또는 스페이스로 돌리기',bx+165,by+74);
+    const hx=mx-8*2.6+30,hy=my-24*2.6+30+Math.sin(g.idle*8)*6;ctx.font=`34px ${FD}`;ctx.fillText('👆',hx,hy);
+    return}
+  const t=g.t,pz=g.prize;
   ctx.fillStyle=`rgba(20,12,6,${Math.min(.62,t*2)})`;ctx.fillRect(0,0,W,H);
   const mx=W/2-150,my=H-40,s=2.6;
   const crank=t<1?0:Math.min(1,(t-1)/.8)*Math.PI*2;
@@ -1333,7 +1342,7 @@ function spawnStore(){
   const st=ST().stores[S.storeIdx++];const x=W+40;
   const id=++S.packN;S.packs[id]={st,left:4,failed:false,done:false,perfect:true};
   S.shops.push({x,w:320,st,pack:id});
-  for(let i=0;i<4;i++)bean(x+200+i*140,{pack:id,vx:-28});
+  {const sp=Math.round((Math.max(S.v,ST().speed)+32)*.435);for(let i=0;i<4;i++)bean(x+210+i*sp,{pack:id,vx:-28})}   // 밟고 튕기는 시간만큼 간격 → 타이밍 맞으면 콩콩콩콩 연속 밟기
   S.items.push({type:'menu',x:x+330,y:GROUND-170,st,ph:0});
   addEggs(x+120,3,30,GROUND-90);
   banner(`${st.name}에 탄원두가 나타났어요!`,2.2,st.color);
@@ -1590,7 +1599,7 @@ function fall(){spoilPerfect();
   else{S.hearts--;sfx('hit');S.shake=.3;banner('전포봇이 겨우 끌어올렸어요 ♥ −1',1.5,'#8a7472');if(S.hearts<=0){gameOver();return}}
 }
 function useBolt(){
-  if(phase!=='play'||S.bolts<=0||S.stage==='clear')return;
+  if(phase!=='play'||S.bolts<=0||S.stage==='clear'||S.gacha)return;
   S.bolts--;S.flash=.28;S.shake=.25;sfx('bolt');
   const hx=S.hb.x,hy=S.hb.y+30;let n=0;
   for(const e of S.ens)if(e.alive&&e.kind!=='flower'&&e.x<W+10&&e.x>-20){zap(hx,hy,e.x,e.y-26);kill(e,'bolt');n++}
