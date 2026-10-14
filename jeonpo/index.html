@@ -1425,14 +1425,14 @@ function updateWater(dt,v){
   if(Math.random()<dt*9)S.parts.push({type:'bub',x:p.x-44,y:p.y+rand(-6,8),vx:-rand(80,140),vy:-rand(20,60),life:1.4,max:1.4,s:rand(1.5,3.5),r:0,vr:0});
 }
 function waterCollide(){
-  const w=S.w;if(!w)return;const pl=p.x-34,pr=p.x+32,pt=p.y-34,pb=p.y+14;
-  for(const f of w.fish){if(f.got)continue;if(Math.abs(f.x-p.x)<(f.gold?44:38)&&Math.abs(f.y-(p.y-8))<(f.gold?34:28)){f.got=true;S.fish++;
+  const w=S.w;if(!w)return;const pl=p.x-50,pr=p.x+56,pt=p.y-44,pb=p.y+22;   // 수달 그림 크기에 맞춤
+  for(const f of w.fish){if(f.got)continue;if(Math.abs(f.x-p.x)<(f.gold?78:70)&&Math.abs(f.y-(p.y-28))<(f.gold?64:56)){f.got=true;S.fish++;
     if(f.gold){addBonus(100,f.x,f.y-30,'#ffdc66');burst(f.x,f.y,16,['#ffdc66','#fff6e0'],220,'star')}else{addBonus(25);burst(f.x,f.y,5,[f.c,'#fff6e0'],120)}sfx('fish')}}
   for(const o of w.obs){let hit=false;
     if(o.type==='rock')hit=pr>o.x-o.w/2+10&&pl<o.x+o.w/2-10&&pb>o.top+12;
     else hit=pr>o.x-o.w/2+10&&pl<o.x+o.w/2-10&&pt<o.bottom-8;
     if(hit&&S.roarT<=0)hurt()}
-  for(const q of w.pira){if(!q.alive)continue;if(Math.abs(q.x-p.x)<46&&q.y>p.y-64&&q.y<p.y+22){
+  for(const q of w.pira){if(!q.alive)continue;if(Math.abs(q.x-p.x)<58&&q.y>p.y-74&&q.y<p.y+28){
     if(S.roarT>0){q.alive=false;S.kills++;addBonus(100,q.x,q.y-30,'#ffdc66');burst(q.x,q.y,12,['#4b5568','#d9534f','#fff6e0'],220)}else hurt()}}
 }
 const REEF_W=1800;
@@ -1782,7 +1782,7 @@ function update(dt){
       if(e.kind==='flower'){ // 꽃: 닿으면 짓밟혀 −50 (무적 중에는 그냥 지나감)
         if(S.roarT<=0&&pr>e.x-16&&pl<e.x+16&&pb>e.y-34)crushFlower(e);continue}
       if(e.kind==='troll'||e.kind==='kick'){ // 악플러·킥보드 난쟁이: 덩치 큼, 밟으면 처치 +150, 옆에서 닿으면 하트 −1
-        const tt=e.y-70;
+        const tt=e.y-(e.kind==='troll'?108:96);   // 새 그림 키(악플러 약 124px, 킥보드 약 110px)에 맞춘 머리 높이
         if(p.vy>0&&p.prevY<=tt+30&&pb>=tt-4&&p.x>e.x-38&&p.x<e.x+38&&S.roarT<=0){kill(e,'stomp');p.vy=p.hold?-620:-500;p.on=false;p.jumps=1;p.holdT=0;sfx('stomp');continue}
         if(pr>e.x-22&&pl<e.x+22&&pb>tt+6&&pt<e.y){if(S.roarT>0)kill(e,'roar');else hurt()}continue}
       if(p.vy>0&&p.prevY<=et+30&&pb>=et-4&&p.x>e.x-32&&p.x<e.x+32&&S.roarT<=0){kill(e,'stomp');p.vy=p.hold?-620:-500;p.on=false;p.jumps=1;p.holdT=0;sfx('stomp');continue}
