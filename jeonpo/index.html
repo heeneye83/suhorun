@@ -1587,7 +1587,7 @@ function drawSwimmer(){
   ctx.fillStyle='#2a1a10';ctx.beginPath();ctx.ellipse(59,-2,3.4,2.6,0,0,7);ctx.fill();ctx.beginPath();ctx.arc(44,-8,2.6,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(43.2,-8.8,.9,0,7);ctx.fill();
   ctx.strokeStyle='rgba(42,26,16,.6)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(53,2);ctx.lineTo(66,0);ctx.moveTo(53,4);ctx.lineTo(65,6);ctx.stroke();}
   ctx.restore();
-  {const sc=.78,ox=-12,oy=-7+38*sc,c=Math.cos(tilt),sn=Math.sin(tilt);guard(Math.floor(t*4)%2?'g_horse2':'g_horse',x+ox*c-oy*sn,y+ox*sn+oy*c,tilt,sc)}
+  {const sc=.78,ox=-8,oy=(SPR.w_otter?-29:-7)+38*sc,c=Math.cos(tilt),sn=Math.sin(tilt);guard(Math.floor(t*4)%2?'g_horse2':'g_horse',x+ox*c-oy*sn,y+ox*sn+oy*c,tilt,sc)}
 }
 function spawnHeart(){S.items.push({type:'heart',x:W+60,y:GROUND-105,ph:0});addEggs(W-110,3,30,GROUND-80);S.nextHeart=S.lt+(S.hearts<=1?18:CONFIG.heartEvery);S.gap=Math.max(S.gap,420)}
 function spawnCharm(){S.charm=true;S.items.push({type:'charm',x:W+60,y:GROUND-160,ph:0});addEggs(W-40,6,60,GROUND-110);S.gap=520}
