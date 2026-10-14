@@ -286,7 +286,7 @@ const CONFIG={
   dongcheonTime:10,        // 동천 보너스 물속 구간 길이(초)
   sprites:{                // 캐릭터 그림 (../common/sprites)
     enabled:true, base:'../common/sprites/',
-    files:Object.fromEntries(['g_run1','g_run2','g_run3','g_run4','g_run5','g_run6','g_run7','g_run8','g_jump','g_fall','g_hero','g_ride','g_horse','g_horse2','g_shoe','g_shoe2',
+    files:Object.fromEntries(['g_run1','g_run2','g_run3','g_run4','g_run5','g_run6','g_run7','g_run8','g_jump','g_fall','g_hero','g_ride','g_horse','g_horse2','g_shoe','g_shoe2','g_shoeride1','g_shoeride2',
       'bot_a','bot_b','bot_blink','bot_happy','bot_zap_a','bot_zap_b','battery',
       // 제미나이로 새로 그린 적·보스·아이템·물속 그림 (없으면 예전 벡터 그림으로 그림)
       'v_bean','v_cup','v_troll','v_kick','v_flower','b_lava','b_cup','b_troll',
@@ -1846,8 +1846,10 @@ function drawCat(){
     // 구두 슈퍼카: 수호자를 먼저 그리고 구두를 앞에 덮어 다리를 숨김
     const sx=x+6,sy=y+2-b;
     for(let i=0;i<3;i++){const px=sx-72-i*14-((S.tAll*240)%14),py=sy-8+Math.sin(S.tAll*40+i)*2;ctx.fillStyle=`rgba(255,246,224,${.5-i*.14})`;ctx.beginPath();ctx.arc(px,py,6-i*1.4,0,7);ctx.fill()}
-    const rb=RAINBOW;RAINBOW=false;guard(Math.floor(S.tAll*10)%2?'g_shoe2':'g_shoe',sx-20,sy-6,0,.8);RAINBOW=rb;
-    drawShoe(sx,sy,1.35);
+    // 장인의 구두: 진수호가 탄 구두 그림 2장을 번갈아 (없으면 예전 방식)
+    if(SPR.g_shoeride1&&SPR.g_shoeride2){const rb=RAINBOW;RAINBOW=false;drawSprite(Math.floor(S.tAll*6)%2?'g_shoeride2':'g_shoeride1',sx,sy+4,170,Math.sin(S.tAll*18)*.02);RAINBOW=rb}
+    else{const rb=RAINBOW;RAINBOW=false;guard(Math.floor(S.tAll*10)%2?'g_shoe2':'g_shoe',sx-20,sy-6,0,.8);RAINBOW=rb;
+    drawShoe(sx,sy,1.35)}
     ctx.fillStyle='#ffdc66';for(let i=0;i<2;i++){ctx.beginPath();ctx.arc(sx+72,sy-10+i*6,2.6,0,7);ctx.fill()}
     return}
   ctx.fillStyle='rgba(0,0,0,.18)';ctx.beginPath();ctx.ellipse(x,(p.on?y:GROUND)+2,p.on?24:16,5,0,0,7);ctx.fill();
