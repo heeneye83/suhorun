@@ -292,8 +292,9 @@ const CONFIG={
       'v_bean','v_cup','v_troll','v_kick','v_flower','b_lava','b_cup','b_troll',
       'i_coin','i_coin_s','i_ginseng','i_chicken','i_lemonade','i_ramen','i_shoe','i_heart',
       'w_otter','w_fish1','w_fish2','w_fish_gold','w_pira',
-      // 거리 건물 (낮 / 밤)
-      ...['roastery','bakery','tools','records','cake','pocha','pub','flower'].flatMap(k=>['bld_'+k,'bld_'+k+'_n'])].map(k=>[k,k+'.png']))
+      // 거리 건물은 원래 그림 사용. 제미나이 건물로 바꾸려면 아래 줄의 // 를 지우고 bld_*.png 를 넣으면 됨
+      // ...['roastery','bakery','tools','records','cake','pocha','pub','flower'].flatMap(k=>['bld_'+k,'bld_'+k+'_n']),
+      ].map(k=>[k,k+'.png']))
   },
   mids:[                   // 거리 뒤쪽 건물 (간판 있는 테마 가게)
     {kind:'roastery',sign:'전포 로스터리',seed:11,w:280},{kind:'bakery',sign:'전포 빵집',seed:12,w:270},{kind:'cake',sign:'하루 케이크',seed:13,w:270},
