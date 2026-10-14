@@ -1789,7 +1789,7 @@ function update(dt){
   else if(phase==='play'&&S.carry<=0){
     const pl=p.x-17,pr=p.x+17,pt=p.y-52,pb=p.y;
     // 밟기용 발 위치: 떨어지는 그림(g_fall)은 발이 몸 중심보다 앞(오른쪽)에 있어서 앞쪽을 넉넉히
-    const fl=p.x-10,fr=p.x+42,HW={troll:44,kick:34},onHead=(e,hw)=>fr>e.x-hw-10&&fl<e.x+hw+10;
+    const fx=p.x+16,HW={troll:38,kick:30},onHead=(e,hw)=>Math.abs(fx-e.x)<hw;   // 발이 머리에 실제로 닿아야 밟힘
     for(const e of S.ens){if(!e.alive)continue;
       const el=e.x-19,er=e.x+19,et=e.y-46,eb=e.y;
       // 밟기 판정은 넉넉하게: 좌우 ±30, 탄원두 머리 위쪽 절반까지
@@ -1800,7 +1800,7 @@ function update(dt){
         if(p.vy>0&&p.prevY<=tt+30&&pb>=tt-4&&onHead(e,HW[e.kind])&&S.roarT<=0){kill(e,'stomp');p.vy=p.hold?-620:-500;p.on=false;p.jumps=1;p.holdT=0;sfx('stomp');continue}
         if(pr>e.x-22&&pl<e.x+22&&pb>tt+6&&pt<e.y){if(S.roarT>0)kill(e,'roar');else hurt()}continue}
       const st=e.y-(e.skin==='cup'?80:72);   // 새 그림 키에 맞춘 머리 높이 (컵 약 88px, 탄원두 약 80px)
-      if(p.vy>0&&p.prevY<=st+30&&pb>=st-4&&onHead(e,e.skin==='cup'?34:26)&&S.roarT<=0){kill(e,'stomp');p.vy=p.hold?-620:-500;p.on=false;p.jumps=1;p.holdT=0;sfx('stomp');continue}
+      if(p.vy>0&&p.prevY<=st+30&&pb>=st-4&&onHead(e,e.skin==='cup'?30:26)&&S.roarT<=0){kill(e,'stomp');p.vy=p.hold?-620:-500;p.on=false;p.jumps=1;p.holdT=0;sfx('stomp');continue}
       if(pr>el&&pl<er&&pb>et&&pt<eb){
         if(S.roarT>0){kill(e,'roar');continue}
         hurt()}}
