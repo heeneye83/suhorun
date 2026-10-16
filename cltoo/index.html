@@ -131,7 +131,7 @@ html.lsm .tL details{margin-top:6px}
       <div class="items">
         <b>그린볼트 이온</b><span>스태미나 +15 (1km마다 급수대)</span>
         <b>런하이 젤</b><span>스태미나 풀충전 + 3초 무적</span>
-        <b>STRIDE X</b><span>러닝화 · 10초 부스트, 점프 높이 상승</span>
+        <b>STRIDE X</b><span>러닝화 · 9초 부스트, 점프 높이 상승</span>
         <b>페이스랩 워치</b><span>15초간 다가오는 장애물 미리보기</span>
         <b>골드 젤</b><span>4K 구간 하늘 위 · 완주하면 즉시 쿠폰</span>
         <b>번개</b><span>모을수록 점수 +10</span>
@@ -857,11 +857,12 @@ function buildCourse() {
   let x = 1000;
   while (true) {
     const s = secAt(x);
-    x += gap[s][0] + R() * (gap[s][1] - gap[s][0]);
+    const late = x > COURSE * 0.3 ? 1.2 : 1;   // 코스 30% 이후 난이도 20% 상향: 장애물 20% 더 촘촘히
+    x += (gap[s][0] + R() * (gap[s][1] - gap[s][0])) / late;
     if (x > COURSE - 600) break;
     if (reserved.some(([a, b]) => x > a && x < b)) continue;
     const pool = pools[s], t = pool[Math.floor(R() * pool.length)], d = OBT[t];
-    obs.push({ t, x, w: d.w, h: d.h, b: d.b, k: d.k, mv: d.mv || 0, ph: R() * 6, hit: false, alt: R() < 0.5 });
+    obs.push({ t, x, w: d.w, h: d.h, b: d.b, k: d.k, mv: (d.mv || 0) * (x > COURSE * 0.3 ? 1.2 : 1), ph: R() * 6, hit: false, alt: R() < 0.5 });   // 30% 이후 앞 러너·자전거·동물 20% 빠르게
     if (d.b > 0 && d.k === 'hit') { for (let i = 0; i < 4; i++) items.push({ t: 'bolt', x: x - 60 + i * 45, h: 26 }); }
     else if (R() < 0.6) { for (let i = 0; i < 5; i++) items.push({ t: 'bolt', x: x + d.w / 2 - 110 + i * 55, h: 60 + 110 * Math.sin(Math.PI * i / 4) }); }
     else if (R() < 0.5) { for (let i = 0; i < 4; i++) items.push({ t: 'bolt', x: x + 230 + i * 45, h: 50 }); }
@@ -1153,7 +1154,7 @@ function pickup(it, sx, iy) {
     case 'bolt': itemScore += 10; bolts++; burst(sx, iy, '#ffe94a', 4); SND.sfx('bolt'); return;
     case 'drink': P.stam = Math.min(100, P.stam + 15); itemScore += 30; popup('+15 스태미나 · 그린볼트 이온', GREEN); SND.sfx('drink'); break;
     case 'gel': P.stam = 100; P.inv = Math.max(P.inv, 3); P.gelInv = 3; itemScore += 60; popup('풀충전 + 무적 3초 · 런하이 젤', '#ffc06a'); SND.sfx('gel'); break;
-    case 'shoes': P.boost = 10; itemScore += 60; popup('10초 부스트 · STRIDE X', '#fff200'); SND.sfx('shoes'); break;
+    case 'shoes': P.boost = 9; itemScore += 60; popup('9초 부스트 · STRIDE X', '#fff200'); SND.sfx('shoes'); break;
     case 'watch': P.watch = 15; itemScore += 40; popup('장애물 미리보기 · 페이스랩 워치', '#7fe9ff'); SND.sfx('watch'); break;
     case 'goldgel': P.stam = 100; P.inv = Math.max(P.inv, 3); P.gelInv = 3; gotGold = true; itemScore += 300; popup('골드 젤! 완주하면 즉시 쿠폰', '#ffd23f'); burst(sx, iy, '#ffd23f', 30); SND.sfx('gold'); break;
   }
