@@ -76,5 +76,27 @@ window.SUHO = {
         { name: '초읍 도넛', benefit: '도넛 1개 추가', pin: '8888', color: '#d9822b' },
       ],
     },
+    {
+      id: 'shoe', name: '수제화 수호런', place: '부전동 · 범천동 수제화 장인 로드', status: 'open', url: 'shoe/',
+      color: '#b9722f', thumb: 'common/img/shoe.webp',
+      pitch: '한 땀 한 땀 구두를 만드는 장인의 골목을 지켜라! 실밥 도깨비·구두약 통·구둣골 골렘을 한 대도 안 맞고 잡으면 퍼펙트 쿠폰.',
+      who: '수제화 공방·수선집 쿠폰 · 쿠폰북 추첨',
+      season: { id: 's1-shoe', name: '시즌 1 · 부전·범천 수제화 장인 로드 스탬프 투어', ends: '' },
+      lastStage: 2,
+      grand: { name: '수제화 쿠폰북', desc: '참여 가게 6곳 대표 혜택 1개씩', winners: 30 },
+      // 시연용 가상 가게 (제안서 승인 후 실제 협업 가게로 교체)
+      stores: [
+        { name: '부전 수제화 공방', benefit: '구두 굽 교체 할인', pin: '1111', color: '#8a5a2b' },
+        { name: '단골 구두 수선집', benefit: '밑창 교체 500원 할인', pin: '2222', color: '#3d5a80' },
+        { name: '범천 신발 공방', benefit: '맞춤 인솔 증정', pin: '3333', color: '#c8553d' },
+        { name: '구두 케어 숍', benefit: '구두약 증정', pin: '4444', color: '#8a5cc4' },
+        { name: '골드테마거리 세공점', benefit: '반지 세척 무료', pin: '5555', color: '#c99a1e' },
+        { name: '신암 언덕 카페', benefit: '음료 사이즈업', pin: '6666', color: '#8a5cc4' },
+      ],
+      eventStores: [
+        { name: '부전 구두 닦이 스튜디오', benefit: '구두 광택 무료', pin: '7777', color: '#6b4a2b' },
+        { name: '범천 가죽 소품샵', benefit: '키링 증정', pin: '8888', color: '#c8553d' },
+      ],
+    },
   ],
 };
