@@ -33,10 +33,26 @@ window.SUHO = {
       ],
     },
     {
-      id: 'seomyeon', name: '서면 수호런', place: '서면 1번가 · 2번가', status: 'soon',
+      id: 'seomyeon', name: '서면 수호런', place: '서면 1번가 · 2번가', status: 'open', url: 'seomyeon/',
       color: '#d94f8a', thumb: 'common/img/seomyeon.webp',
-      pitch: '네온 가득한 서면 밤거리를 달리는 스테이지. 놀거리·먹거리 가게와 함께 준비 중이에요.',
-      who: '서면에서 놀고 싶은 친구들',
+      pitch: '취객·쓰레기 봉지·헬창 건달까지! 서면 젊음의 거리와 지하상가, 빛 축제 거리를 달리며 빌런 4마리를 한 대도 안 맞고 잡으면 퍼펙트 쿠폰.',
+      who: '서면 가게 쿠폰 · 쿠폰북 추첨',
+      season: { id: 's1-seomyeon', name: '시즌 1 · 서면 1번가·2번가 스탬프 투어', ends: '' },
+      lastStage: 2,   // 마지막 스테이지(밤) 보스를 물리치면 '수호 완료' 도장
+      grand: { name: '서면 쿠폰북', desc: '참여 가게 6곳 대표 메뉴 1개씩 무료', winners: 30 },
+      // 시연용 가상 가게 (제안서 승인 후 실제 협업 가게로 교체)
+      stores: [
+        { name: '젊음의 거리 호떡집', benefit: '꿀호떡 1개 추가', pin: '1111', color: '#c8553d' },
+        { name: '2번가 타코야키', benefit: '500원 할인', pin: '2222', color: '#e0702c' },
+        { name: '지하상가 보세 옷가게', benefit: '10% 할인', pin: '3333', color: '#d94f8a' },
+        { name: '지하상가 금은방', benefit: '귀걸이 증정', pin: '4444', color: '#3d5a80' },
+        { name: '상상마당 앞 푸드트럭', benefit: '츄러스 토핑 추가', pin: '5555', color: '#e0702c' },
+        { name: '빛축제 핫초코', benefit: '사이즈업', pin: '6666', color: '#8a5cc4' },
+      ],
+      eventStores: [
+        { name: '서면 수제버거', benefit: '감자튀김 무료', pin: '7777', color: '#d9822b' },
+        { name: '서면 젤라또', benefit: '1스쿱 추가', pin: '8888', color: '#3fa99a' },
+      ],
     },
     {
       id: 'choeup', name: '초읍 수호런', place: '어린이대공원 · 초읍동', status: 'soon',
