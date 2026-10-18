@@ -887,7 +887,10 @@ let busk=[];
 function drawBusker(o){const k=o.k||'p_picnic';if(!SPR[k])return;artShadow(o.x,GROUND+4,64);art(k,o.x,GROUND+6,k==='p_picnic'?104:k==='p_yoga'?100:92)}
 const BGT={};
 function bgTile(src){let t=BGT[src];if(t)return t.ok?t:null;t=BGT[src]={ok:false,im:new Image()};t.im.onload=()=>{t.ok=true;t.sc=H/t.im.height;t.w=t.im.width*t.sc};t.im.src=src;return null}
-function drawBgImg(){const src=ST().bgImg;if(!src)return false;const t=bgTile(src);if(!t)return false;
+// 스테이지 배경 그림을 처음에 모두 미리 불러와 둠 (스테이지 넘어갈 때 다른 거리 그림이 잠깐 보이던 문제)
+let BG_LAST=null;setTimeout(()=>{for(const st of CONFIG.stages)if(st.bgImg)bgTile(st.bgImg)},0);
+function drawBgImg(){const src=ST().bgImg;if(!src)return false;let t=bgTile(src);if(t)BG_LAST=t;else t=BG_LAST;
+  if(!t){ctx.fillStyle=S.night>.5?'#1d2240':'#9fd3ef';ctx.fillRect(0,0,W,H);return true}
   const o=-((S.groundOff*.55)%t.w);for(let x=o;x<W;x+=t.w)ctx.drawImage(t.im,x,0,t.w+1,H);return true}
 function drawBg(){
   const d=S.dark,N=S.night,base=GROUND-30;
