@@ -241,7 +241,7 @@ h1{white-space:nowrap}
     <span><b>보스</b>낮 스테이지 공원 관리 반장 · 저녁 스테이지 심술 멧돼지 · 밤 스테이지 너구리 대장(더 강해요: 체력이 많고 낮은 호통과 높은 호통을 섞어 던져요) · 충격파 한 방에 체력 2칸 · 보스전에서는 빌런을 밟으면 바로 충격파 충전</span>
     <span><b>퍼펙트 쿠폰</b>장난꾸러기 4마리를 한 대도 안 맞고 모두 잡으면 그 가게 쿠폰(샷 추가·사이즈업·토핑 추가·500원 할인) · 메뉴 주문 시 가게에서 보여 주면 사장님이 사용 처리</span>
     <span><b>캡슐 뽑기</b>가끔(스테이지마다 많아야 한 번) 길에 뽑기 기계가 나와요 · 부딪히면 동전 넣고 돌려서 점수·하트·구조 배터리, 낮은 확률로 이벤트 가게 스페셜 쿠폰</span>
-    <span><b>스탬프 투어</b>가게 6곳 스탬프 + 마지막 보스를 물리친 '수호 완료' 도장을 모으면(스탬프 7개) 쿠폰북 추첨 응모(1인 1회) · 스탬프는 저장돼서 다음 판에 이어서 모아요</span>
+    <span><b>스탬프 투어</b>가게 7곳 스탬프 + 마지막 보스를 물리친 '수호 완료' 도장을 모으면(스탬프 8개) 쿠폰북 추첨 응모(1인 1회) · 스탬프는 저장돼서 다음 판에 이어서 모아요</span>
     <span><b>스테이지 열기</b>보스를 물리치면 다음 판부터 그다음 스테이지에서 바로 시작할 수 있어요</span>
     <span><b>시즌</b>정해진 기간에만 열리고, 다음 시즌은 새 가게·새 테마(예: 맥주 축제)로 바뀌어요</span>
   </div>
@@ -263,8 +263,9 @@ const CONFIG={
     {name:'부산시민공원', time:'낮', night:0, dusk:0, track:'street', color:'#4f9a5a', arrive:'부산시민공원 · 가족 나들이가 한창이에요', villain:'park', mix:['rgm','rgf','rac','rgm'], rival:'kick', bgImg:'./bg/a.jpg',
      speed:330, bossAt:60, boss:'bean', bossHP:10, bossName:'공원 관리 반장',
      stores:[              // 시연용 가상 가게 (실제 협업 가게로 교체)
-      {at:9, name:'시민공원 푸드트럭', kind:'pocha', color:'#e0702c', item:'핫도그'},
-      {at:33, name:'공원 앞 김밥집', kind:'bakery', color:'#c8553d', item:'꼬마김밥'}]},
+      {at:9, name:'시민공원 편의점', kind:'goods', color:'#3f7d5a', item:'1+1 음료'},
+      {at:21, name:'시민공원 카페', kind:'roastery', color:'#8a5a3b', item:'아이스 라떼'},
+      {at:35, name:'시민공원 푸드코트', kind:'pocha', color:'#e0702c', item:'돈가스 정식'}]},
     {name:'초읍 어린이대공원', time:'저녁', night:0, dusk:1, track:'street', color:'#d9803d', arrive:'어린이대공원 · 노을이 내려앉았어요', villain:'park', mix:['rgf','rgm','mos','mos'], rival:'kick', bgImg:'./bg/b.jpg',
      speed:330, bossAt:60, boss:'cup', bossHP:12, bossName:'대형 심술 멧돼지',
      stores:[
@@ -294,7 +295,7 @@ const CONFIG={
       'w_otter','w_fish1','w_fish2','w_fish_gold','w_pira',
       // 거리 건물은 원래 그림 사용. 제미나이 건물로 바꾸려면 아래 줄의 // 를 지우고 bld_*.png 를 넣으면 됨
       // ...['roastery','bakery','tools','records','cake','pocha','pub','flower'].flatMap(k=>['bld_'+k,'bld_'+k+'_n']),
-      ].map(k=>[k,k+'.png']).concat([['gacha_sheet','gacha_sheet.webp'],['v_bean','./sprites/v_dust.png'],['v_cup','./sprites/v_mosq.png'],['v_troll','./sprites/v_racc.png'],['v_kick','./sprites/v_kick.png'],['v_bike','./sprites/v_bike.png'],['v_boar','./sprites/v_boar.png'],['v_flower','./sprites/v_duck.png'],['v_trash','./sprites/v_trash.png'],['b_lava','./sprites/b_dust.png'],['b_cup','./sprites/b_boar.png'],['b_troll','./sprites/b_racc.png'],['v_rgm_a','./sprites/v_rgm_a.png'],['v_rgm_b','./sprites/v_rgm_b.png'],['v_rgf_a','./sprites/v_rgf_a.png'],['v_rgf_b','./sprites/v_rgf_b.png'],['v_rac_a','./sprites/v_rac_a.png'],['v_rac_b','./sprites/v_rac_b.png'],['v_boar_a','./sprites/v_boar_a.png'],['v_boar_b','./sprites/v_boar_b.png'],['v_mos_a','./sprites/v_mos_a.png'],['v_mos_b','./sprites/v_mos_b.png'],['v_duck_a','./sprites/v_duck_a.png'],['v_duck_b','./sprites/v_duck_b.png'],['b_rgr_a','./sprites/b_rgr_a.png'],['b_rgr_b','./sprites/b_rgr_b.png'],['b_boar_a','./sprites/b_boar_a.png'],['b_boar_b','./sprites/b_boar_b.png'],['b_rac_a','./sprites/b_rac_a.png'],['b_rac_b','./sprites/b_rac_b.png'],['w_turtle1','./sprites/w_turtle1.png'],['w_turtle2','./sprites/w_turtle2.png'],['w_frog1','./sprites/w_frog1.png'],['w_frog2','./sprites/w_frog2.png'],['w_carp','./sprites/w_carp.png'],['w_gold','./sprites/w_gold.png'],['w_carp_gold','./sprites/w_carp_gold.png'],['p_picnic','./sprites/p_picnic.png'],['p_bean','./sprites/p_bean.png'],['p_coffee','./sprites/p_coffee.png'],['p_yoga','./sprites/p_yoga.png'],['i_shoe','./sprites/i_stork.png'],['g_shoeride1','./sprites/g_stork1.png'],['g_shoeride2','./sprites/g_stork2.png']]))
+      ].map(k=>[k,k+'.png']).concat([['gacha_sheet','gacha_sheet.webp'],['v_bean','./sprites/v_dust.png'],['v_cup','./sprites/v_mosq.png'],['v_troll','./sprites/v_racc.png'],['v_kick','./sprites/v_kick.png'],['v_bike','./sprites/v_bike.png'],['v_boar','./sprites/v_boar.png'],['v_flower','./sprites/v_duck.png'],['v_trash','./sprites/v_trash.png'],['b_lava','./sprites/b_dust.png'],['b_cup','./sprites/b_boar.png'],['b_troll','./sprites/b_racc.png'],['v_rgm_a','./sprites/v_rgm_a.png'],['v_rgm_b','./sprites/v_rgm_b.png'],['v_rgf_a','./sprites/v_rgf_a.png'],['v_rgf_b','./sprites/v_rgf_b.png'],['v_rac_a','./sprites/v_rac_a.png'],['v_rac_b','./sprites/v_rac_b.png'],['v_boar_a','./sprites/v_boar_a.png'],['v_boar_b','./sprites/v_boar_b.png'],['v_mos_a','./sprites/v_mos_a.png'],['v_mos_b','./sprites/v_mos_b.png'],['v_duck_a','./sprites/v_duck_a.png'],['v_duck_b','./sprites/v_duck_b.png'],['b_rgr_a','./sprites/b_rgr_a.png'],['b_rgr_b','./sprites/b_rgr_b.png'],['b_boar_a','./sprites/b_boar_a.png'],['b_boar_b','./sprites/b_boar_b.png'],['b_rac_a','./sprites/b_rac_a.png'],['b_rac_b','./sprites/b_rac_b.png'],['w_turtle1','./sprites/w_turtle1.png'],['w_turtle2','./sprites/w_turtle2.png'],['w_frog1','./sprites/w_frog1.png'],['w_frog2','./sprites/w_frog2.png'],['w_carp','./sprites/w_carp.png'],['w_gold','./sprites/w_gold.png'],['w_carp_gold','./sprites/w_carp_gold.png'],['p_picnic','./sprites/p_picnic.png'],['p_bean','./sprites/p_bean.png'],['p_coffee','./sprites/p_coffee.png'],['p_yoga','./sprites/p_yoga.png'],['own1','./sprites/own1.png'],['own2','./sprites/own2.png'],['own3','./sprites/own3.png'],['own4','./sprites/own4.png'],['t_pine','./sprites/t_pine.png'],['t_burr','./sprites/t_burr.png'],['t_acorn','./sprites/t_acorn.png'],['i_shoe','./sprites/i_stork.png'],['g_shoeride1','./sprites/g_stork1.png'],['g_shoeride2','./sprites/g_stork2.png']]))
   },
   mids:[                   // 거리 뒤쪽 건물 (간판 있는 테마 가게)
     {kind:'roastery',sign:'공원 로스터리',seed:11,w:280},{kind:'bakery',sign:'공원 빵집',seed:12,w:270},{kind:'cake',sign:'하루 케이크',seed:13,w:270},
@@ -1631,10 +1632,27 @@ function rescueStore(pk){const has=S.coupons.some(c=>c.name===pk.st.name);if(!ha
   const st=pk.st;
   if(!hasStamp(st)){STP.got[st.name]=Date.now();saveStamps();S.newStamps.push(st);S.stampFx={st,t0:S.tAll};
     banner(`${st.name} 스탬프 획득! (${stampAll()}/${STAMP_TOTAL})`,2.2,st.color);
-    if(seasonDone())setTimeout(()=>{if(phase==='play')banner('스탬프 7개 완성! 쿠폰북 추첨 응모 자격을 얻었어요',2.8,'#c99a1e')},2400);
+    if(seasonDone())setTimeout(()=>{if(phase==='play')banner(`스탬프 ${STAMP_TOTAL}개 완성! 쿠폰북 추첨 응모 자격을 얻었어요`,2.8,'#c99a1e')},2400);
     else if(stampN()>=ALL_STORES.length)setTimeout(()=>{if(phase==='play')banner('가게 스탬프 완성! 마지막 보스를 물리치면 수호 완료',2.6,'#c99a1e')},2400)}
   else banner(`${st.name} 또 구출! 스탬프는 이미 받았어요 · +300점`,2,st.color);
-  burst(W/2,170,30,['#ffdc66','#fff6e0',st.color],320,'star')}
+  burst(W/2,170,30,['#ffdc66','#fff6e0',st.color],320,'star');startOwner(st)}
+/* ---- 사장님 하트 이벤트: 가게를 구할 때마다 화면 정지 → 사장님이 하트를 보내요 → 1초 무적으로 재시작 ---- */
+const OWNERS=[['own1','여사장님'],['own2','남사장님'],['own3','푸근한 사장님'],['own4','할머니 사장님']];
+function startOwner(st){if(S.owner||!SPR.own1)return;const o=pickArr(OWNERS);S.owner={t:0,k:o[0],who:o[1],store:st.name,col:st.color,hs:[],nx:0};held=false;p.hold=false;sfx('coupon')}
+function updateOwner(dt){const o=S.owner;o.t+=dt;o.nx-=dt;
+  if(o.t>.35&&o.t<2.3&&o.nx<=0){o.nx=.11;o.hs.push({x:W/2+rand(-70,70),y:H*.8,vy:-rand(90,170),sw:rand(0,6),sz:rand(.8,1.7)})}
+  for(const h of o.hs){h.y+=h.vy*dt;h.sw+=dt*3}
+  o.hs=o.hs.filter(h=>h.y>-30);
+  if(o.t>2.6){S.owner=null;S.inv=Math.max(S.inv,1);last=performance.now()}}
+function drawOwner(){const o=S.owner;if(!o)return;
+  const a=Math.min(1,o.t*4);ctx.save();ctx.fillStyle=`rgba(40,14,30,${.62*a})`;ctx.fillRect(0,0,W,H);
+  const pop=Math.min(1,o.t/.25),sc=.6+.4*(1-Math.pow(1-pop,3)),oh=H*.82*sc;
+  art(o.k,W/2,H+8,oh);
+  for(const h of o.hs){ctx.globalAlpha=Math.min(1,h.y/120+.2);heart(W/2*0+h.x+Math.sin(h.sw)*14,h.y,true,h.sz)}ctx.globalAlpha=1;
+  const bw=Math.min(W-40,520),bx=W/2-bw/2,by=H*.07,pa=Math.min(1,Math.max(0,(o.t-.15)*5));
+  ctx.globalAlpha=pa;ctx.fillStyle='#fff6e0';rr(bx,by,bw,86,18);ctx.fill();ctx.lineWidth=4;ctx.strokeStyle=o.col||'#d94f8a';ctx.stroke();
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#d8352a';ctx.font=`26px ${FD}`;ctx.fillText('사장님께서 하트를 보냈습니다!',W/2,by+32);
+  ctx.fillStyle='#6b4a3a';ctx.font=`15px ${FD}`;ctx.fillText(`${o.store} · ${o.who}`,W/2,by+64);ctx.globalAlpha=1;ctx.restore()}
 function failStore(pk){pk.failed=true;sfx('fail');banner(`아쉬워요! ${pk.st.name} 구출 실패`,1.6,'#8a7472')}
 function spoilPerfect(){for(const k in S.packs){const q=S.packs[k];if(!q.done&&!q.failed&&q.perfect){q.perfect=false;floatText('퍼펙트 실패',p.x,p.y-120,'#ffb4a2')}}}
 function hurt(){if(S.inv>0||S.roarT>0||S.carry>0||S.stage==='clear')return;spoilPerfect();
@@ -1646,7 +1664,7 @@ function fall(){spoilPerfect();
   else{S.hearts--;sfx('hit');S.shake=.3;banner('볼트가 겨우 끌어올렸어요 ♥ −1',1.5,'#8a7472');if(S.hearts<=0){gameOver();return}}
 }
 function useBolt(){
-  if(phase!=='play'||S.bolts<=0||S.stage==='clear'||S.gacha)return;
+  if(phase!=='play'||S.bolts<=0||S.stage==='clear'||S.gacha||S.owner)return;
   S.bolts--;S.flash=.28;S.shake=.25;sfx('bolt');
   const hx=S.hb.x,hy=S.hb.y+30;let n=0;
   for(const e of S.ens)if(e.alive&&e.kind!=='flower'&&e.x<W+10&&e.x>-20){zap(hx,hy,e.x,e.y-26);kill(e,'bolt');n++}
@@ -1676,6 +1694,7 @@ function nextStage(){
 
 /* ================= update ================= */
 function update(dt){
+  if(S.owner){updateOwner(dt);return}
   if(S.gacha){updateGacha(dt);return}
   S.t+=dt;S.lt+=dt;updateFireworks(dt);
   {const ns=CONFIG.stages[(S.stage==='clear'?S.level+1:S.level)%CONFIG.stages.length];S.night+=(ns.night-S.night)*Math.min(1,dt*.7);S.dusk+=((ns.dusk||0)-S.dusk)*Math.min(1,dt*.7)}
@@ -1716,7 +1735,7 @@ function update(dt){
     S.introT+=dt;
     if(S.introT>3.2){const T=ST();S.stage='boss';S.boss={kind:T.boss,x:W+180,y:T.boss==='cloud'?170:T.boss==='troll'?GROUND-110:GROUND-100,hp:T.bossHP+Math.floor(S.level/2)*2,max:T.bossHP+Math.floor(S.level/2)*2,t:0,atk:2.2,hurt:0};sfx('boss');
       banner(`${T.bossName} 등장!`,1.6,T.boss==='bean'?'#6b3e23':T.boss==='cup'?'#8a4a22':'#3b3a6b');
-      setTimeout(()=>{if(phase==='play'&&S.stage==='boss')banner(T.boss==='troll'?'장난꾸러기를 밟아 충격파 충전! 낮은 도토리는 점프, 높은 도토리는 그대로':T.boss==='cup'?'빌런을 밟아 충격파를 모아 심술 멧돼지를 맞혀요':T.boss==='cloud'?'졸개를 밟아 충격파를 모아 먹구름을 맞혀요':'관리인을 밟아 충격파를 모아 공원 관리 반장을 맞혀요',2.4,'#2f8f86')},1800)}
+      setTimeout(()=>{if(phase==='play'&&S.stage==='boss')banner(T.boss==='troll'?'빌런을 밟아 충격파 충전! 낮게 날아오는 솔방울·밤송이·도토리는 점프, 높은 건 그대로':T.boss==='cup'?'빌런을 밟아 충격파를 모아 심술 멧돼지를 맞혀요':T.boss==='cloud'?'졸개를 밟아 충격파를 모아 먹구름을 맞혀요':'관리인을 밟아 충격파 충전! 낮은 전기파는 점프, 높은 전기파는 그대로',2.4,'#2f8f86')},1800)}
   }else if(S.stage==='boss'){
     const b=S.boss;b.t+=dt;b.hurt=Math.max(0,b.hurt-dt);
     const cl=b.kind==='cloud',tr=b.kind==='troll';
@@ -1725,7 +1744,7 @@ function update(dt){
     if(tr&&b.atk<=0&&b.x<W-40){ // 대형 악플러: 졸개 소환 + 높낮이 섞인 악플 연사
       const r=Math.random(),lvl=b.max-b.hp;b.throwAnim=.4;
       if(r<.42){if(Math.random()<.75)bean(b.x-70,{vx:-70,hop:Math.random()<.3});else rival(b.x-70);floatText('졸개 출동!',b.x,b.y-140,'#fff6e0')}
-      else{const n=2+(lvl>=6?1:0);for(let i=0;i<n;i++){const hi=Math.random()<.45;S.obs.push({type:'insult',big:true,x:b.x-100+i*160,y:hi?GROUND-122:GROUND-36,vx:-rand(130,170),ph:i,txt:pickArr(INSULTS)})}}
+      else{const n=2+(lvl>=6?1:0);for(let i=0;i<n;i++){const hi=Math.random()<.45;S.obs.push({type:'insult',big:true,nut:pickArr(['t_pine','t_burr','t_acorn']),x:b.x-100+i*160,y:hi?GROUND-122:GROUND-36,vx:-rand(130,170),ph:i,txt:''})}}
       b.atk=Math.max(.9,1.6-lvl*.06)+rand(-.15,.25);
     }else if(cl&&b.atk<=0&&b.x<W-60){
       const r=Math.random(),lvl=b.max-b.hp;
@@ -1735,6 +1754,7 @@ function update(dt){
     }else if(b.atk<=0&&b.x<W-60){
       const r=Math.random(),lvl=b.max-b.hp;
       if(r<.42){bean(b.x-40,{vx:-70,hop:Math.random()<.4});floatText('졸개 출동!',b.x,b.y-100,'#fff6e0')}
+      else if(r<.78&&b.kind!=='cup'){const n=2+(lvl>=4?1:0);for(let i=0;i<n;i++){const hi=Math.random()<.45;S.obs.push({type:'insult',big:true,zap:true,x:b.x-110+i*180,y:hi?GROUND-122:GROUND-36,vx:-rand(140,180),ph:i,txt:''})}sfx('zap')}
       else if(r<.78){const n=2+(lvl>2?1:0);for(let i=0;i<n;i++)S.obs.push({type:'drop',x:b.x-40,y:b.y+20,vx:-rand(230,420),vy:-rand(160,360)})}
       else rival(b.x-30);
       b.atk=Math.max(1,1.9-lvl*.12)+rand(-.2,.3);
@@ -1989,6 +2009,11 @@ function drawLavaBoss(b){ // 대형 탄원두: 용암이 흐르는 바위 몸
 function drawObs(o){
   if(o.type==='nut'){ctx.save();ctx.translate(o.x,o.y-o.r);ctx.rotate(o.rot);ctx.beginPath();for(let i=0;i<6;i++){const a=i*Math.PI/3;ctx.lineTo(Math.cos(a)*o.r,Math.sin(a)*o.r)}ctx.closePath();
     ctx.fillStyle='#a3adb6';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#4f5861';ctx.stroke();ctx.fillStyle='#4f5861';ctx.beginPath();ctx.arc(0,0,6,0,7);ctx.fill();ctx.restore();return}
+  if(o.type==='insult'&&o.nut&&SPR[o.nut]){art(o.nut,o.x,o.y,o.big?40:30,{center:true,rot:-o.ph*8});return}
+  if(o.type==='insult'&&o.zap){const R=o.big?24:18,t=S.tAll*20+o.ph*7;ctx.save();ctx.translate(o.x,o.y);
+    const g=ctx.createRadialGradient(0,0,2,0,0,R*2.2);g.addColorStop(0,'rgba(255,255,255,.95)');g.addColorStop(.35,'rgba(120,230,255,.75)');g.addColorStop(1,'rgba(60,140,255,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,R*2.2,0,7);ctx.fill();
+    ctx.strokeStyle='#eaffff';ctx.lineWidth=3;ctx.lineJoin='round';for(let k=0;k<4;k++){const a0=k*1.57+t*.13;ctx.beginPath();ctx.moveTo(Math.cos(a0)*R*.4,Math.sin(a0)*R*.4);for(let q=1;q<=3;q++){const a=a0+(q%2?.35:-.35),rr=R*(.4+q*.32);ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}ctx.stroke()}
+    ctx.strokeStyle='rgba(140,220,255,.7)';ctx.lineWidth=3;for(let k=0;k<3;k++){ctx.beginPath();ctx.moveTo(R+6+k*10,-8+k*8);ctx.lineTo(R+22+k*12,-8+k*8);ctx.stroke()}ctx.restore();return}
   if(o.type==='insult'){ctx.save();ctx.translate(o.x,o.y+Math.sin(o.ph*9)*3);if(o.big)ctx.scale(1.35,1.35);ctx.rotate(Math.sin(o.ph*7)*.08);
     ctx.strokeStyle='rgba(216,53,42,.45)';ctx.lineWidth=2;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(36+i*2,-8+i*8);ctx.lineTo(50+i*4,-8+i*8);ctx.stroke()}
     ctx.fillStyle='#fff';rr(-32,-15,64,30,14);ctx.fill();ctx.beginPath();ctx.moveTo(18,12);ctx.lineTo(32,22);ctx.lineTo(10,14);ctx.closePath();ctx.fill();
@@ -2205,7 +2230,7 @@ function render(){
   }
   drawZaps();drawParts();
   ctx.restore();
-  drawGacha();
+  drawGacha();drawOwner();
   if(S.flash>0){ctx.fillStyle=`rgba(230,244,255,${S.flash*1.6})`;ctx.fillRect(0,0,W,H)}
   if(S.hurtFx>0){ctx.fillStyle=`rgba(255,60,40,${S.hurtFx*.7})`;ctx.fillRect(0,0,W,H)}
   if(phase!=='title')drawHUD();
@@ -2325,7 +2350,7 @@ function showEntry(){
 
 /* ================= input ================= */
 let held=false;
-function press(){if(held)return;held=true;if(S&&S.gacha){gachaSkip();return}if(phase!=='play'||S.carry>0||S.stage==='clear')return;
+function press(){if(held)return;held=true;if(S&&S.owner)return;if(S&&S.gacha){gachaSkip();return}if(phase!=='play'||S.carry>0||S.stage==='clear')return;
   if(p.on){p.vy=-640;p.on=false;p.jumps=1;p.hold=true;p.holdT=0;sfx('jump')}
   else if(p.jumps<2){p.vy=-600;p.jumps=2;p.hold=true;p.holdT=0;sfx('dbl');burst(p.x,p.y,8,['#fff6e0','#ffdc66'],140)}}
 function release(){held=false;p.hold=false;if(p.vy<-320)p.vy*=.6}
