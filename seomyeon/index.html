@@ -1659,6 +1659,9 @@ function overPit(x){for(const q of S.pits)if(x-8>q.x&&x+8<q.x+q.w)return q;retur
 
 function crushFlower(e){if(!e.alive)return;e.alive=false;S.bonus-=50;floatText('−50',e.x,e.y-50,'#ff8a7a');sfx('fail');
   burst(e.x,e.y-18,14,['#f7a6c4','#fff6e0','#ffd84d','#7fbf6a'],200);if(!S.seenHelp.flower){S.seenHelp.flower=1;banner('꽃다발은 밟지 말고 피해 주세요! −50',1.8,'#c2577f')}}
+// 가게 빌런 4마리 연속 밟기 도우미: 다음 빌런 머리에 딱 떨어지도록 튕기는 높이를 맞춤 (버튼을 누르고 있어도 동일)
+function packHop(e){if(!e.pack)return;let nx=null;for(const o of S.ens)if(o.alive&&o.pack===e.pack&&o!==e&&o.x>e.x-4&&(!nx||o.x<nx.x))nx=o;if(!nx)return;
+  const rel=S.v-nx.vx,dx=nx.x-(p.x+10);if(dx<20||rel<50)return;const t=dx/rel;p.vy=clamp(-2300*t/2,-720,-380);p.holdT=1}
 function kill(e,how){
   if(!e.alive)return;if(e.kind==='flower'){crushFlower(e);return}e.alive=false;S.kills++;
   burst(e.x,e.y-26,14,e.kind==='kick'?['#d8352a','#2f9f8c','#fffaf0','#ffd84d']:e.skin==='cup'?['#fffaf0','#c69c6d','#6b3e23','#3b2a20']:e.kind==='troll'?['#2a2433','#5b5170','#ff5a5a','#fff6e0']:['#2b1d16','#5a3a28','#ff8a3d','#fff6e0'],240);
@@ -1876,7 +1879,7 @@ function update(dt){
         if(p.vy>0&&p.prevY<=tt+30&&pb>=tt-4&&onHead(e,HW[e.kind])&&S.roarT<=0){kill(e,'stomp');p.vy=p.hold?-620:-500;p.on=false;p.jumps=1;p.holdT=0;sfx('stomp');continue}
         if(pr>e.x-22&&pl<e.x+22&&pb>tt+6&&pt<e.y){if(S.roarT>0)kill(e,'roar');else hurt()}continue}
       const st=e.y-(e.skin==='cup'?80:72);   // 새 그림 키에 맞춘 머리 높이 (컵 약 88px, 탄원두 약 80px)
-      if(p.vy>0&&p.prevY<=st+30&&pb>=st-4&&onHead(e,e.skin==='cup'?30:26)&&S.roarT<=0){kill(e,'stomp');p.vy=p.hold?-620:-500;p.on=false;p.jumps=1;p.holdT=0;sfx('stomp');continue}
+      if(p.vy>0&&p.prevY<=st+30&&pb>=st-4&&onHead(e,e.skin==='cup'?30:26)&&S.roarT<=0){kill(e,'stomp');p.vy=p.hold?-620:-500;p.on=false;p.jumps=1;p.holdT=0;packHop(e);sfx('stomp');continue}
       if(pr>el&&pl<er&&pb>et&&pt<eb){
         if(S.roarT>0){kill(e,'roar');continue}
         hurt()}}
