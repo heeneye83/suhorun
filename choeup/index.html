@@ -1757,10 +1757,10 @@ function update(dt){
     }else if(b.atk<=0&&b.x<W-60){
       const r=Math.random(),lvl=b.max-b.hp;
       if(r<.42){bean(b.x-40,{vx:-70,hop:Math.random()<.4});floatText('졸개 출동!',b.x,b.y-100,'#fff6e0')}
-      else if(r<.78&&b.kind!=='cup'){const n=2+(lvl>=4?1:0);for(let i=0;i<n;i++){const hi=Math.random()<.45;S.obs.push({type:'insult',big:true,zap:true,x:b.x-110+i*180,y:hi?GROUND-122:GROUND-36,vx:-rand(140,180),ph:i,txt:''})}sfx('zap')}
-      else if(r<.78){const n=2+(lvl>2?1:0);for(let i=0;i<n;i++)S.obs.push({type:'drop',x:b.x-40,y:b.y+20,vx:-rand(230,420),vy:-rand(160,360)})}
+      else if(r<.72&&b.kind!=='cup'){const n=1+(lvl>=6?1:0),hi=Math.random()<.5;for(let i=0;i<n;i++)S.obs.push({type:'insult',big:false,zap:true,x:b.x-110+i*300,y:hi?GROUND-128:GROUND-34,vx:-rand(115,145),ph:i,txt:''});sfx('zap');b.zapT=1}
+      else if(r<.78&&b.kind==='cup'){const n=2+(lvl>2?1:0);for(let i=0;i<n;i++)S.obs.push({type:'drop',x:b.x-40,y:b.y+20,vx:-rand(230,420),vy:-rand(160,360)})}
       else rival(b.x-30);
-      b.atk=Math.max(1,1.9-lvl*.12)+rand(-.2,.3);
+      b.atk=Math.max(1,1.9-lvl*.12)+rand(-.2,.3);if(b.zapT){b.atk=Math.max(1.6,2.5-lvl*.06)+rand(0,.4);b.zapT=0}
     }
   }else if(S.stage==='clear'){
     S.endT+=dt;if(S.endT>3)nextStage();
@@ -1828,7 +1828,7 @@ function update(dt){
     for(const o of S.obs){if(o.gone)continue;let hit=false;
       if(o.type==='nut'){const dx=o.x-p.x,dy=(o.y-o.r)-(p.y-26);hit=Math.abs(dx)<o.r+14&&Math.abs(dy)<o.r+22}
       else if(o.type==='drop'){hit=Math.abs(o.x-p.x)<20&&o.y>pt&&o.y-14<pb}
-      else if(o.type==='insult'){const hw=o.big?52:40,hh=o.big?18:12;hit=Math.abs(o.x-p.x)<hw&&pb>o.y-hh&&pt<o.y+hh}
+      else if(o.type==='insult'){const hw=o.zap?26:o.big?52:40,hh=o.zap?12:o.big?18:12;hit=Math.abs(o.x-p.x)<hw&&pb>o.y-hh&&pt<o.y+hh}
       else{hit=pr-4>o.x-o.w/2&&pl+4<o.x+o.w/2&&pb>GROUND-o.h+4}
       if(hit){if(S.roarT>0){o.gone=true;burst(o.x,GROUND-20,10,['#9aa4ad','#fff6e0','#c8553d'],220);addBonus(50,o.x,GROUND-70)}else hurt()}}
     const b=S.boss;
