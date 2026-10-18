@@ -77,7 +77,7 @@ window.SUHO = {
       ],
     },
     {
-      id: 'shoe', name: '수제화 수호런', place: '부전동 · 범천동 수제화 장인 로드', status: 'open', url: 'shoe/',
+      id: 'shoe', name: '수제화 수호런 (부전-범천)', place: '부전동 · 범천동 수제화 장인 로드', status: 'open', url: 'shoe/',
       color: '#b9722f', thumb: 'common/img/shoe.webp',
       pitch: '한 땀 한 땀 구두를 만드는 장인의 골목을 지켜라! 실밥 도깨비·구두약 통·구둣골 골렘을 한 대도 안 맞고 잡으면 퍼펙트 쿠폰.',
       who: '수제화 공방·수선집 쿠폰 · 쿠폰북 추첨',
@@ -97,6 +97,24 @@ window.SUHO = {
         { name: '부전 구두 닦이 스튜디오', benefit: '구두 광택 무료', pin: '7777', color: '#6b4a2b' },
         { name: '범천 가죽 소품샵', benefit: '키링 증정', pin: '8888', color: '#c8553d' },
       ],
+    },
+    {
+      id: 'baegyang', name: '산사 수호런 (백양산-삼광사)', place: '백양산 · 삼광사', status: 'soon',
+      color: '#c46a8a', thumb: 'common/img/baegyang.webp',
+      pitch: '연등 가득한 삼광사 마당에서 백양산 산길까지, 계단과 바위를 넘어 달리는 산사 스테이지를 준비 중이에요.',
+      who: '산책·등산 가족 · 입구 식당·카페',
+    },
+    {
+      id: 'bujeon', name: '시장 수호런 (부전시장-부전도서관)', place: '부전시장 · 부전도서관', status: 'soon',
+      color: '#e0702c', thumb: 'common/img/bujeon.webp',
+      pitch: '과일·생선·떡 가게가 늘어선 부전시장 골목을 달려 부전도서관까지. 상인 가게 쿠폰으로 꾸밀 예정이에요.',
+      who: '시장 상인 · 장보러 온 주민',
+    },
+    {
+      id: 'jwacheon', name: '가구거리 수호런 (좌천동-부산진시장)', place: '좌천동 · 부산진시장 · 가구거리', status: 'soon',
+      color: '#d49a3a', thumb: 'common/img/jwacheon.webp',
+      pitch: '소파와 옷장이 늘어선 가구거리와 알록달록 옷감 도매시장을 달리는 좌천동 스테이지를 준비 중이에요.',
+      who: '가구·원단 가게 · 인테리어 관심 주민',
     },
   ],
 };
