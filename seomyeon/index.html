@@ -230,7 +230,7 @@ h1{white-space:nowrap}
     <span><b>하트</b>가끔 길에 떨어져 있어요 · 주우면 +1(최대 3개) · 가득 차 있으면 +100점</span>
     <span><b>발도장 금화</b>+10</span>
     <span><b>줄무늬 은화</b>+5</span>
-    <span><b>장인의 구두</b>올라타면 약 4초 무적 질주 · 주변 코인을 자석처럼 끌어당겨요</span>
+    <span><b>반짝 운동화</b>불빛 운동화에 올라타면 약 4초 무적 질주 · 주변 코인을 자석처럼 끌어당겨요</span>
     <span><b>무적 아이템</b>낮에는 백양산 산삼, 밤에는 바삭 치킨 · 먹으면 약 4초 무적 질주</span>
     <span><b>좀비 보너스</b>좀비가 고개를 내민 맨홀에 빠지면 하수구 보너스 스테이지 · 좀비를 계속 밟아 콤보, 10콤보부터 점수 +20% · 라이프 1개</span>
     <span><b>물속</b>물고기 +25 · 황금 잉어 +100 · 피라니아에 물리거나 바위·통나무에 부딪히면 하트 −1</span>
@@ -257,31 +257,31 @@ const CONFIG={
   goalScore:15000,
   season:{id:'s1-seomyeon',name:'시즌 1 · 서면 1번가·2번가 스탬프 투어',period:'[__월 __일 ~ __월 __일]'},   // 시즌마다 가게·테마를 바꿔 새로 시작
   speedUpPerStage:15,      // 스테이지가 바뀔 때마다 빨라지는 정도
-  shoeAt:[32,60],          // 장인의 구두 등장 시점
+  shoeAt:[24,45],          // 장인의 구두 등장 시점
   shoeTime:4.2,            // 장인의 구두 효과 시간(초)         // 경품 추첨권 목표 점수
   stages:[                 // 스테이지별 설정 (시간은 스테이지 시작부터 초) · 낮 → 저녁 → 밤
     {name:'서면 2번가 젊음의 거리', time:'낮', night:0, dusk:0, track:'street', color:'#d94f8a', arrive:'서면 2번가 · 버스킹과 공연이 한창이에요', villain:'bean', rival:'kick', bgImg:'./bg/a.jpg',
-     speed:330, bossAt:80, boss:'bean', bossHP:10, bossName:'대형 쓰레기 봉지',
+     speed:330, bossAt:60, boss:'bean', bossHP:10, bossName:'대형 쓰레기 봉지',
      stores:[              // 시연용 가상 가게 (실제 협업 가게로 교체)
-      {at:12, name:'젊음의 거리 호떡집', kind:'bakery', color:'#c8553d', item:'꿀호떡'},
-      {at:44, name:'2번가 타코야키', kind:'pocha', color:'#e0702c', item:'타코야키'}]},
+      {at:9, name:'젊음의 거리 호떡집', kind:'bakery', color:'#c8553d', item:'꿀호떡'},
+      {at:33, name:'2번가 타코야키', kind:'pocha', color:'#e0702c', item:'타코야키'}]},
     {name:'서면 지하상가', time:'저녁', night:0, dusk:0, track:'street', color:'#2f8f83', arrive:'서면 지하상가 · 보세 옷가게 골목이에요', villain:'cup', rival:'troll', bgImg:'./bg/b.jpg', indoor:true,
-     speed:330, bossAt:80, boss:'cup', bossHP:12, bossName:'호객 대장',
+     speed:330, bossAt:60, boss:'cup', bossHP:12, bossName:'호객 대장',
      stores:[
-      {at:12, name:'지하상가 보세 옷가게', kind:'records', color:'#d94f8a', item:'보세 할인'},
-      {at:44, name:'지하상가 금은방', kind:'tools', color:'#3d5a80', item:'귀걸이 증정'}]},
-    {name:'서면 1번가 빛 축제', time:'밤', night:1, dusk:0, track:'night', color:'#3b3a6b', arrive:'1번가에 빛 축제가 켜졌어요', villain:'bean', rival:'kick', bgImg:'./bg/c.jpg',
-     speed:330, bossAt:80, boss:'troll', bossHP:14, bossName:'대형 헬창',
+      {at:9, name:'지하상가 보세 옷가게', kind:'records', color:'#d94f8a', item:'보세 할인'},
+      {at:33, name:'지하상가 금은방', kind:'tools', color:'#3d5a80', item:'귀걸이 증정'}]},
+    {name:'서면 1번가 빛 축제', time:'밤', night:1, dusk:0, track:'night', color:'#3b3a6b', arrive:'1번가에 빛 축제가 켜졌어요', villain:'street', rival:'troll', trollSkin:'akpl', bgImg:'./bg/c.jpg',
+     speed:330, bossAt:60, boss:'troll', bossHP:14, bossName:'대형 헬창',
      stores:[
-      {at:12, name:'상상마당 앞 푸드트럭', kind:'pocha', color:'#e0702c', item:'츄러스'},
-      {at:44, name:'빛축제 핫초코', kind:'cake', color:'#8a5cc4', item:'핫초코'}]}
+      {at:9, name:'상상마당 앞 푸드트럭', kind:'pocha', color:'#e0702c', item:'츄러스'},
+      {at:33, name:'빛축제 핫초코', kind:'cake', color:'#8a5cc4', item:'핫초코'}]}
   ],
   midsEvening:[            // 저녁 거리 건물: 수제맥주·호프·라이브 펍
     {kind:'wine',sign:'서면 수제맥주',seed:21,w:280},{kind:'pocha',sign:'호프 & 치킨',seed:22,w:270},{kind:'records',sign:'라이브 펍',seed:23,w:280},{kind:'wine',sign:'비어 가든',seed:24,w:270}],
   maxHearts:3,             // 하트 최대 개수
-  heartEvery:28,           // 하트 아이템이 나오는 간격(초) · 하트가 1개면 조금 더 자주
-  charmAt:66,              // 구조 배터리(볼트 구조 +1) 등장 시점
-  ginsengAt:[20,44,70],    // 바삭 치킨(먹으면 약 4초 무적) 등장 시점
+  heartEvery:21,           // 하트 아이템이 나오는 간격(초) · 하트가 1개면 조금 더 자주
+  charmAt:50,              // 구조 배터리(볼트 구조 +1) 등장 시점
+  ginsengAt:[15,33,52],    // 바삭 치킨(먹으면 약 4초 무적) 등장 시점
   ginsengTime:4.2,
   dongcheonTime:10,
   zombieTime:16,           // 좀비 보너스(하수구) 길이(초)        // 동천 보너스 물속 구간 길이(초)
@@ -295,7 +295,7 @@ const CONFIG={
       'w_otter','w_fish1','w_fish2','w_fish_gold','w_pira',
       // 거리 건물은 원래 그림 사용. 제미나이 건물로 바꾸려면 아래 줄의 // 를 지우고 bld_*.png 를 넣으면 됨
       // ...['roastery','bakery','tools','records','cake','pocha','pub','flower'].flatMap(k=>['bld_'+k,'bld_'+k+'_n']),
-      ].map(k=>[k,k+'.png']).concat([['gacha_sheet','gacha_sheet.webp'],['v_bean','./sprites/v_drunk.png'],['v_cup','./sprites/v_tout.png'],['v_troll','./sprites/v_gym.png'],['v_kick','./sprites/v_kick.png'],['v_moto','./sprites/v_moto.png'],['v_car','./sprites/v_car.png'],['v_trash','./sprites/v_trash.png'],['b_lava','./sprites/b_trash.png'],['b_cup','./sprites/b_tout.png'],['b_troll','./sprites/b_gym.png'],['v_bean1a','./sprites/v_bean1a.png'],['v_bean1b','./sprites/v_bean1b.png'],['v_bean2a','./sprites/v_bean2a.png'],['v_bean2b','./sprites/v_bean2b.png'],['v_cup1a','./sprites/v_cup1a.png'],['v_cup1b','./sprites/v_cup1b.png'],['v_troll1a','./sprites/v_troll1a.png'],['v_troll1b','./sprites/v_troll1b.png'],['v_troll2a','./sprites/v_troll2a.png'],['v_troll2b','./sprites/v_troll2b.png'],['v_kicka','./sprites/v_kicka.png'],['v_kickb','./sprites/v_kickb.png'],['busk_a','./sprites/busk_a.png'],['busk_b','./sprites/busk_b.png'],['t_banana','./sprites/t_banana.png'],['t_cup','./sprites/t_cup.png'],['t_apple','./sprites/t_apple.png'],['t_snack','./sprites/t_snack.png'],['v_bean3a','./sprites/v_bean3a.png'],['v_bean3b','./sprites/v_bean3b.png'],['love_a','./sprites/love_a.png'],['love_b','./sprites/love_b.png'],['zb_walka','./sprites/zb_walka.png'],['zb_walkb','./sprites/zb_walkb.png'],['zb_runa','./sprites/zb_runa.png'],['zb_runb','./sprites/zb_runb.png'],['zb_crawla','./sprites/zb_crawla.png'],['zb_crawlb','./sprites/zb_crawlb.png'],['zb_dancea','./sprites/zb_dancea.png'],['zb_danceb','./sprites/zb_danceb.png'],['manhole','./sprites/manhole.png'],['own1','./sprites/own1.png'],['b_trash1a','./sprites/b_trash1a.png'],['b_trash1b','./sprites/b_trash1b.png'],['b_cup1a','./sprites/b_cup1a.png'],['b_cup1b','./sprites/b_cup1b.png'],['own2','./sprites/own2.png'],['own3','./sprites/own3.png'],['own4','./sprites/own4.png'],['b_gym1a','./sprites/b_gym1a.png'],['b_gym1b','./sprites/b_gym1b.png']]))
+      ].map(k=>[k,k+'.png']).concat([['gacha_sheet','gacha_sheet.webp'],['v_bean','./sprites/v_drunk.png'],['v_cup','./sprites/v_tout.png'],['v_troll','./sprites/v_gym.png'],['v_kick','./sprites/v_kick.png'],['v_moto','./sprites/v_moto.png'],['v_car','./sprites/v_car.png'],['v_trash','./sprites/v_trash.png'],['b_lava','./sprites/b_trash.png'],['b_cup','./sprites/b_tout.png'],['b_troll','./sprites/b_gym.png'],['v_bean1a','./sprites/v_bean1a.png'],['v_bean1b','./sprites/v_bean1b.png'],['v_bean2a','./sprites/v_bean2a.png'],['v_bean2b','./sprites/v_bean2b.png'],['v_cup1a','./sprites/v_cup1a.png'],['v_cup1b','./sprites/v_cup1b.png'],['v_troll1a','./sprites/v_troll1a.png'],['v_troll1b','./sprites/v_troll1b.png'],['v_troll2a','./sprites/v_troll2a.png'],['v_troll2b','./sprites/v_troll2b.png'],['v_kicka','./sprites/v_kicka.png'],['v_kickb','./sprites/v_kickb.png'],['busk_a','./sprites/busk_a.png'],['busk_b','./sprites/busk_b.png'],['t_banana','./sprites/t_banana.png'],['t_cup','./sprites/t_cup.png'],['t_apple','./sprites/t_apple.png'],['t_snack','./sprites/t_snack.png'],['v_bean3a','./sprites/v_bean3a.png'],['v_bean3b','./sprites/v_bean3b.png'],['love_a','./sprites/love_a.png'],['love_b','./sprites/love_b.png'],['zb_walka','./sprites/zb_walka.png'],['zb_walkb','./sprites/zb_walkb.png'],['zb_runa','./sprites/zb_runa.png'],['zb_runb','./sprites/zb_runb.png'],['zb_crawla','./sprites/zb_crawla.png'],['zb_crawlb','./sprites/zb_crawlb.png'],['zb_dancea','./sprites/zb_dancea.png'],['zb_danceb','./sprites/zb_danceb.png'],['manhole','./sprites/manhole.png'],['v_smoke_a','./sprites/v_smoke_a.png'],['v_smoke_b','./sprites/v_smoke_b.png'],['v_akpl_a','./sprites/v_akpl_a.png'],['v_akpl_b','./sprites/v_akpl_b.png'],['i_dumbbell','./sprites/i_dumbbell.png'],['i_shoe','./sprites/i_sneaker.png'],['g_shoeride1','./sprites/g_sneak1.png'],['g_shoeride2','./sprites/g_sneak2.png'],['own1','./sprites/own1.png'],['b_trash1a','./sprites/b_trash1a.png'],['b_trash1b','./sprites/b_trash1b.png'],['b_cup1a','./sprites/b_cup1a.png'],['b_cup1b','./sprites/b_cup1b.png'],['own2','./sprites/own2.png'],['own3','./sprites/own3.png'],['own4','./sprites/own4.png'],['b_gym1a','./sprites/b_gym1a.png'],['b_gym1b','./sprites/b_gym1b.png']]))
   },
   mids:[                   // 거리 뒤쪽 건물 (간판 있는 테마 가게)
     {kind:'roastery',sign:'서면 로스터리',seed:11,w:280},{kind:'bakery',sign:'서면 빵집',seed:12,w:270},{kind:'cake',sign:'하루 케이크',seed:13,w:270},
@@ -715,7 +715,7 @@ function drawFireworks(){if(!S.fw.length)return;ctx.save();ctx.globalCompositeOp
   ctx.restore()}
 
 /* ================= 캡슐 뽑기 이벤트 (스테이지당 최대 1번, 가끔) ================= */
-const GACHA={chance:.7,from:22,to:70,odds:[['points',.55],['heart',.2],['battery',.17],['special',.08]]};
+const GACHA={chance:.7,from:16,to:52,odds:[['points',.55],['heart',.2],['battery',.17],['special',.08]]};
 const CAPS=['#ff6fb1','#5ec8ff','#ffd84d','#9dff7a','#c99aff','#ff9a5e'];
 function planGacha(){S.gachaAt=Math.random()<GACHA.chance?rand(GACHA.from,GACHA.to):Infinity}
 function spawnGacha(){S.gachaAt=Infinity;S.items.push({type:'gacha',x:W+80,y:GROUND-46,ph:0});S.gap=Math.max(S.gap,520);
@@ -1350,9 +1350,11 @@ newGame();
 
 /* ================= spawning ================= */
 function addEggs(x0,n,h,base){base=base||GROUND-70;const sil=Math.random()<.4;for(let i=0;i<n;i++)S.items.push({type:'egg',silver:sil,x:x0+i*38,y:base-Math.sin(i/Math.max(1,n-1)*Math.PI)*h,ph:i*.6})}
-function bean(x,o){const e=Object.assign({type:'bean',kind:'bean',x,y:GROUND,vx:-60,vy:0,alive:true,ph:rand(0,6),hop:false,hopT:rand(.4,1.2),pack:null},o||{});e.var=e.var||(1+Math.floor(Math.random()*3));e.off=Math.random()*2;if(!e.skin)e.skin=e.kind==='bean'?(ST().villain||'bean'):e.kind;S.ens.push(e);return e}
-function troll(x){return bean(x,{kind:'troll',vx:-38,throwT:rand(.2,.7)})}
+function bean(x,o){const e=Object.assign({type:'bean',kind:'bean',x,y:GROUND,vx:-60,vy:0,alive:true,ph:rand(0,6),hop:false,hopT:rand(.4,1.2),pack:null},o||{});e.var=e.var||(1+Math.floor(Math.random()*3));if(!e.sub&&(o&&o.skin||ST().villain)==='street'&&e.kind==='bean'){const r=Math.random();e.sub=r<.5?'smoke':r<.78?'zwalk':'zcrawl'}e.off=Math.random()*2;if(!e.skin)e.skin=e.kind==='bean'?(ST().villain||'bean'):e.kind;S.ens.push(e);return e}
+function troll(x){const o={kind:'troll',vx:-38,throwT:rand(.2,.7)};if(ST().trollSkin)o.skin=ST().trollSkin;return bean(x,o)}
 const INSULTS=['야!','덤벼','으랏','#@!%','근육!'];
+const AKPL=['ㅋㅋㅋ','노잼','#@!%','별로','광고?'];
+const TOUTS=['들어와요!','1+1!','한잔만!','오늘만 세일','구경만~','무료입장!'];
 function flower(x){return bean(x,{kind:'flower',vx:-120,rot:0})}
 function lemon(x,y){S.items.push({type:Math.random()<.5?'lemon':'lemonade',x,y,ph:0})}
 const activePack=()=>Object.values(S.packs).some(k=>!k.done&&!k.failed);
@@ -1361,7 +1363,7 @@ function spawnDongcheon(){const x=W+60,w=170;S.pits.push({x,w,gold:true});S.dcCo
   banner('열린 맨홀 발견! 좀비 보너스로 쏙 빠져 보세요',2,'#3fa34d');S.gap=w+460}
 function spawnPattern(){
   const x=W+60;
-  if(S.lt>12&&S.lt<ST().bossAt-16&&S.dcCool<=0&&!activePack()&&(Math.random()<.22||(S.dcCount===0&&S.lt>34))){spawnDongcheon();return}
+  if(S.lt>12&&S.lt<ST().bossAt-16&&S.dcCool<=0&&!activePack()&&(Math.random()<.22||(S.dcCount===0&&S.lt>26))){spawnDongcheon();return}
   const pool=[['bean',3],['hopper',1.8],['pair',1.3],['troll',1.8],['flower',1.8],['box',1.1],['cups',.9],['pit',2],['eggs',1.4]];
   if(S.lt<5)pool.splice(7,1);
   const tot=pool.reduce((a,b)=>a+b[1],0);let r=Math.random()*tot,k=pool[0][0];for(const[n,w]of pool){if((r-=w)<=0){k=n;break}}
@@ -1796,7 +1798,7 @@ function update(dt){
     S.introT+=dt;
     if(S.introT>3.2){const T=ST();S.stage='boss';S.boss={kind:T.boss,x:W+180,y:T.boss==='cloud'?170:T.boss==='troll'?GROUND-110:GROUND-100,hp:T.bossHP+Math.floor(S.level/2)*2,max:T.bossHP+Math.floor(S.level/2)*2,t:0,atk:2.2,hurt:0};sfx('boss');
       banner(`${T.bossName} 등장!`,1.6,T.boss==='bean'?'#6b3e23':T.boss==='cup'?'#8a4a22':'#3b3a6b');
-      setTimeout(()=>{if(phase==='play'&&S.stage==='boss')banner(T.boss==='troll'?'빌런을 밟아 충격파 충전! 낮은 호통은 점프, 높은 호통은 그대로':T.boss==='cup'?'직원을 밟아 충격파를 모아 호객 대장을 맞혀요':T.boss==='cloud'?'졸개를 밟아 충격파를 모아 먹구름을 맞혀요':'빌런을 밟아 충격파를 모아 대형 쓰레기 봉지를 맞혀요',2.4,'#2f8f86')},1800)}
+      setTimeout(()=>{if(phase==='play'&&S.stage==='boss')banner(T.boss==='troll'?'빌런을 밟아 충격파 충전! 낮은 아령은 점프, 높은 아령은 그대로':T.boss==='cup'?'직원을 밟아 충격파 충전! 낮은 말풍선은 점프, 높은 말풍선은 그대로':T.boss==='cloud'?'졸개를 밟아 충격파를 모아 먹구름을 맞혀요':'빌런을 밟아 충격파를 모아 대형 쓰레기 봉지를 맞혀요',2.4,'#2f8f86')},1800)}
   }else if(S.stage==='boss'){
     const b=S.boss;b.t+=dt;b.hurt=Math.max(0,b.hurt-dt);
     const cl=b.kind==='cloud',tr=b.kind==='troll';
@@ -1805,13 +1807,18 @@ function update(dt){
     if(tr&&b.atk<=0&&b.x<W-40){ // 대형 악플러: 졸개 소환 + 높낮이 섞인 악플 연사
       const r=Math.random(),lvl=b.max-b.hp;b.throwAnim=.4;
       if(r<.42){if(Math.random()<.75)bean(b.x-70,{vx:-70,hop:Math.random()<.3});else rival(b.x-70);floatText('졸개 출동!',b.x,b.y-140,'#fff6e0')}
-      else{const n=2+(lvl>=6?1:0);for(let i=0;i<n;i++){const hi=Math.random()<.45;S.obs.push({type:'insult',big:true,x:b.x-100+i*160,y:hi?GROUND-122:GROUND-36,vx:-rand(130,170),ph:i,txt:pickArr(INSULTS)})}}
+      else{const n=2+(lvl>=6?1:0);for(let i=0;i<n;i++){const hi=Math.random()<.45;S.obs.push({type:'insult',big:true,dumb:true,x:b.x-100+i*160,y:hi?GROUND-122:GROUND-36,vx:-rand(130,170),ph:i,txt:''})}}
       b.atk=Math.max(.9,1.6-lvl*.06)+rand(-.15,.25);
     }else if(cl&&b.atk<=0&&b.x<W-60){
       const r=Math.random(),lvl=b.max-b.hp;
       if(r<.4){if(Math.random()<.7)bean(b.x-30,{vx:-70,hop:Math.random()<.35});else rival(b.x-30);floatText('졸개 출동!',b.x,b.y-90,'#fff6e0')}
       else{const n=3+(lvl>4?1:0);for(let i=0;i<n;i++)S.obs.push({type:'drop',rain:true,x:b.x-40+rand(-90,60),y:b.y+50,vx:-rand(140,300),vy:rand(-60,60)})}
       b.atk=Math.max(.95,1.8-lvl*.08)+rand(-.2,.3);
+    }else if(b.kind==='cup'&&b.atk<=0&&b.x<W-60){ // 호객 대장: 직원 소환 + 높낮이 섞인 호객 말풍선
+      const r=Math.random(),lvl=b.max-b.hp;b.throwAnim=.4;
+      if(r<.36){bean(b.x-60,{vx:-70,hop:Math.random()<.3});floatText('직원 출동!',b.x,b.y-150,'#fff6e0')}
+      else{const n=2+(lvl>=6?1:0);for(let i=0;i<n;i++){const hi=Math.random()<.45;S.obs.push({type:'insult',big:true,bubble:true,x:b.x-110+i*170,y:hi?GROUND-122:GROUND-36,vx:-rand(130,170),ph:i,txt:pickArr(TOUTS)})}}
+      b.atk=Math.max(.95,1.7-lvl*.06)+rand(-.15,.25);
     }else if(b.atk<=0&&b.x<W-60){
       const r=Math.random(),lvl=b.max-b.hp;
       if(r<.42){bean(b.x-40,{vx:-70,hop:Math.random()<.4});floatText('졸개 출동!',b.x,b.y-100,'#fff6e0')}
@@ -1825,7 +1832,7 @@ function update(dt){
 
   // enemies
   for(const e of S.ens){if(!e.alive)continue;e.x+=e.vx*dt;e.ph+=dt*10;if(e.kind==='flower')e.rot-=(v-e.vx)*dt/18;
-    if(e.kind==='troll'){e.throwAnim=Math.max(0,(e.throwAnim||0)-dt);if(e.x<W-20&&e.x>p.x+300&&S.stage!=='clear'){e.throwT-=dt;if(e.throwT<=0){e.throwT=rand(1.6,2.4);e.throwAnim=.3;S.obs.push({type:'insult',x:e.x-34,y:GROUND-34,vx:-rand(50,80),ph:0,txt:pickArr(INSULTS)})}}}
+    if(e.kind==='troll'){e.throwAnim=Math.max(0,(e.throwAnim||0)-dt);if(e.x<W-20&&e.x>p.x+300&&S.stage!=='clear'){e.throwT-=dt;if(e.throwT<=0){e.throwT=rand(1.6,2.4);e.throwAnim=.3;S.obs.push(e.skin==='akpl'?{type:'insult',x:e.x-34,y:GROUND-34,vx:-rand(50,80),ph:0,txt:pickArr(AKPL)}:{type:'insult',dumb:true,x:e.x-34,y:GROUND-30,vx:-rand(60,90),ph:0,txt:''})}}}
     if(e.kind==='kick'&&!e.bell&&e.x<p.x+320&&e.x>p.x){e.bell=true;floatText('따릉!',e.x,e.y-96,'#ffd84d');sfx('dbl')}
     if(e.hop){e.hopT-=dt;if(e.y>=GROUND&&e.hopT<=0){e.vy=-560;e.hopT=rand(.9,1.4)}}
     e.vy+=2000*dt;e.y+=e.vy*dt;if(e.y>=GROUND){e.y=GROUND;e.vy=0}
@@ -1900,7 +1907,7 @@ function update(dt){
         else if(it.type==='lemon'){S.lemons++;addBonus(80,it.x,iy-30,'#ffd27a');sfx('menu');burst(it.x,iy,12,['#f2c27a','#fff6e0','#c8553d'],200,'star')}
         else if(it.type==='lemonade'){S.lemonades++;addBonus(80,it.x,iy-30,'#fff27a');sfx('menu');burst(it.x,iy,12,['#ffe65c','#fff6e0','#b8e07a'],200,'star')}
         else if(it.type==='heart'){if(S.hearts<CONFIG.maxHearts){S.hearts++;banner('하트 +1',1.1,'#d9483b');sfx('rescue')}else{addBonus(100,it.x,iy-30,'#ff8a7a');sfx('egg')}burst(it.x,iy,16,['#ff5b4d','#fff6e0','#ffb3a8'],220,'star')}
-        else if(it.type==='shoe'){S.shoeT=CONFIG.shoeTime;S.roarT=CONFIG.shoeTime;S.roarMax=CONFIG.shoeTime;sfx('shoe');banner('장인의 구두! 코인 자석 질주',1.6,'#8a4f2a');burst(it.x,iy,24,['#ffdc66','#c98f5a','#fff6e0'],300,'star')}
+        else if(it.type==='shoe'){S.shoeT=CONFIG.shoeTime;S.roarT=CONFIG.shoeTime;S.roarMax=CONFIG.shoeTime;sfx('shoe');banner('반짝 운동화! 코인 자석 질주',1.6,'#d94f8a');burst(it.x,iy,24,['#ffdc66','#c98f5a','#fff6e0'],300,'star')}
         else if(it.type==='charm'){S.rescues++;sfx('rescue');banner('구조 배터리! 볼트 구조 +1',1.5,'#2f8f86');burst(it.x,iy,16,['#6ff2d6','#fff6e0','#8a4a22'],220,'star')}}}
   }
 
@@ -1973,6 +1980,7 @@ function boltIcon(x,y,s){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.beginP
 function drawTroll(e){ // 악플러: 후드 쓴 회색 얼굴 고블린 (1.35배)
   if(e.boss&&SPR.b_gym1a){artA('b_gym1',null,1.6,0,8,330/2.3,{fade:1});return}
   if(e.boss&&SPR.b_troll){art('b_troll',0,8,330/2.3);return}
+  if(!e.boss&&e.skin==='akpl'&&SPR.v_akpl_a){artShadow(e.x,e.y+2,24);artA('v_akpl_',e,4,e.x,e.y+4,112,{fade:1});return}
   if(!e.boss&&SPR.v_troll1a){artShadow(e.x,e.y+2,26);artA('v_troll'+(e.var||1),e,4,e.x,e.y+4,124,{fade:1});return}
   const x=e.x,y=e.y,step=Math.sin(e.ph*.8)*3;ctx.save();ctx.translate(x,y);ctx.scale(1.35,1.35);
   ctx.fillStyle='rgba(0,0,0,.22)';ctx.beginPath();ctx.ellipse(0,2,17,4,0,0,7);ctx.fill();
@@ -2010,6 +2018,7 @@ function drawFlower(e){ // 구르는 꽃: 착한 꽃이라 밟으면 감점
 function drawEnemy(e){if(e.kind==='kick')drawKick(e);else if(e.kind==='troll')drawTroll(e);else if(e.kind==='flower')drawFlower(e);else drawBean(e)}
 function drawBean(e){ // 탄원두: 까맣게 탄 원두, 갈라진 틈에서 불씨
   if(e.skin==='cup'){drawCupEnemy(e);return}
+  if(e.skin==='street'&&SPR.v_smoke_a){if(e.sub==='zwalk'){artShadow(e.x,e.y+2,22);artA('zb_walk',e,4,e.x,e.y+4,96,{fade:1})}else if(e.sub==='zcrawl'){artShadow(e.x,e.y+2,28);artA('zb_crawl',e,3,e.x,e.y+4,52,{fade:1})}else{artShadow(e.x,e.y+2,20);artA('v_smoke_',e,4.2,e.x,e.y+4,96,{fade:1})}return}
   if(SPR.v_bean1a){artShadow(e.x,e.y+2,20);artA('v_bean'+(e.var||1),e,4.5,e.x,e.y+4,e.var===1?90:94,{fade:1});return}
   const x=e.x,y=e.y,step=Math.sin(e.ph)*3,light=e.hop;
   ctx.save();ctx.translate(x,y);
@@ -2068,6 +2077,10 @@ function drawLavaBoss(b){ // 대형 탄원두: 용암이 흐르는 바위 몸
 function drawObs(o){
   if(o.type==='nut'){ctx.save();ctx.translate(o.x,o.y-o.r);ctx.rotate(o.rot);ctx.beginPath();for(let i=0;i<6;i++){const a=i*Math.PI/3;ctx.lineTo(Math.cos(a)*o.r,Math.sin(a)*o.r)}ctx.closePath();
     ctx.fillStyle='#a3adb6';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#4f5861';ctx.stroke();ctx.fillStyle='#4f5861';ctx.beginPath();ctx.arc(0,0,6,0,7);ctx.fill();ctx.restore();return}
+  if(o.type==='insult'&&o.dumb&&SPR.i_dumbbell){art('i_dumbbell',o.x,o.y,o.big?40:30,{center:true,rot:-o.ph*7});return}
+  if(o.type==='insult'&&o.bubble){ctx.save();ctx.translate(o.x,o.y);ctx.scale(1.35,1.35);ctx.font=`15px ${FD}`;const tw=Math.max(56,ctx.measureText(o.txt).width+22);
+    ctx.fillStyle='#fff';rr(-tw/2,-15,tw,30,14);ctx.fill();ctx.beginPath();ctx.moveTo(tw/2-16,12);ctx.lineTo(tw/2+2,22);ctx.lineTo(tw/2-26,14);ctx.closePath();ctx.fill();
+    ctx.lineWidth=2.5;ctx.strokeStyle='#8a1f5c';rr(-tw/2,-15,tw,30,14);ctx.stroke();ctx.fillStyle='#d94f8a';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(o.txt,0,1);ctx.restore();return}
   if(o.type==='insult'){ctx.save();ctx.translate(o.x,o.y+Math.sin(o.ph*9)*3);if(o.big)ctx.scale(1.35,1.35);ctx.rotate(Math.sin(o.ph*7)*.08);
     ctx.strokeStyle='rgba(216,53,42,.45)';ctx.lineWidth=2;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(36+i*2,-8+i*8);ctx.lineTo(50+i*4,-8+i*8);ctx.stroke()}
     ctx.fillStyle='#fff';rr(-32,-15,64,30,14);ctx.fill();ctx.beginPath();ctx.moveTo(18,12);ctx.lineTo(32,22);ctx.lineTo(10,14);ctx.closePath();ctx.fill();
