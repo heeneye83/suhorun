@@ -55,7 +55,7 @@ window.SUHO = {
       ],
     },
     {
-      id: 'choeup', name: '초읍 수호런', place: '시민공원 · 어린이대공원 · 초읍동', status: 'open', url: 'choeup/',
+      id: 'choeup', name: '공원 수호런 (초읍-시민공원)', place: '시민공원 · 어린이대공원 · 초읍동', status: 'open', url: 'choeup/',
       color: '#4f9a5a', thumb: 'common/img/choeup.webp',
       pitch: '가족이 함께! 부산시민공원에서 초읍 어린이대공원, 성지곡 편백숲길까지 달리며 먼지뭉치·모기·너구리 장난꾸러기 4마리를 한 대도 안 맞고 잡으면 퍼펙트 쿠폰.',
       who: '아이와 함께 오는 가족 · 가게 쿠폰 · 쿠폰북 추첨',
