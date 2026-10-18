@@ -55,10 +55,26 @@ window.SUHO = {
       ],
     },
     {
-      id: 'choeup', name: '초읍 수호런', place: '어린이대공원 · 초읍동', status: 'soon',
+      id: 'choeup', name: '초읍 수호런', place: '시민공원 · 어린이대공원 · 초읍동', status: 'open', url: 'choeup/',
       color: '#4f9a5a', thumb: 'common/img/choeup.webp',
-      pitch: '숲길과 호수를 달리는 가족 스테이지. 아이도 쉽게 할 수 있는 난이도로 준비 중이에요.',
-      who: '아이와 함께 오는 가족',
+      pitch: '가족이 함께! 부산시민공원에서 초읍 어린이대공원, 성지곡 편백숲길까지 달리며 먼지뭉치·모기·너구리 장난꾸러기 4마리를 한 대도 안 맞고 잡으면 퍼펙트 쿠폰.',
+      who: '아이와 함께 오는 가족 · 가게 쿠폰 · 쿠폰북 추첨',
+      season: { id: 's1-choeup', name: '시즌 1 · 초읍 시민공원~어린이대공원 스탬프 투어', ends: '' },
+      lastStage: 2,
+      grand: { name: '초읍 쿠폰북', desc: '참여 가게 6곳 대표 메뉴 1개씩 무료', winners: 30 },
+      // 시연용 가상 가게 (제안서 승인 후 실제 협업 가게로 교체)
+      stores: [
+        { name: '시민공원 푸드트럭', benefit: '핫도그 소스 추가', pin: '1111', color: '#e0702c' },
+        { name: '공원 앞 김밥집', benefit: '500원 할인', pin: '2222', color: '#c8553d' },
+        { name: '어린이대공원 솜사탕', benefit: '사이즈업', pin: '3333', color: '#d94f8a' },
+        { name: '정문 앞 분식집', benefit: '떡꼬치 1개 추가', pin: '4444', color: '#e0702c' },
+        { name: '숲속 찻집', benefit: '편백차 사이즈업', pin: '5555', color: '#8a5cc4' },
+        { name: '초읍 샌드위치', benefit: '음료 할인', pin: '6666', color: '#c8553d' },
+      ],
+      eventStores: [
+        { name: '초읍 아이스크림', benefit: '1스쿱 추가', pin: '7777', color: '#3fa99a' },
+        { name: '초읍 도넛', benefit: '도넛 1개 추가', pin: '8888', color: '#d9822b' },
+      ],
     },
   ],
 };
