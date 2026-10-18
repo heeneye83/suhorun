@@ -223,7 +223,7 @@ h1{white-space:nowrap}
     <span><b>일시정지</b>P</span>
     <span><b>밟으면 +100</b>취객 · 호객 직원 · 충격파는 빌런을 3마리 밟을 때만 충전 · 몸에 닿으면 하트 −1</span>
     <span><b>밟으면 +150</b>헬창 건달 · 킥보드 소년들 · 오토바이 배달부 · 매연 자동차 · 헬창은 호통 말풍선을 던져요(점프로 피하기, 충격파로 지우기) · 옆에서 닿거나 맞으면 하트 −1</span>
-    <span><b>밟으면 −50</b>구르는 꽃 · 착한 꽃이라 피해서 지나가요</span>
+    <span><b>밟으면 −50</b>구르는 꽃다발 · 상인이 놓친 꽃다발이라 피해서 지나가요</span>
     <span><b>장애물</b>공구통 · 컵 탑</span>
     <span><b>라멘 · 레몬에이드</b>각 +80</span>
     <span><b>공사 구멍</b>빠지면 볼트가 구조 빔으로 구조 · 구조 배터리가 없으면 하트 −1</span>
@@ -232,8 +232,8 @@ h1{white-space:nowrap}
     <span><b>줄무늬 은화</b>+5</span>
     <span><b>장인의 구두</b>올라타면 약 4초 무적 질주 · 주변 코인을 자석처럼 끌어당겨요</span>
     <span><b>무적 아이템</b>낮에는 백양산 산삼, 밤에는 바삭 치킨 · 먹으면 약 4초 무적 질주</span>
-    <span><b>동천 보너스</b>금빛 물웅덩이에 빠지면 수달을 말처럼 타고 헤엄 · 누르면 위로, 떼면 아래로</span>
-    <span><b>동천 속</b>물고기 +25 · 황금 잉어 +100 · 피라니아에 물리거나 바위·통나무에 부딪히면 하트 −1</span>
+    <span><b>물웅덩이 보너스</b>금빛 물웅덩이에 빠지면 수달을 말처럼 타고 헤엄 · 누르면 위로, 떼면 아래로</span>
+    <span><b>물속</b>물고기 +25 · 황금 잉어 +100 · 피라니아에 물리거나 바위·통나무에 부딪히면 하트 −1</span>
     <span><b>가게 스탬프</b>습격한 빌런 4마리를 모두 잡으면 그 가게 스탬프 · 이미 받은 스탬프는 다시 안 줘요</span>
     <span><b>시그니처 메뉴</b>먹으면 5초간 점수 2배</span>
     <span><b>저녁 스테이지</b>서면 지하상가 · 휴대폰 호객 직원이 쫓아오고 헬창 건달이 막아서요 · 보스는 호객 대장</span>
@@ -277,7 +277,7 @@ const CONFIG={
       {at:44, name:'빛축제 핫초코', kind:'cake', color:'#8a5cc4', item:'핫초코'}]}
   ],
   midsEvening:[            // 저녁 거리 건물: 수제맥주·호프·라이브 펍
-    {kind:'wine',sign:'전포 수제맥주',seed:21,w:280},{kind:'pocha',sign:'호프 & 치킨',seed:22,w:270},{kind:'records',sign:'라이브 펍',seed:23,w:280},{kind:'wine',sign:'비어 가든',seed:24,w:270}],
+    {kind:'wine',sign:'서면 수제맥주',seed:21,w:280},{kind:'pocha',sign:'호프 & 치킨',seed:22,w:270},{kind:'records',sign:'라이브 펍',seed:23,w:280},{kind:'wine',sign:'비어 가든',seed:24,w:270}],
   maxHearts:3,             // 하트 최대 개수
   heartEvery:28,           // 하트 아이템이 나오는 간격(초) · 하트가 1개면 조금 더 자주
   charmAt:66,              // 구조 배터리(볼트 구조 +1) 등장 시점
@@ -297,9 +297,9 @@ const CONFIG={
       ].map(k=>[k,k+'.png']).concat([['gacha_sheet','gacha_sheet.webp'],['v_bean','./sprites/v_drunk.png'],['v_cup','./sprites/v_tout.png'],['v_troll','./sprites/v_gym.png'],['v_kick','./sprites/v_kick.png'],['v_moto','./sprites/v_moto.png'],['v_car','./sprites/v_car.png'],['v_trash','./sprites/v_trash.png'],['b_lava','./sprites/b_trash.png'],['b_cup','./sprites/b_tout.png'],['b_troll','./sprites/b_gym.png']]))
   },
   mids:[                   // 거리 뒤쪽 건물 (간판 있는 테마 가게)
-    {kind:'roastery',sign:'전포 로스터리',seed:11,w:280},{kind:'bakery',sign:'전포 빵집',seed:12,w:270},{kind:'cake',sign:'하루 케이크',seed:13,w:270},
-    {kind:'goods',sign:'전포 소품샵',seed:14,w:290},{kind:'tools',sign:'전포 공구상가',seed:15,w:290},{kind:'records',sign:'레코드 & 책방',seed:16,w:280},
-    {kind:'flower',sign:'꽃 공방',seed:17,w:280},{kind:'wine',sign:'와인 비스트로',seed:18,w:270},{kind:'pocha',sign:'전포 포장마차',seed:19,w:270}]
+    {kind:'roastery',sign:'서면 로스터리',seed:11,w:280},{kind:'bakery',sign:'서면 빵집',seed:12,w:270},{kind:'cake',sign:'하루 케이크',seed:13,w:270},
+    {kind:'goods',sign:'서면 소품샵',seed:14,w:290},{kind:'tools',sign:'서면 공구상가',seed:15,w:290},{kind:'records',sign:'레코드 & 책방',seed:16,w:280},
+    {kind:'flower',sign:'꽃 공방',seed:17,w:280},{kind:'wine',sign:'와인 비스트로',seed:18,w:270},{kind:'pocha',sign:'서면 포장마차',seed:19,w:270}]
 };
 const SITE_ID='seomyeon';
 const WALLET=window.SuhoWallet||null;
@@ -429,7 +429,7 @@ const FACADE=['#f3dfbf','#f2c6a0','#eab4a4','#cfe0ea','#d6e3c3','#c8805f','#f0d7
 const ROOFC=['#d0553a','#3e5d8e','#2f6f6a','#8c4a36','#c96a3b','#4f5f7f'];
 const AWN=['#d9483b','#2f8f6f','#3c6fae','#e39a2d','#8a5cc4','#c8553d','#2f6b4f','#d94f8a'];
 const SHOPC=['#2f5f4f','#28466e','#6b2f2f','#3e3a5c','#5a3a22','#2f6b6b','#7a5a2a'];
-const SIGNS=['Bakery','Café','ROASTERY','Brunch','DESSERT','베이커리','커피','전포 공구','TEA','소품샵','LP CAFÉ','디저트','PASTRY','젤라또'];
+const SIGNS=['Bakery','Café','ROASTERY','Brunch','DESSERT','베이커리','커피','서면 공구','TEA','소품샵','LP CAFÉ','디저트','PASTRY','젤라또'];
 
 /* --- 집 한 채 그리기 (낮/밤) --- */
 function houseDesign(seed,o){const r=srand(seed*7919+13);const pk=a=>a[Math.floor(r()*a.length)];
@@ -635,7 +635,7 @@ function backWalkArt(N){const[c,g]=mkC(128,30);const col=v=>N?nt(v):v;
 const BLD={roastery:[400,776,62,406,339,482],bakery:[400,734,63,364,339,439],tools:[400,783,62,412,337,488],records:[400,729,61,359,339,434],
   cake:[400,736,81,386,318,448],pocha:[400,665,70,303,322,367],pub:[400,607,25,343,374,391],flower:[400,716,79,323,324,390]};
 const BLD_KIND={roastery:'roastery',cafe:'roastery',bean:'roastery',bakery:'bakery',bread:'bakery',tools:'tools',records:'records',cake:'cake',pocha:'pocha',wine:'pub',flower:'flower',goods:'flower'};
-const BLD_SIGN={roastery:'ROASTERY',bakery:'Bakery',tools:'전포 공구',records:'LP CAFÉ',cake:'DESSERT',pocha:'분식',pub:'PUB',flower:'FLOWER'};
+const BLD_SIGN={roastery:'ROASTERY',bakery:'Bakery',tools:'서면 공구',records:'LP CAFÉ',cake:'DESSERT',pocha:'분식',pub:'PUB',flower:'FLOWER'};
 function bldArt(kind,sign,N,w){const k=BLD_KIND[kind]||kind,B=BLD[k],im=SPR['bld_'+k+(N?'_n':'')];if(!B||!im)return null;
   const s=w/B[0],h=Math.round(B[1]*s);const[c,g]=mkC(w,h);g.drawImage(im,0,0,w,h);
   const x0=B[2]*s,y0=B[3]*s,x1=B[4]*s,y1=B[5]*s,pw=x1-x0,ph=y1-y0;
@@ -950,7 +950,7 @@ function drawGround(){
       const sx=p.x+p.w/2,sy=GROUND-120+Math.sin(S.tAll*3)*3;ctx.fillStyle='#4a3a2e';ctx.fillRect(sx-2,sy+30,4,GROUND-sy-30);
       ctx.save();ctx.shadowColor='rgba(255,210,90,.8)';ctx.shadowBlur=14;const bg=ctx.createLinearGradient(0,sy-4,0,sy+34);bg.addColorStop(0,'#3fb4d8');bg.addColorStop(1,'#1f7fae');ctx.fillStyle=bg;rr(sx-62,sy-4,124,36,18);ctx.fill();ctx.restore();
       ctx.lineWidth=3;ctx.strokeStyle='#ffe27a';rr(sx-62,sy-4,124,36,18);ctx.stroke();
-      ctx.font=`18px ${FD}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=4;ctx.strokeStyle='#14506e';ctx.strokeText('동천 보너스 ↓',sx,sy+14);ctx.fillStyle='#fffbe8';ctx.fillText('동천 보너스 ↓',sx,sy+14);
+      ctx.font=`18px ${FD}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=4;ctx.strokeStyle='#14506e';ctx.strokeText('물웅덩이 보너스 ↓',sx,sy+14);ctx.fillStyle='#fffbe8';ctx.fillText('물웅덩이 보너스 ↓',sx,sy+14);
       continue}
     ctx.fillStyle='#1c130d';ctx.fillRect(p.x,GROUND,p.w,H-GROUND);
     const gg=ctx.createLinearGradient(0,GROUND,0,H);gg.addColorStop(0,'rgba(80,60,40,.5)');gg.addColorStop(1,'rgba(0,0,0,.6)');ctx.fillStyle=gg;ctx.fillRect(p.x,GROUND,p.w,H-GROUND);
@@ -1367,7 +1367,7 @@ function lemon(x,y){S.items.push({type:Math.random()<.5?'lemon':'lemonade',x,y,p
 const activePack=()=>Object.values(S.packs).some(k=>!k.done&&!k.failed);
 function spawnDongcheon(){const x=W+60,w=170;S.pits.push({x,w,gold:true});S.dcCool=24;S.dcCount++;
   for(let i=0;i<3;i++)S.items.push({type:'egg',x:x+40+i*45,y:GROUND-26,ph:i*.6});addEggs(x-170,4,40);
-  banner('금빛 동천 등장! 풍덩 빠져 보세요',2,'#c99a1e');S.gap=w+460}
+  banner('금빛 물웅덩이 등장! 풍덩 빠져 보세요',2,'#c99a1e');S.gap=w+460}
 function spawnPattern(){
   const x=W+60;
   if(S.lt>12&&S.lt<ST().bossAt-16&&S.dcCool<=0&&!activePack()&&(Math.random()<.22||(S.dcCount===0&&S.lt>34))){spawnDongcheon();return}
@@ -1411,7 +1411,7 @@ function enterWater(){
   S.water=CONFIG.dongcheonTime;S.w={fish:[],obs:[],pira:[],gap:240,off:0};
   S.ens=[];S.obs=[];S.items=[];S.pits=[];S.shops=[];
   p.water=true;p.y=SURF+150;p.vy=0;p.on=false;p.hold=false;S.flash=.25;S.inv=Math.max(S.inv,.6);
-  sfx('splash');banner('동천 보너스! 수달 타고 헤엄쳐요',1.8,'#c99a1e');
+  sfx('splash');banner('물웅덩이 보너스! 수달 타고 헤엄쳐요',1.8,'#c99a1e');
   burst(p.x,SURF+20,22,['#ffe38a','#fff6e0','#f2c14e'],280);
   if(!S.seenHelp.water){S.seenHelp.water=1;setTimeout(()=>{if(phase==='play'&&S.water>0)banner(touchMode?'누르고 있으면 위로, 떼면 아래로':'스페이스를 누르면 위로, 떼면 아래로',2,'#517aa4')},1900)}
 }
@@ -1609,7 +1609,7 @@ function zap(x0,y0,x1,y1){const pts=[[x0,y0]];const n=7;for(let i=1;i<n;i++){con
 function overPit(x){for(const q of S.pits)if(x-8>q.x&&x+8<q.x+q.w)return q;return null}
 
 function crushFlower(e){if(!e.alive)return;e.alive=false;S.bonus-=50;floatText('−50',e.x,e.y-50,'#ff8a7a');sfx('fail');
-  burst(e.x,e.y-18,14,['#f7a6c4','#fff6e0','#ffd84d','#7fbf6a'],200);if(!S.seenHelp.flower){S.seenHelp.flower=1;banner('꽃은 밟지 말고 피해 주세요! −50',1.8,'#c2577f')}}
+  burst(e.x,e.y-18,14,['#f7a6c4','#fff6e0','#ffd84d','#7fbf6a'],200);if(!S.seenHelp.flower){S.seenHelp.flower=1;banner('꽃다발은 밟지 말고 피해 주세요! −50',1.8,'#c2577f')}}
 function kill(e,how){
   if(!e.alive)return;if(e.kind==='flower'){crushFlower(e);return}e.alive=false;S.kills++;
   burst(e.x,e.y-26,14,e.kind==='kick'?['#d8352a','#2f9f8c','#fffaf0','#ffd84d']:e.skin==='cup'?['#fffaf0','#c69c6d','#6b3e23','#3b2a20']:e.kind==='troll'?['#2a2433','#5b5170','#ff5a5a','#fff6e0']:['#2b1d16','#5a3a28','#ff8a3d','#fff6e0'],240);
@@ -2153,7 +2153,7 @@ function drawHUD(){
    else{ctx.fillStyle='#ffcf3a';ctx.beginPath();ctx.arc(ix,iy,6,0,7);ctx.fill();ctx.strokeStyle='#ffcf3a';ctx.lineWidth=2;ctx.beginPath();for(let i=0;i<8;i++){const a=i*Math.PI/4;ctx.moveTo(ix+Math.cos(a)*8.5,iy+Math.sin(a)*8.5);ctx.lineTo(ix+Math.cos(a)*11,iy+Math.sin(a)*11)}ctx.stroke()}
    ctx.fillStyle='#ffdc66';ctx.textAlign='right';ctx.fillText(t1,R-12,33);
    ctx.font=`14px ${FD}`;const t3=`구조 ${S.rescues}`,w3=ctx.measureText(t3).width+54,x3=R-w3;pill(x3,58,w3,26);if(SPR.bot_a)ctx.drawImage(SPR.bot_a,x3+4,59,34,29);ctx.fillStyle='#fff6e0';ctx.fillText(t3,x3+w3-11,72)}
-  if(S.water>0){const ww=200;pill(W/2-ww/2,12,ww,42);ctx.textAlign='center';ctx.fillStyle='#ffe27a';ctx.font=`16px ${FD}`;ctx.fillText('동천 보너스',W/2,26);
+  if(S.water>0){const ww=200;pill(W/2-ww/2,12,ww,42);ctx.textAlign='center';ctx.fillStyle='#ffe27a';ctx.font=`16px ${FD}`;ctx.fillText('물웅덩이 보너스',W/2,26);
     ctx.fillStyle='rgba(255,246,224,.2)';rr(W/2-80,38,160,8,4);ctx.fill();ctx.fillStyle='#4fd0e0';rr(W/2-80,38,Math.max(8,160*S.water/CONFIG.dongcheonTime),8,4);ctx.fill()}
   // 아래 왼쪽: 무적 / 충격파 충전
   const by=H-44;
