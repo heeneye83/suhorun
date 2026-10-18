@@ -168,7 +168,7 @@ addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeo
 
 /* ============ 스프라이트 (제미나이 생성 이미지) ============ */
 const SHEETS={gift:1,bgs1:1,bgs2:1,bgs3:1,bgs4:1,bgs5:1,bgs6:1,z_walk:2,z_run:2,z_office:2,z_ajumma:2,z_bball:2,z_ballet:2,z_wolf:2,z_bear:2,z_gull:2,z_cat:2,z_dance:2,
-  kingdj:3,heli:2,boom:1,bomb:1,arch:1,it_coin:1,it_drink:1,it_vaccine:1,it_candy:1,z_boss:3,fireball:1,ghost:2,ob_pipe:1,ob_beams:1,ob_tires:1,ob_cube:1,ob_car:1,ob_aframe:1,ob_pole:1,ob_neon:1,konik_pink:1,it_spring:1,i_heart:1,
+  kingdj:3,heli:2,boom:1,bomb:1,arch:1,it_coin:1,it_drink:1,it_vaccine:1,it_candy:1,z_boss:3,fireball:1,ghost:2,ob_pipe:1,ob_beams:1,ob_tires:1,ob_cube:1,ob_car:1,ob_aframe:1,ob_pole:1,ob_neon:1,hero_walk:1,hero_jump:1,hero_slide:1,it_spring:1,i_heart:1,
   tmachine:2,p_party:4};
 const IMG={};
 function loadAll(){const ps=[];for(const k in SHEETS){const src=(window.SPRITES&&SPRITES[k])||('sprites/'+k+(k.startsWith('bg')?'.jpg':'.png'));
@@ -746,38 +746,20 @@ function drawHorde(){
   cx.globalAlpha=1;
   if(near>.6){cx.fillStyle='rgba(120,190,110,.9)';const hx=baseX+40+Math.sin(G.t*9)*6;cx.beginPath();cx.ellipse(hx,GY-70,14,8,0,0,7);cx.fill()}
 }
-/* 주인공: 상체(장인 할아버지 업은 모습)는 그림, 다리는 코드로 그려 매끄럽게 달림 */
+/* 주인공: 영상에서 뽑은 걷기 12칸 + 점프·슬라이딩 그림 (발이 땅에 딱 붙도록 이동 거리에 맞춰 칸을 넘김) */
 const KM={"cw": 220, "ch": 190, "ax": 104, "sad": [[104, 106], [104, 105], [104, 105], [104, 100], [104, 103], [104, 128]], "seat": [145, 228], "rw": 200, "rh": 300};
 const KS=.83,RS=.41*KS/.97,KCX=115;
-const HERO={hx:168,hy:398,L1:70,L2:66,W:36,K:.36};
+const WALK_N=12,WALK_CYC=98;   // 걷기 한 주기 동안 땅이 움직이는 거리(게임 px, 기본 크기 기준)
 let SPRING_ON=0;
-function konikFrame(){const p=G.p;if(G.state==='dead')return 5;if(p.slide>0&&p.y>=GY-1)return 5;if(p.y<GY-1)return 4;return (p.anim*.62)%4}
-function legPose(f){const L1=HERO.L1,L2=HERO.L2;
-  if(f===4)return{legs:[[-.55,.75],[1.15,1.75]],hip:-150,rot:-.06};
-  if(f===5)return{legs:[[1.22,.32],[1.48,.06]],hip:-34,rot:-.62};
-  const ph=f/4*Math.PI*2,legs=[];
-  for(const a of [ph+Math.PI,ph]){const th=.68*Math.sin(a),kn=.12+1.15*Math.pow(Math.max(0,Math.cos(a)),1.4);legs.push([th,kn])}
-  let low=0;for(const[th,kn]of legs){const fy=L1*Math.cos(th)+L2*Math.cos(th-kn);low=Math.max(low,fy)}
-  return{legs,hip:-low-14,rot:.04*Math.sin(ph*2)}}
-function drawLeg(c,th,kn,hy,back,gold){c.save();c.translate(back?-16:14,0);const L1=HERO.L1,L2=HERO.L2,W=HERO.W;
-  const kx=L1*Math.sin(th),ky=hy+L1*Math.cos(th),sh=th-kn,fx=kx+L2*Math.sin(sh),fy=ky+L2*Math.cos(sh);
-  c.lineCap='round';c.lineJoin='round';
-  const pants=gold?(back?'#b8860f':'#e0a91c'):(back?'#16161b':'#2a2a31'),edge=gold?'#6b4a05':'#050507';
-  c.beginPath();c.moveTo(0,hy);c.lineTo(kx,ky);c.lineTo(fx,fy);c.strokeStyle=edge;c.lineWidth=W+9;c.stroke();c.strokeStyle=pants;c.lineWidth=W;c.stroke();
-  if(!back){c.strokeStyle=gold?'rgba(255,240,170,.45)':'rgba(255,255,255,.10)';c.lineWidth=6;c.beginPath();c.moveTo(kx*.2+3,hy+(ky-hy)*.2);c.lineTo(kx+3,ky-2);c.stroke()}
-  // 구두 (발끝은 오른쪽, 정강이 각도를 따라 살짝 기울임)
-  const fa=Math.max(-.5,Math.min(.9,sh*.6));c.save();c.translate(fx,fy);c.rotate(-fa);
-  if(SPRING_ON){c.strokeStyle='#5b6470';c.lineWidth=7;c.beginPath();for(let i=0;i<=6;i++){const y=12+i*4.2,x=(i%2?-13:13)+6;i?c.lineTo(x,y):c.moveTo(x,y)}c.stroke();c.strokeStyle='#dfe6ee';c.lineWidth=3.5;c.stroke()}
-  c.fillStyle=edge;c.beginPath();c.ellipse(12,4,32,17,0,0,7);c.fill();
-  c.fillStyle=gold?'#ffd23c':(SPRING_ON?'#e2453c':(back?'#141418':'#24242a'));c.beginPath();c.ellipse(12,3,27,12.5,0,0,7);c.fill();
-  c.fillStyle=gold?'#fff3b0':'rgba(255,255,255,.35)';c.beginPath();c.ellipse(20,-2,9,3.5,-.2,0,7);c.fill();
-  c.restore();c.restore()}
-function drawKonik(c,key,f,x,yb,s,rot,alpha){const im=IMG['konik_'+key];if(!im)return null;const k=s*HERO.K,gold=key.indexOf('gold')===0;
-  const P=legPose(f);c.save();if(alpha!=null)c.globalAlpha=alpha;if(rot){c.translate(x,yb-60*s);c.rotate(rot);c.translate(-x,-(yb-60*s))}
-  c.translate(x,yb-(SPRING_ON?24*k:0));c.scale(k,k);
-  drawLeg(c,P.legs[0][0],P.legs[0][1],P.hip,true,gold);
-  c.save();c.translate(0,P.hip);c.rotate(P.rot);c.drawImage(im,-HERO.hx,-HERO.hy);c.restore();
-  drawLeg(c,P.legs[1][0],P.legs[1][1],P.hip,false,gold);
+function konikFrame(){const p=G.p;if(G.state==='dead')return 5;if(p.slide>0&&p.y>=GY-1)return 5;if(p.y<GY-1)return 4;
+  const d=(G.dist+(G.tread||0))/(WALK_CYC*(1+.55*p.giant));return ((d%1)+1)%1*4}
+function heroImg(key,kind){return IMG[(key.indexOf('gold')===0?'gold_':'')+'hero_'+kind]}
+function drawKonik(c,key,f,x,yb,s,rot,alpha){const k=s/KS*.5,kind=f===5?'slide':f===4?'jump':'walk',im=heroImg(key,kind);if(!im)return null;
+  c.save();if(alpha!=null)c.globalAlpha=alpha;if(rot){c.translate(x,yb-60*s);c.rotate(rot);c.translate(-x,-(yb-60*s))}
+  const lift=SPRING_ON?26*s/KS:0;
+  if(SPRING_ON){c.save();c.lineCap='round';for(const dx of[-14,14]){c.strokeStyle='#4a525c';c.lineWidth=8*s/KS;c.beginPath();for(let i=0;i<=6;i++){const yy=yb-lift+2+i*lift/6,xx=x+dx*s/KS+(i%2?-9:9)*s/KS;i?c.lineTo(xx,yy):c.moveTo(xx,yy)}c.stroke();c.strokeStyle='#e4ebf2';c.lineWidth=3.5*s/KS;c.stroke()}c.restore()}
+  if(kind==='walk'){const n=WALK_N,cw=im.width/n,i=Math.floor(f/4*n)%n;c.drawImage(im,i*cw,0,cw,im.height,x-cw*k/2,yb-lift-im.height*k,cw*k,im.height*k)}
+  else{const ox=kind==='slide'?10:0;c.drawImage(im,x+ox*s/KS-im.width*k/2,yb-lift-im.height*k+(kind==='slide'?4:0)*s/KS,im.width*k,im.height*k)}
   c.restore();return [x,yb-120*s]}
 function drawRider(){}
 function drawPlayerT(){if(G.state!=='ending'&&G.state!=='done'){drawPlayer();return}const e=G.et;
@@ -1074,9 +1056,9 @@ function cert(win,t,km){
 }
 
 /* ============ 시작 ============ */
-function makeGold(){for(const k of ['pink','rainbow']){const im=IMG['konik_'+k];if(!im)continue;const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');
+function makeGold(){for(const k of ['hero_walk','hero_jump','hero_slide']){const im=IMG[k];if(!im)continue;const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');
   x.drawImage(im,0,0);x.globalCompositeOperation='source-atop';const g=x.createLinearGradient(0,0,0,im.height);g.addColorStop(0,'rgba(255,246,170,.78)');g.addColorStop(.5,'rgba(255,196,40,.72)');g.addColorStop(1,'rgba(214,140,20,.78)');x.fillStyle=g;x.fillRect(0,0,c.width,c.height);
-  x.globalCompositeOperation='source-over';x.globalAlpha=.35;x.drawImage(im,0,0);IMG['konik_gold_'+k]=c}}
+  x.globalCompositeOperation='source-over';x.globalAlpha=.35;x.drawImage(im,0,0);IMG['gold_'+k]=c}}
 loadAll().then(()=>{makeGold();drawPick();newGame();G.state='idle';requestAnimationFrame(loop)});
 if(document.fonts)document.fonts.ready.then(()=>{try{drawPick()}catch(e){}});
 setInterval(()=>{if(G&&!running&&G.state==='idle'){G.dist+=6;G.t+=.016}},16);
