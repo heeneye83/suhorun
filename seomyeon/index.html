@@ -294,7 +294,7 @@ const CONFIG={
       'w_otter','w_fish1','w_fish2','w_fish_gold','w_pira',
       // 거리 건물은 원래 그림 사용. 제미나이 건물로 바꾸려면 아래 줄의 // 를 지우고 bld_*.png 를 넣으면 됨
       // ...['roastery','bakery','tools','records','cake','pocha','pub','flower'].flatMap(k=>['bld_'+k,'bld_'+k+'_n']),
-      ].map(k=>[k,k+'.png']).concat([['gacha_sheet','gacha_sheet.webp'],['v_bean','./sprites/v_drunk.png'],['v_cup','./sprites/v_tout.png'],['v_troll','./sprites/v_gym.png'],['v_kick','./sprites/v_kick.png'],['v_moto','./sprites/v_moto.png'],['v_car','./sprites/v_car.png'],['v_trash','./sprites/v_trash.png'],['b_lava','./sprites/b_trash.png'],['b_cup','./sprites/b_tout.png'],['b_troll','./sprites/b_gym.png'],['v_bean1a','./sprites/v_bean1a.png'],['v_bean1b','./sprites/v_bean1b.png'],['v_bean2a','./sprites/v_bean2a.png'],['v_bean2b','./sprites/v_bean2b.png'],['v_cup1a','./sprites/v_cup1a.png'],['v_cup1b','./sprites/v_cup1b.png'],['v_troll1a','./sprites/v_troll1a.png'],['v_troll1b','./sprites/v_troll1b.png'],['v_troll2a','./sprites/v_troll2a.png'],['v_troll2b','./sprites/v_troll2b.png'],['v_kicka','./sprites/v_kicka.png'],['v_kickb','./sprites/v_kickb.png'],['busk_a','./sprites/busk_a.png'],['busk_b','./sprites/busk_b.png'],['t_banana','./sprites/t_banana.png'],['t_cup','./sprites/t_cup.png'],['t_apple','./sprites/t_apple.png'],['t_snack','./sprites/t_snack.png'],['own1','./sprites/own1.png'],['b_trash1a','./sprites/b_trash1a.png'],['b_trash1b','./sprites/b_trash1b.png'],['b_cup1a','./sprites/b_cup1a.png'],['b_cup1b','./sprites/b_cup1b.png'],['own2','./sprites/own2.png'],['own3','./sprites/own3.png'],['own4','./sprites/own4.png'],['b_gym1a','./sprites/b_gym1a.png'],['b_gym1b','./sprites/b_gym1b.png']]))
+      ].map(k=>[k,k+'.png']).concat([['gacha_sheet','gacha_sheet.webp'],['v_bean','./sprites/v_drunk.png'],['v_cup','./sprites/v_tout.png'],['v_troll','./sprites/v_gym.png'],['v_kick','./sprites/v_kick.png'],['v_moto','./sprites/v_moto.png'],['v_car','./sprites/v_car.png'],['v_trash','./sprites/v_trash.png'],['b_lava','./sprites/b_trash.png'],['b_cup','./sprites/b_tout.png'],['b_troll','./sprites/b_gym.png'],['v_bean1a','./sprites/v_bean1a.png'],['v_bean1b','./sprites/v_bean1b.png'],['v_bean2a','./sprites/v_bean2a.png'],['v_bean2b','./sprites/v_bean2b.png'],['v_cup1a','./sprites/v_cup1a.png'],['v_cup1b','./sprites/v_cup1b.png'],['v_troll1a','./sprites/v_troll1a.png'],['v_troll1b','./sprites/v_troll1b.png'],['v_troll2a','./sprites/v_troll2a.png'],['v_troll2b','./sprites/v_troll2b.png'],['v_kicka','./sprites/v_kicka.png'],['v_kickb','./sprites/v_kickb.png'],['busk_a','./sprites/busk_a.png'],['busk_b','./sprites/busk_b.png'],['t_banana','./sprites/t_banana.png'],['t_cup','./sprites/t_cup.png'],['t_apple','./sprites/t_apple.png'],['t_snack','./sprites/t_snack.png'],['v_bean3a','./sprites/v_bean3a.png'],['v_bean3b','./sprites/v_bean3b.png'],['love_a','./sprites/love_a.png'],['love_b','./sprites/love_b.png'],['own1','./sprites/own1.png'],['b_trash1a','./sprites/b_trash1a.png'],['b_trash1b','./sprites/b_trash1b.png'],['b_cup1a','./sprites/b_cup1a.png'],['b_cup1b','./sprites/b_cup1b.png'],['own2','./sprites/own2.png'],['own3','./sprites/own3.png'],['own4','./sprites/own4.png'],['b_gym1a','./sprites/b_gym1a.png'],['b_gym1b','./sprites/b_gym1b.png']]))
   },
   mids:[                   // 거리 뒤쪽 건물 (간판 있는 테마 가게)
     {kind:'roastery',sign:'서면 로스터리',seed:11,w:280},{kind:'bakery',sign:'서면 빵집',seed:12,w:270},{kind:'cake',sign:'하루 케이크',seed:13,w:270},
@@ -678,6 +678,8 @@ function scrollBg(v,dt){
   {const l=mid[mid.length-1];if(l.x+l.w<W+300)mid.push(makeHouse(l.x+l.w+(Math.random()<.3?rand(18,40):rand(0,4))))}
   for(const t of trees)t.x-=v*.75*dt;
   for(const k of busk)k.x-=v*.75*dt;busk=busk.filter(k=>k.x>-200);
+  for(const k of love)k.x-=v*.75*dt;love=love.filter(k=>k.x>-200);
+  S.loveT=(S.loveT==null?rand(10,18):S.loveT)-dt;if(S.loveT<=0&&ST().bgImg&&!ST().indoor&&!love.length&&!busk.some(b=>b.x>W-500)&&SPR.love_a){love.push({x:W+240});S.loveT=rand(26,44)}
   S.buskT=(S.buskT==null?rand(4,8):S.buskT)-dt;if(S.buskT<=0&&(S.dusk>.5||(ST().bgImg&&!ST().indoor))&&!busk.length){busk.push({x:W+260});S.buskT=rand(22,38)}
   if(trees.length&&trees[0].x<-160)trees.shift();
   {const l=trees[trees.length-1];if(l.x<W+200)trees.push({x:l.x+rand(380,560),v:Math.random()<.5?0:1})}
@@ -880,7 +882,8 @@ function drawCupBoss(b){ // 대형 일회용컵
   ctx.save();ctx.scale(3.3,3.3);drawCupEnemy({x:0,y:0,ph:b.t*6,boss:true});
   ctx.restore()}
 // 버스킹 무대 (뒤쪽 보도)
-let busk=[];
+let busk=[],love=[];
+function drawLove(x){if(!SPR.love_a)return;artShadow(x,GROUND+4,60);artA('love_',null,1,x,GROUND+5,112);const t=S.tAll;for(let i=0;i<3;i++){const k=(t*.45+i/3)%1;ctx.globalAlpha=Math.sin(k*Math.PI);heart(x-6+Math.sin(k*6+i*2)*16,GROUND-100-k*46,true,.8)}ctx.globalAlpha=1}
 function drawBusker(x){if(!SPR.busk_a)return;artShadow(x,GROUND+4,70);artA('busk_',null,1.3,x,GROUND+5,118)}
 const BGT={};
 function bgTile(src){let t=BGT[src];if(t)return t.ok?t:null;t=BGT[src]={ok:false,im:new Image()};t.im.onload=()=>{t.ok=true;t.sc=H/t.im.height;t.w=t.im.width*t.sc};t.im.src=src;return null}
@@ -888,7 +891,7 @@ function drawBgImg(){const src=ST().bgImg;if(!src)return false;const t=bgTile(sr
   const o=-((S.groundOff*.55)%t.w);for(let x=o;x<W;x+=t.w)ctx.drawImage(t.im,x,0,t.w+1,H);return true}
 function drawBg(){
   const d=S.dark,N=S.night,base=GROUND-30;
-  if(drawBgImg()){if(!ST().indoor)for(const k of busk)drawBusker(k.x);if(d>0){ctx.fillStyle=`rgba(30,20,40,${d*.3})`;ctx.fillRect(0,0,W,GROUND)}return}
+  if(drawBgImg()){if(!ST().indoor){for(const k of busk)drawBusker(k.x);for(const k of love)drawLove(k.x)}if(d>0){ctx.fillStyle=`rgba(30,20,40,${d*.3})`;ctx.fillRect(0,0,W,GROUND)}return}
   const g=ctx.createLinearGradient(0,0,0,GROUND);
   const DK=S.dusk||0;
   g.addColorStop(0,lerpC(lerpC(lerpC('#3f9fe6','#0a1230',N),'#40457e',DK),'#2e2538',d));g.addColorStop(.55,lerpC(lerpC(lerpC('#8ccdf2','#1c2a5e',N),'#e7835e',DK),'#4f4352',d));g.addColorStop(1,lerpC(lerpC(lerpC('#fdf1d6','#4b3f74',N),'#ffcf8a',DK),'#7a6466',d));
@@ -913,7 +916,7 @@ function drawBg(){
   // 뒤쪽 보도
   {const wo=-((S.groundOff*.75)%128);for(let x=wo;x<W;x+=128)blit(ART.walk,N,x,base)}
   if(DK>.02){ctx.fillStyle=`rgba(255,140,70,${.13*DK})`;ctx.fillRect(0,0,W,GROUND)}
-  for(const k of busk)drawBusker(k.x);
+  for(const k of busk)drawBusker(k.x);for(const k of love)drawLove(k.x);
   // 나무와 가로등
   for(const t of trees){blit(ART.trees[t.v],N,t.x-75,GROUND-8-196);
     const lx=t.x+150;blit(ART.lamp,N,lx-22,GROUND-8-190);
@@ -1345,7 +1348,7 @@ newGame();
 
 /* ================= spawning ================= */
 function addEggs(x0,n,h,base){base=base||GROUND-70;const sil=Math.random()<.4;for(let i=0;i<n;i++)S.items.push({type:'egg',silver:sil,x:x0+i*38,y:base-Math.sin(i/Math.max(1,n-1)*Math.PI)*h,ph:i*.6})}
-function bean(x,o){const e=Object.assign({type:'bean',kind:'bean',x,y:GROUND,vx:-60,vy:0,alive:true,ph:rand(0,6),hop:false,hopT:rand(.4,1.2),pack:null},o||{});e.var=e.var||(Math.random()<.5?1:2);if(!e.skin)e.skin=e.kind==='bean'?(ST().villain||'bean'):e.kind;S.ens.push(e);return e}
+function bean(x,o){const e=Object.assign({type:'bean',kind:'bean',x,y:GROUND,vx:-60,vy:0,alive:true,ph:rand(0,6),hop:false,hopT:rand(.4,1.2),pack:null},o||{});e.var=e.var||(1+Math.floor(Math.random()*3));if(!e.skin)e.skin=e.kind==='bean'?(ST().villain||'bean'):e.kind;S.ens.push(e);return e}
 function troll(x){return bean(x,{kind:'troll',vx:-38,throwT:rand(.2,.7)})}
 const INSULTS=['야!','덤벼','으랏','#@!%','근육!'];
 function flower(x){return bean(x,{kind:'flower',vx:-120,rot:0})}
@@ -1941,7 +1944,7 @@ function drawFlower(e){ // 구르는 꽃: 착한 꽃이라 밟으면 감점
 function drawEnemy(e){if(e.kind==='kick')drawKick(e);else if(e.kind==='troll')drawTroll(e);else if(e.kind==='flower')drawFlower(e);else drawBean(e)}
 function drawBean(e){ // 탄원두: 까맣게 탄 원두, 갈라진 틈에서 불씨
   if(e.skin==='cup'){drawCupEnemy(e);return}
-  if(SPR.v_bean1a){artShadow(e.x,e.y+2,20);artA('v_bean'+(e.var||1),e,.95,e.x,e.y+4,90,{fade:.35});return}
+  if(SPR.v_bean1a){artShadow(e.x,e.y+2,20);artA('v_bean'+(e.var||1),e,.7,e.x,e.y+4,e.var===3?92:e.var===2?92:88,{fade:.4});return}
   const x=e.x,y=e.y,step=Math.sin(e.ph)*3,light=e.hop;
   ctx.save();ctx.translate(x,y);
   ctx.fillStyle='rgba(0,0,0,.2)';ctx.beginPath();ctx.ellipse(0,2,18,4,0,0,7);ctx.fill();
