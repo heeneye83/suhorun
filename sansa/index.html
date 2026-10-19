@@ -132,7 +132,7 @@ a.go{text-decoration:none;display:inline-block}
     </ol>
   </div>
 </section>
-<p class="credit">부산진구 협의용 시연본입니다. 진수호·볼트는 오리지널 캐릭터 시안이고, 같이 달리는 친구들과 배경은 임시 그림이에요(제미나이로 만든 이미지를 <code>sansa/sprites</code>·<code>sansa/bg</code> 폴더에 넣으면 자동으로 바뀝니다).
+<p class="credit">부산진구 협의용 시연본입니다. 진수호·볼트는 오리지널 캐릭터 시안이고, 같이 달리는 친구들·배경·아이템·장애물은 제미나이로 만든 시안이에요.
   게임 속 가게와 쿠폰 혜택은 시연을 위한 가상의 예시예요. 시연 버전에서는 쿠폰과 응모 정보가 이 기기에만 저장됩니다.</p>
 
 <script>
@@ -158,7 +158,7 @@ function hash(n){n=Math.imul((n|0)^61,0x45d9f3b);n=Math.imul(n^(n>>>16),0x45d9f3
 const IMG={};
 const COMMON=['g_run1','g_run2','g_run3','g_run4','g_run5','g_run6','g_run7','g_run8','g_jump','g_fall','g_hero','bot_a','bot_b','bot_happy','bot_blink'];
 const OPT=[];
-Object.keys(S.RACERS).forEach(id=>{OPT.push(['r_'+id+'_1','sprites/r_'+id+'_1.png']);OPT.push(['r_'+id+'_2','sprites/r_'+id+'_2.png'])});
+Object.keys(S.RACERS).forEach(id=>{for(let f=1;f<=4;f++)OPT.push(['r_'+id+'_'+f,'sprites/r_'+id+'_'+f+'.png'])});OPT.push(['r_rabbit_nap','sprites/r_rabbit_nap.png']);
 ['i_coupon','i_drink','o_rock','o_log','o_boulder','o_tower','o_lantern_stone','o_cloud','o_storm','o_branch','o_lantern_hang','g_slide'].forEach(n=>OPT.push([n,'sprites/'+n+'.png']));
 S.KINDS.forEach(k=>{OPT.push(['bg_'+k,'bg/'+k+'.jpg']);OPT.push(['gr_'+k,'bg/'+k+'_ground.jpg'])});
 function loadImg(key,src){return new Promise(res=>{const i=new Image();i.onload=()=>{IMG[key]=i;res()};i.onerror=()=>res();i.src=src})}
@@ -367,10 +367,12 @@ function drawRacer(r,isSpirit){
   const sx=r.x-camX,gy=GY-r.y;
   if(sx<-200||sx>W+200)return;
   const id=r.id,ph=(r.x/46)+(r.ph||0);
-  const im=IMG['r_'+id+'_'+((Math.floor(r.x/70)%2)+1)]||IMG['r_'+id+'_1'];
+  const fi=isSpirit?Math.floor(FX.tAnim*7)%4:Math.floor(r.x/(id==='turtle'?36:id==='old'?52:62))%4;
+  let im=IMG['r_'+id+'_'+(fi+1)]||IMG['r_'+id+'_1'],nap=false;
+  if(id==='rabbit'&&r.mode==='nap'&&IMG.r_rabbit_nap){im=IMG.r_rabbit_nap;nap=true}
   ctx.save();ctx.translate(sx,gy);
   if(isSpirit){const g=ctx.createRadialGradient(0,-60,10,0,-60,150);g.addColorStop(0,'rgba(255,230,120,.55)');g.addColorStop(1,'rgba(255,230,120,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,-60,150,0,6.3);ctx.fill()}
-  if(im){const hh=(r.h||S.RACERS[id].h)*1.15,w=im.width*hh/im.height;ctx.drawImage(im,-w/2,-hh+ (isSpirit?-8*Math.sin(FX.tAnim*3)-10:0),w,hh)}
+  if(im){const hh=(r.h||S.RACERS[id].h)*(nap?.72:id==='turtle'?1.2:id==='spirit'?1.3:1.22),w=im.width*hh/im.height;ctx.drawImage(im,-w/2,-hh+ (isSpirit?-8*Math.sin(FX.tAnim*3)-10:0),w,hh)}
   else drawRacerArt(ctx,id,r.h||S.RACERS[id].h,ph,{y:r.y,slide:r.slide,mode:r.mode});
   ctx.restore();
   // 이름표
@@ -436,6 +438,10 @@ function drawBackground(kind,t){
     ctx.fillStyle=kind==='sky'?'#cfe8fb':'#140c08';ctx.fillRect(0,GY,W,H-GY);
     const hh=GY+8,ww=im.width*hh/im.height,off=camX*.3;let i=Math.floor(off/ww);
     for(let x=i*ww-off;x<W;x+=ww,i++){ctx.save();if(i&1){ctx.translate(x+ww,0);ctx.scale(-1,1);ctx.drawImage(im,0,0,ww,hh)}else ctx.drawImage(im,x,0,ww,hh);ctx.restore()}
+    // 캐릭터가 달리는 높이에 옅은 안개를 깔아 배경보다 캐릭터가 또렷하게 보이게
+    const hz=ctx.createLinearGradient(0,GY-260,0,GY);const nt=kind==='samgwang_b';
+    hz.addColorStop(0,nt?'rgba(20,16,50,0)':'rgba(255,250,240,0)');hz.addColorStop(1,nt?'rgba(20,16,50,.32)':'rgba(255,250,240,.26)');
+    ctx.fillStyle=hz;ctx.fillRect(0,GY-260,W,268);
     return;
   }
   ctx.fillStyle=skyGrad(th);ctx.fillRect(0,0,W,GY+4);
@@ -526,11 +532,11 @@ function drawObstacle(o,t){
   const sx=o.x-camX;if(sx>W+100||sx<-200)return;
   const kind=S.kindOf(Math.floor(o.x/S.STAGE_LEN)+1),temple=kind.startsWith('samgwang'),sky=kind==='sky';
   const w=o.w;
-  const okey=o.type==='hang'?(sky?'o_storm':temple?'o_lantern_hang':'o_branch'):sky?'o_cloud':temple?(o.type==='tall'||o.skin!==1?'o_tower':'o_lantern_stone'):(o.type==='tall'?'o_boulder':o.skin===1?'o_log':'o_rock');
+  const okey=o.type==='hang'?(sky?'o_storm':temple?'o_lantern_hang':'o_branch'):sky?'o_cloud':temple?(o.type==='tall'||o.skin===1?'o_lantern_stone':'o_tower'):(o.type==='tall'?'o_boulder':'o_rock');
   const oim=IMG[okey];
   if(oim){
-    if(o.type==='hang'){const hh=210,ww=oim.width*hh/oim.height;ctx.drawImage(oim,sx+w/2-ww/2,GY-o.oy-hh,ww,hh)}
-    else{const hh=o.h*1.2,ww=oim.width*hh/oim.height;ctx.drawImage(oim,sx+w/2-ww/2,GY-hh+4,ww,hh)}
+    if(o.type==='hang'){const ww=w*(okey==='o_branch'?2.6:okey==='o_storm'?2.2:1.35),hh=ww*oim.height/oim.width;ctx.drawImage(oim,sx+w/2-ww/2,GY-o.oy-hh+6,ww,hh)}
+    else{let hh=o.h*(okey==='o_cloud'?1.1:1.18),ww=oim.width*hh/oim.height;const cap=w*1.9;if(ww>cap){hh*=cap/ww;ww=cap}ctx.drawImage(oim,sx+w/2-ww/2,GY-hh+5,ww,hh)}
     return;
   }
   if(o.type==='hang'){
@@ -604,7 +610,7 @@ function drawHero(p,t){
   else if(p.knock>0){im=IMG.g_fall;ctx.rotate(-.35*(p.knock/P.knockT))}
   else if(p.slideT>0){
     const si=IMG.g_slide;
-    if(si){const w=HH*.9*si.width/si.height;ctx.drawImage(si,-w/2,-HH*.9+8,w,HH*.9);ctx.restore();return}
+    if(si){const sh=84,w=sh*si.width/si.height;ctx.drawImage(si,-w*.42,-sh+6,w,sh);ctx.restore();return}
     ctx.translate(0,-26);ctx.rotate(-1.38);ctx.translate(0,HH*.1);im=IMG.g_run3||im;
   }
   else if(p.y>2||p.vy>0){im=p.vy>0?IMG.g_jump:IMG.g_fall;if(p.vy<=0)ctx.rotate(clamp(-p.vy/9000,0,.1))}
@@ -724,7 +730,7 @@ const ovl=$('ovl'),card=$('card');
 function lvButtons(){return Object.keys(S.DIFF).map(k=>{const d=S.DIFF[k];return `<button class="lv" type="button" data-k="${k}" aria-pressed="${k===diffKey}"><b>${d.name}</b><small>제한 ${Math.floor(d.limit/60)}분${d.limit%60?' '+d.limit%60+'초':''}</small></button>`}).join('')}
 function portrait(id,h){const c=document.createElement('canvas');c.width=220;c.height=190;const x=c.getContext('2d');
   const im=IMG['r_'+id+'_1'];
-  if(im){const hh=170,w=im.width*hh/im.height;x.drawImage(im,110-w/2,185-hh,w,hh)}
+  if(im){const k=Math.min(170/im.height,200/im.width),hh=im.height*k,w=im.width*k;x.drawImage(im,110-w/2,185-hh,w,hh)}
   else{x.translate(110,178);const hh=S.RACERS[id].h,k=Math.min(1.8,(id==='turtle'?100:id==='spirit'?190:id==='deer'?170:150)/(hh*1.04));x.scale(k,k);drawRacerArt(x,id,hh,.6,{y:0,slide:0,mode:'run'})}
   return c}
 function showTitle(){
