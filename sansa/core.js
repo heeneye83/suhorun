@@ -20,7 +20,7 @@
     gravity: 3000, jumpV: 855, dblV: 790, cutG: 2.0,   // 점프는 낮게 · 공중에서 한 번 더(2단 점프) · 손을 떼면 더 낮게
     slipT: 0.75, slipMul: 0.3,                // 바나나 껍질: 미끄러져 넘어짐 → 속도 뚝
     coyote: 0.09, buffer: 0.12,
-    hitHalfW: 22, standH: 112, slideH: 40, slideT: 0.6,
+    hitHalfW: 22, standH: 112, slideH: 88, slideT: 0.6,   // 슬라이딩(엉덩방아 자세) 높이
     knockT: 0.30, knockV: 520, slowT: 1.2, slowMin: 0.55, invul: 1.0,   // 부딪히면: 뒤로 튕김 → 잠깐 느려짐 (라이프 없음)
     energyMax: 100, drain: 30, regen: 9, regenDelay: 0.5, drinkEnergy: 45, hasteT: 2.4,  // 스프린트 에너지 / 에너지 음료
     fallY: -140, pickY: -140, rescueT: 1.3,    // 구덩이·구름 밑으로 떨어지면 볼트가 끌어올림
@@ -131,7 +131,7 @@
         g.obs.push(o); return o;
       };
       // 공중에 떠 있는 장애물: 밑으로 슬라이딩하거나 2단 점프로 넘는다
-      const floatAt = (cx) => { const o = { x: cx, w: 84, h: 92, oy: 58, type: 'float', skin: (rnd() * 2) | 0 }; g.obs.push(o); return o; };
+      const floatAt = (cx) => { const o = { x: cx, w: 84, h: 80, oy: 98, type: 'float', skin: (rnd() * 2) | 0 }; g.obs.push(o); return o; };
       const bananaAt = (cx) => { const o = { x: cx, w: 40, h: 16, oy: 0, type: 'banana', used: false }; g.obs.push(o); return o; };
       const pitAt = (cx) => {
         const wd = (165 + rnd() * 55) * (1 + 0.05 * (stage - 1));
@@ -207,7 +207,7 @@
     // 아이템
     const items = g.items;
     while (g.itemIdx < items.length && items[g.itemIdx].x < p.x - 300) g.itemIdx++;
-    const cy = p.y + (p.slideT > 0 ? 22 : 56);
+    const cy = p.y + (p.slideT > 0 ? 40 : 56);
     for (let i = g.itemIdx; i < items.length && items[i].x < p.x + 80; i++) {
       const it = items[i];
       if (it.taken) continue;

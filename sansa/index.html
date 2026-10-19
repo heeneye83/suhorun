@@ -618,8 +618,8 @@ function drawHero(p,t){
   else if(p.slip>0){im=IMG.g_fall;const k=1-p.slip/P.slipT;ctx.translate(0,-10);ctx.rotate(-1.1*Math.min(1,k*3));ctx.translate(0,10)}
   else if(p.slideT>0){
     // 슬라이딩: 엉덩방아 찍는 그림을 작게 낮춰서 바닥을 미끄러지듯
-    const fi=IMG.g_fall||im,sh=HH*.66,sw=sh*fi.width/fi.height;
-    ctx.rotate(-.08);ctx.drawImage(fi,-sw*.5,-sh+16,sw,sh);ctx.restore();
+    const fi=IMG.g_fall||im;
+    ctx.rotate(-.06);ctx.drawImage(fi,-wR/2,-HH+16,wR,HH);ctx.restore();
     if(Math.random()<.6)FX.parts.push({x:p.x-30-Math.random()*20,y:4,vx:-160-Math.random()*80,vy:60+Math.random()*80,life:.35,max:.35,size:3+Math.random()*4,color:'rgba(255,245,225,.85)',g:500});
     return;
   }
