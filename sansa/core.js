@@ -37,12 +37,13 @@
 
 
   const RACERS = {
-    dongja: { name: '동자승', f: 0.80, w: 48, h: 82 },
-    young:  { name: '젊은승', f: 0.90, w: 52, h: 104 },
-    old:    { name: '늙은승', f: 0.70, w: 52, h: 96 },
-    turtle: { name: '거북이', f: 0.52, w: 86, h: 56 },
-    rabbit: { name: '토끼',   f: 0.88, w: 52, h: 84 },
-    deer:   { name: '사슴',   f: 0.97, w: 78, h: 104 },
+    // 같이 달리는 친구들 (20% 빠르게 — 스프린트할 때도 너무 느려 보이지 않게)
+    dongja: { name: '동자승', f: 0.96, w: 48, h: 82 },
+    young:  { name: '젊은승', f: 1.08, w: 52, h: 104 },
+    old:    { name: '늙은승', f: 0.84, w: 52, h: 96 },
+    turtle: { name: '거북이', f: 0.62, w: 86, h: 56 },
+    rabbit: { name: '토끼',   f: 1.06, w: 52, h: 84 },
+    deer:   { name: '사슴',   f: 1.16, w: 78, h: 104 },
     spirit: { name: '산신령', f: 1.0,  w: 60, h: 128 },
   };
   const FIELD = ['dongja', 'young', 'old', 'turtle', 'rabbit', 'deer'];
