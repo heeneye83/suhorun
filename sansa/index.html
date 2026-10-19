@@ -6,9 +6,9 @@
 <title>산사 수호런 (백양산-삼광사)</title>
 <meta name="description" content="진수호가 백양산 산신령을 따라잡는 추격 레이스 · 동자승·젊은승·늙은승·거북이·토끼·사슴과 함께 삼광사 마당과 구름 하늘길을 달리며 가게 쿠폰을 먹어요">
 <link rel="icon" href="../common/sprites/bot_happy.png">
-<script src="../common/sites.js?v=10200400"></script>
-<script src="../common/wallet.js?v=10200400"></script>
-<script src="core.js?v=10200400"></script>
+<script src="../common/sites.js?v=10200406"></script>
+<script src="../common/wallet.js?v=10200406"></script>
+<script src="core.js?v=10200406"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
@@ -225,9 +225,11 @@ function musicTick(){
   const playing=phase==='play'&&G&&G.state==='run'&&!paused&&!document.hidden;
   if(!playing){mNext=AC.currentTime+.08;return}
   mbus();
-  const T=TRACKS[track]||TRACKS.mountain,left=G.cfg.limit-G.t;
+  let T=TRACKS[track]||TRACKS.mountain;const left=G.cfg.limit-G.t;
   const sp=clamp(G.p.v/P.base,1,1.3),step=T.step/(1+(sp-1)*.3)*(left<30?.88:1);   // 빨라질수록 · 마지막 30초엔 몰아치게
   while(mNext<AC.currentTime+.2){
+    if(pendingTrack&&mStep%12===0){track=pendingTrack;pendingTrack=null;mStep=0;T=TRACKS[track]}
+    if(pendingTrack&&mStep%12>=9)drum('deok',mNext+step*.5);              // 곡 바뀌기 전 잔가락
     const bar=Math.floor(mStep/12)%T.G.length,i=mStep%12;
     const n=T.G[bar][i];if(n!=null)gayageum(NT(T.root,n),mNext,.13,i===6&&bar%2===1);
     const dr=JANGGU[i];if(dr)drum(dr,mNext);
@@ -239,7 +241,8 @@ function musicTick(){
 }
 function musicStart(){if(!musicOn||!AC)return;musicStop();mbus();mNext=AC.currentTime+.08;mTimer=setInterval(musicTick,40)}
 function musicStop(){if(mTimer){clearInterval(mTimer);mTimer=null}}
-function musicTrack(t){if(track===t)return;track=t;mStep=0}
+let pendingTrack=null;
+function musicTrack(t){if(track===t){pendingTrack=null;return}if(!mTimer){track=t;mStep=0;return}pendingTrack=t}
 
 /* ------------------------------------------------------------ 게임 상태 */
 let G=null,phase='title',camX=0,shake=0,flash=0,paused=false,endT=0;
@@ -818,18 +821,43 @@ function drawSpeedLines(speedRatio,t){
   const g=ctx.createRadialGradient(W/2,H/2,H*.45,W/2,H/2,H*.95);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(30,20,10,'+(a*.55)+')');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
 }
 
+
+/* 스테이지가 바뀌는 곳: 배경은 화면 위치에 따라 서서히 겹쳐 바뀌고(약 1,400px), 땅은 경계에서 부드럽게 섞임 */
+const kindAt=wx=>S.kindOf(Math.floor(Math.max(0,wx)/S.STAGE_LEN)+1);
+function stageMix(){
+  const cx=camX+W*.5,L=S.STAGE_LEN,B=Math.round(cx/L)*L;
+  if(B<=0)return null;
+  const d=cx-B;if(d<-600||d>800)return null;
+  const k=clamp((d+600)/1400,0,1);
+  return {from:kindAt(B-1),to:kindAt(B+1),k:k*k*(3-2*k)};
+}
+function groundRange(wx0,wx1,t){
+  const L=S.STAGE_LEN,Z=260;
+  let a=wx0;
+  while(a<wx1){
+    const B=(Math.floor(a/L)+1)*L,end=Math.min(wx1,B-Z);
+    if(end>a){groundSeg(kindAt(a),a-camX,end-camX,t);a=end;continue}
+    const zEnd=Math.min(wx1,B+Z),from=kindAt(B-1),to=kindAt(B+1);       // 섞이는 구간
+    groundSeg(from,a-camX,zEnd-camX,t);
+    const N=12;for(let i=0;i<N;i++){const s0=B-Z+(2*Z)*i/N,s1=B-Z+(2*Z)*(i+1)/N,c0=Math.max(a,s0),c1=Math.min(zEnd,s1);if(c1<=c0)continue;
+      ctx.save();ctx.globalAlpha=(i+.5)/N;groundSeg(to,c0-camX,c1-camX,t);ctx.restore()}
+    a=zEnd;
+  }
+}
 function render(dt,t){
   FX.tAnim=t;
   const kind=G?S.kindOf(G.stage):'baegyang_a';
   ctx.save();
   if(shake>0){shake=Math.max(0,shake-dt);ctx.translate((Math.random()-.5)*shake*22,(Math.random()-.5)*shake*22)}
-  drawBackground(kind,t);
+  const mix=G?stageMix():null;
+  if(mix){drawBackground(mix.from,t);ctx.save();ctx.globalAlpha=mix.k;drawBackground(mix.to,t);ctx.restore()}
+  else drawBackground(G?kindAt(camX+W*.5):kind,t);
   // 땅 (구덩이 사이사이)
   if(G){
     const x0=camX-40,x1=camX+W+40;let cur=x0;
     const pits=G.pits;
-    for(const q of pits){if(q.x1<x0)continue;if(q.x0>x1)break;groundSeg(kind,cur-camX,q.x0-camX,t);cur=q.x1}
-    groundSeg(kind,cur-camX,x1-camX,t);
+    for(const q of pits){if(q.x1<x0)continue;if(q.x0>x1)break;groundRange(cur,q.x0,t);cur=q.x1}
+    groundRange(cur,x1,t);
     for(const q of pits){if(q.x1<x0)continue;if(q.x0>x1)break;drawPit(S.kindOf(Math.floor(q.x0/S.STAGE_LEN)+1),q.x0,q.x1,t)}
   }else groundSeg(kind,0,W,t);
   if(G){
