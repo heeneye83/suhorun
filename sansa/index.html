@@ -105,6 +105,7 @@ a.go{text-decoration:none;display:inline-block}
     <span class="best">최고 점수<b id="best">0</b></span>
     <a class="tbtn" href="../wallet/">내 쿠폰함</a>
     <a class="tbtn" href="../">수호런 맵</a>
+    <button class="tbtn" id="bgm" type="button" aria-pressed="true">음악 켬</button>
     <button class="tbtn" id="snd" type="button" aria-pressed="true">소리 켬</button>
   </div>
 </header>
@@ -179,6 +180,47 @@ const SFX={
   go(){tone(660,.3,'square',.06)},dbl(){tone(620,.13,'square',.06,1.9)},slip(){tone(700,.35,'sawtooth',.06,.25)},bonk(){tone(180,.12,'square',.08,.6);tone(520,.1,'triangle',.05,1.5,.05)},tick(){tone(440,.1,'square',.05)},surge(){tone(200,.5,'sawtooth',.05,2.5)},stage(){tone(587,.12,'triangle',.07);tone(880,.2,'triangle',.07,1,.12)}
 };
 
+/* ------------------------------------------------------------ 배경음악 (음원 파일 없이 바로 연주 · 국악풍 5음계) */
+let musicOn=LS.get('sansa.music',true),mBus=null,mTimer=null,mNext=0,mStep=0,track='mountain';
+const NT=(base,s)=>s==null?null:base*Math.pow(2,s/12);
+const TRACKS={
+  // 백양산: 경쾌한 산길 (궁조 5음계)
+  mountain:{tempo:.17,lead:523.25,bass:130.81,wave:'triangle',bell:false,
+    L:[0,2,4,7,4,2,0,null, 2,4,7,9,7,4,2,null, 4,7,9,12,9,7,4,2, 0,2,4,2,0,null,-3,null],
+    B:[0,null,7,null,0,null,7,null, -3,null,4,null,-3,null,4,null, -5,null,2,null,-5,null,2,null, 0,null,7,null,0,null,null,null]},
+  // 삼광사: 조금 신비로운 절 분위기 + 마디마다 풍경(종) 소리
+  temple:{tempo:.18,lead:440,bass:110,wave:'triangle',bell:true,
+    L:[0,3,5,7,10,7,5,3, 0,null,3,5,7,null,5,null, 7,10,12,10,7,5,3,5, 7,null,5,3,0,null,null,null],
+    B:[0,null,null,0,-5,null,null,-5, -2,null,null,-2,-5,null,-7,null, 0,null,null,0,-5,null,null,-5, -2,null,-5,null,0,null,null,null]},
+  // 구름 하늘길: 밝고 높게
+  sky:{tempo:.16,lead:659.25,bass:164.81,wave:'square',bell:false,
+    L:[0,4,7,12,9,7,4,7, 9,12,16,12,9,7,4,null, 0,4,7,9,7,4,2,4, 7,null,4,null,0,null,null,null],
+    B:[0,null,7,null,5,null,7,null, -3,null,4,null,2,null,4,null, 0,null,7,null,5,null,7,null, -5,null,2,null,0,null,null,null]},
+};
+const trackOf=kind=>kind==='sky'?'sky':kind.startsWith('samgwang')?'temple':'mountain';
+function mbus(){if(!AC)return null;if(!mBus){mBus=AC.createGain();mBus.gain.value=.16;mBus.connect(AC.destination)}return mBus}
+function mnote(f,d,type,vol,when,slide){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,when);if(slide)o.frequency.exponentialRampToValueAtTime(f*slide,when+d);
+  g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(vol,when+.012);g.gain.exponentialRampToValueAtTime(.0001,when+d);o.connect(g);g.connect(mbus());o.start(when);o.stop(when+d+.03)}
+function musicTick(){
+  if(!AC||!musicOn)return;
+  const playing=phase==='play'&&G&&G.state==='run'&&!paused&&!document.hidden;
+  if(!playing){mNext=AC.currentTime+.08;return}
+  const T=TRACKS[track]||TRACKS.mountain,left=G.cfg.limit-G.t;
+  const sp=clamp(G.p.v/P.base,1,1.3),tempo=T.tempo/(1+(sp-1)*.35)*(left<30?.86:1);   // 빨라질수록, 마지막 30초엔 더 빠르게
+  while(mNext<AC.currentTime+.15){
+    const i=mStep%T.L.length,l=NT(T.lead,T.L[i]),b=NT(T.bass,T.B[i]);
+    if(l)mnote(l,tempo*.9,T.wave,T.wave==='square'?.035:.07,mNext);
+    if(b)mnote(b,tempo*.95,'triangle',.12,mNext);
+    if(i%4===0)mnote(120,.16,'sine',.22,mNext,.38);               // 북 (박자)
+    if(i%4===2)mnote(2600,.03,'square',.012,mNext);               // 작은 박
+    if(T.bell&&i%16===0)mnote(NT(T.lead,24),1.6,'sine',.05,mNext); // 풍경 소리
+    mStep++;mNext+=tempo;
+  }
+}
+function musicStart(){if(!musicOn||!AC)return;musicStop();mbus();mNext=AC.currentTime+.08;mTimer=setInterval(musicTick,40)}
+function musicStop(){if(mTimer){clearInterval(mTimer);mTimer=null}}
+function musicTrack(t){if(track===t)return;track=t;mStep=0}
+
 /* ------------------------------------------------------------ 게임 상태 */
 let G=null,phase='title',camX=0,shake=0,flash=0,paused=false,endT=0;
 let diffKey='normal';
@@ -198,6 +240,7 @@ function banner(t,sub,color,dur){FX.banner={t:0,dur:dur||2,text:t,sub:sub||'',co
 function start(){
   unlockAudio();
   G=S.create({difficulty:diffKey,storeCount:STORES.length});
+  track='';musicTrack(trackOf(S.kindOf(1)));musicStart();
   phase='play';endT=0;camX=-340+0;FX.parts.length=0;FX.pops.length=0;FX.banner=null;FX.bolt=null;FX.boltExit=null;FX.catchT=0;FX.surgeT=0;shake=0;flash=0;
   $('ovl').hidden=true;if(touchMode)$('touch').hidden=false;
   G.p.x=0;camX=G.p.x-340;
@@ -228,10 +271,10 @@ function handleEvents(){
       case 'fall':SFX.fall();FX.bolt={t:0};break;
       case 'grab':SFX.grab();break;
       case 'rescue':FX.boltExit={x:G.p.x,t:0};FX.bolt=null;addPop(G.p.x,150,'볼트 고마워!','#ffdc66',28);break;
-      case 'stage':SFX.stage();banner('STAGE '+e.stage+' · '+KN[e.kind],'속도 UP!',null,2.2);break;
+      case 'stage':SFX.stage();musicTrack(trackOf(e.kind));banner('STAGE '+e.stage+' · '+KN[e.kind],'속도 UP!',null,2.2);break;
       case 'surge':SFX.surge();FX.surgeT=1.6;addPop(G.p.x+500,260,'산신령이 속도를 올린다!','#ffdc66',34);break;
-      case 'win':SFX.win();FX.catchT=0;shake=.5;flash=.8;break;
-      case 'timeout':SFX.lose();break;
+      case 'win':musicStop();SFX.win();FX.catchT=0;shake=.5;flash=.8;break;
+      case 'timeout':musicStop();SFX.lose();break;
     }
   }
   G.events.length=0;
@@ -266,6 +309,8 @@ bindBtn('tbSprint',()=>{touchSprint=true;syncSprint()},()=>{touchSprint=false;sy
 cvs.addEventListener('pointerdown',e=>{if(phase==='play'&&!touchMode){unlockAudio()}});
 $('snd').addEventListener('click',()=>{soundOn=!soundOn;LS.set('sansa.snd',soundOn);$('snd').textContent=soundOn?'소리 켬':'소리 끔';$('snd').setAttribute('aria-pressed',soundOn);unlockAudio()});
 $('snd').textContent=soundOn?'소리 켬':'소리 끔';$('snd').setAttribute('aria-pressed',soundOn);
+$('bgm').addEventListener('click',()=>{musicOn=!musicOn;LS.set('sansa.music',musicOn);$('bgm').textContent=musicOn?'음악 켬':'음악 끔';$('bgm').setAttribute('aria-pressed',musicOn);unlockAudio();if(musicOn){if(phase==='play')musicStart()}else musicStop()});
+$('bgm').textContent=musicOn?'음악 켬':'음악 끔';$('bgm').setAttribute('aria-pressed',musicOn);
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&phase==='play')paused=true});
 
 /* ------------------------------------------------------------ 그리기 도구 */
@@ -765,6 +810,7 @@ function portrait(id,h){const c=document.createElement('canvas');c.width=220;c.h
   else{x.translate(110,178);const hh=S.RACERS[id].h,k=Math.min(1.8,(id==='turtle'?100:id==='spirit'?190:id==='deer'?170:150)/(hh*1.04));x.scale(k,k);drawRacerArt(x,id,hh,.6,{y:0,slide:0,mode:'run'})}
   return c}
 function showTitle(){
+  musicStop();
   phase='title';G=null;camX=0;$('touch').hidden=true;
   const si=stampInfo();
   card.innerHTML=`<p class="eyebrow">백양산 · 삼광사 · 구름 하늘길</p><h2>산사 수호런</h2>
@@ -856,7 +902,7 @@ ready.then(()=>{
   bolt.appendChild(bc);bolt.insertAdjacentHTML('beforeend','<figcaption>볼트<small>떨어지면 끌어올려 줘요</small></figcaption>');crew.insertBefore(bolt,crew.children[1]);
   showTitle();requestAnimationFrame(frame);
 });
-window.__sansa={get G(){return G},start,showResult,get phase(){return phase},setPhase(v){phase=v}};
+window.__sansa={get music(){return {on:musicOn,step:mStep,track,timer:!!mTimer}},get G(){return G},start,showResult,get phase(){return phase},setPhase(v){phase=v}};
 })();
 </script>
 </body>
