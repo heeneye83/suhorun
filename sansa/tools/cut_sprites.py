@@ -100,8 +100,6 @@ for rid in ['dongja', 'young', 'old', 'turtle', 'rabbit', 'deer', 'spirit']:
     for i, f in enumerate(frs): f.save(os.path.join(OUT, f'r_{rid}_{i+1}.png'))
     print(rid, len(frs), frs[0].size)
 
-sl = save_frames('slide', p('g_slide.png'), 2)
-sl[0].save(os.path.join(OUT, 'g_slide.png')); print('slide', sl[0].size)
 
 it = save_frames('items', p('items.png'), 3, crop=(0, 0, 1024, 250))
 tight(it[0]).save(os.path.join(OUT, 'i_coupon.png'))

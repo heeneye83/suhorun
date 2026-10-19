@@ -75,4 +75,4 @@
   백양산 `o_bees.png`(벌떼와 벌집) · 삼광사 `o_lotus_float.png`(떠 있는 연꽃 연등) · 하늘 `o_storm.png`(화난 먹구름)
 - 바나나 껍질 `o_banana.png` — 밟으면 미끄러져 넘어지고 속도가 뚝 떨어져요.
 - 절 마당 돌탑 `o_tower.png`·석등 `o_lantern_stone.png` 은 잘 보이도록 테두리를 구워 넣었어요(`cut_sprites.py` 의 `outline`).
-- 진수호 슬라이딩 `g_slide.png` 은 발부터 미끄러지는 자세로 다시 만들었어요.
+- 진수호 슬라이딩은 별도 그림 없이 엉덩방아 그림(`common/sprites/g_fall.png`)을 낮게 그려 미끄러지듯 보여 줘요.

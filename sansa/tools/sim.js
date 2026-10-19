@@ -57,7 +57,7 @@ function run(kind, diff, seed) {
 }
 
 if (require.main === module) {
-  for (const diff of ['easy', 'normal', 'hard']) {
+  for (const diff of ['normal']) {
     for (const kind of Object.keys(KINDS)) {
       let win = 0, st = {}, tm = 0, hits = 0, falls = 0, slips = 0, cp = 0, bonks = 0;
       for (let s = 1; s <= N; s++) {

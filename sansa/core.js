@@ -15,26 +15,26 @@
 
   // ---- 조작 감각 · 속도 ----
   const P = {
-    base: 440,            // 기본 달리기 속도 (px/s) — 다른 수호런보다 빠르게
-    sprintMul: 1.45,      // 스프린트 배율
-    gravity: 3000, jumpV: 780, dblV: 720, cutG: 2.0,   // 점프는 낮게 · 공중에서 한 번 더(2단 점프) · 손을 떼면 더 낮게
+    base: 500,            // 기본 달리기 속도 (px/s) — 신발거리 수호런과 같은 체감 속도(화면 폭 기준)
+    sprintMul: 1.32,      // 스프린트 배율 (신발거리와 같게)
+    gravity: 3000, jumpV: 855, dblV: 790, cutG: 2.0,   // 점프는 낮게 · 공중에서 한 번 더(2단 점프) · 손을 떼면 더 낮게
     slipT: 0.75, slipMul: 0.3,                // 바나나 껍질: 미끄러져 넘어짐 → 속도 뚝
     coyote: 0.09, buffer: 0.12,
     hitHalfW: 22, standH: 112, slideH: 40, slideT: 0.6,
     knockT: 0.30, knockV: 520, slowT: 1.2, slowMin: 0.55, invul: 1.0,   // 부딪히면: 뒤로 튕김 → 잠깐 느려짐 (라이프 없음)
     energyMax: 100, drain: 30, regen: 9, regenDelay: 0.5, drinkEnergy: 45, hasteT: 2.4,  // 스프린트 에너지 / 에너지 음료
     fallY: -140, pickY: -140, rescueT: 1.3,    // 구덩이·구름 밑으로 떨어지면 볼트가 끌어올림
-    stageSpeed: 0.09, timeSpeed: 0.0016, timeSpeedCap: 0.30, maxMult: 1.55,   // 스테이지·시간이 지날수록 빨라짐
+    stageSpeed: 0.05, timeSpeed: 0.0012, timeSpeedCap: 0.18, maxMult: 1.3,    // 스테이지·시간이 지날수록 조금씩 빨라짐
     catchDx: 50,
     countdown: 2.4,
   };
 
   // ---- 난이도: 제한 시간 안에 산신령을 못 잡으면 끝 ----
+  // 난이도 선택 없이 하나: 2분 30초 안에 산신령을 잡아야 함 (시연 후 필요하면 limit·spiritF 조정)
   const DIFF = {
-    easy:   { name: '쉬움',   limit: 240, spiritF: 1.07, gap0: 2300, drinkP: 0.75, spacing: 1.15, hint: '산신령이 느긋해요' },
-    normal: { name: '보통',   limit: 180, spiritF: 1.10,  gap0: 2600, drinkP: 0.60, spacing: 1.0,  hint: '잘 달리면 3스테이지 안에 잡을 수 있어요' },
-    hard:   { name: '어려움', limit: 150, spiritF: 1.12,  gap0: 2800, drinkP: 0.45, spacing: 0.9,  hint: '빈틈없이 달려야 잡아요' },
+    normal: { name: '기본', limit: 150, spiritF: 1.05, gap0: 2600, drinkP: 0.60, spacing: 1.0, hint: '2분 30초 안에 산신령을 잡아요' },
   };
+
 
   const RACERS = {
     dongja: { name: '동자승', f: 0.80, w: 48, h: 82 },
@@ -117,10 +117,10 @@
       const m = mult(stage, 40 + stage * 30);     // 그 스테이지에서 쯤의 속도
       const sec = (s) => s * P.base * m * 1.12;    // s초 동안 달리는 거리
       const sky = kind === 'sky';
-      const w = [['rocks', 3], ['tall', 1.6], ['banana', 2.4], ['pit', sky ? 5 : 2.6], ['float', 2.4], ['flat', 0.5]];
-      if (stage >= 1) w.push(['bananablock', 1.6], ['floatblock', 1.6]);
-      if (stage >= 2) w.push(['pitblock', 2], ['stack', 1.8], ['bananas', 1.4], ['tallfloat', 1.2]);
-      if (stage >= 3) w.push(['dblpit', sky ? 3 : 1.6], ['pitbanana', 1.4]);
+      const w = [['rocks', 3], ['tall', 1.6], ['banana', 1.2], ['pit', sky ? 5 : 2.6], ['float', 2.4], ['flat', 0.5]];   // 바나나는 절반으로
+      if (stage >= 1) w.push(['bananablock', 0.8], ['floatblock', 1.6]);
+      if (stage >= 2) w.push(['pitblock', 2], ['stack', 1.8], ['bananas', 0.7], ['tallfloat', 1.2]);
+      if (stage >= 3) w.push(['dblpit', sky ? 3 : 1.6], ['pitbanana', 0.7]);
       let tot = 0; for (const e of w) tot += e[1];
       let r = rnd() * tot, kindP = 'rocks';
       for (const e of w) { r -= e[1]; if (r <= 0) { kindP = e[0]; break; } }

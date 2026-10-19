@@ -122,8 +122,8 @@ a.go{text-decoration:none;display:inline-block}
   <div class="panel"><h3>같이 달리는 친구들</h3><div class="crew" id="crew"></div></div>
   <div class="panel"><h3>조작과 규칙</h3>
     <ol class="rules">
-      <li><b>점프</b> 스페이스·↑ — 공중에서 한 번 더 누르면 <b>2단 점프</b>. 낮은 바위·바나나 껍질은 한 번, 큰 바위·석등은 2단 점프로 넘어요.</li>
-      <li><b>슬라이딩</b> ↓·S — 공중에 떠 있는 벌떼·연등·먹구름은 밑으로 슬라이딩하거나 2단 점프로 넘어요. 공중에서 누르면 바로 내려와요.</li>
+      <li><b>점프</b> 스페이스·↑ — 공중에서 한 번 더 누르면 <b>2단 점프</b>. 낮은 바위·바나나 껍질은 한 번, 큰 바위·석등은 길게 누르거나 2단 점프로 넘어요.</li>
+      <li><b>슬라이딩</b> ↓·S — 엉덩방아 자세로 쭉 미끄러져요. 공중에 떠 있는 벌떼·연등·먹구름은 밑으로 슬라이딩하거나 2단 점프로 넘어요. 공중에서 누르면 바로 내려와요.</li>
       <li><b>스프린트</b> Shift·→ 누르고 있는 동안 — 게이지가 닳고, <b>에너지 음료</b>를 먹으면 채워지고 잠깐 전속력!</li>
       <li><b>쿠폰</b>은 먹으면 가게 쿠폰함에 쏙. 놓치면 그냥 지나가요.</li>
       <li>같이 달리는 친구들은 그냥 밀치고 지나가요. 부딪히면 <b>친구가 뒤로 튕겨 나가요.</b></li>
@@ -160,7 +160,7 @@ const IMG={};
 const COMMON=['g_run1','g_run2','g_run3','g_run4','g_run5','g_run6','g_run7','g_run8','g_jump','g_fall','g_hero','bot_a','bot_b','bot_happy','bot_blink'];
 const OPT=[];
 Object.keys(S.RACERS).forEach(id=>{for(let f=1;f<=4;f++)OPT.push(['r_'+id+'_'+f,'sprites/r_'+id+'_'+f+'.png'])});OPT.push(['r_rabbit_nap','sprites/r_rabbit_nap.png']);
-['i_coupon','i_drink','o_rock','o_boulder','o_tower','o_lantern_stone','o_cloud','o_storm','o_bees','o_lotus_float','o_banana','g_slide'].forEach(n=>OPT.push([n,'sprites/'+n+'.png']));
+['i_coupon','i_drink','o_rock','o_boulder','o_tower','o_lantern_stone','o_cloud','o_storm','o_bees','o_lotus_float','o_banana'].forEach(n=>OPT.push([n,'sprites/'+n+'.png']));
 S.KINDS.forEach(k=>{OPT.push(['bg_'+k,'bg/'+k+'.jpg']);OPT.push(['gr_'+k,'bg/'+k+'_ground.jpg'])});
 function loadImg(key,src){return new Promise(res=>{const i=new Image();i.onload=()=>{IMG[key]=i;res()};i.onerror=()=>res();i.src=src})}
 const ready=Promise.race([Promise.all(COMMON.map(n=>loadImg(n,'../common/sprites/'+n+'.png')).concat(OPT.map(o=>loadImg(o[0],o[1])))),new Promise(r=>setTimeout(r,4000))]);
@@ -181,7 +181,7 @@ const SFX={
 
 /* ------------------------------------------------------------ 게임 상태 */
 let G=null,phase='title',camX=0,shake=0,flash=0,paused=false,endT=0;
-let diffKey=LS.get('sansa.diff','normal');if(!S.DIFF[diffKey])diffKey='normal';
+let diffKey='normal';
 const FX={parts:[],pops:[],banner:null,bolt:null,boltExit:null,toast:null,tAnim:0,surgeT:0,hasteGlow:0,catchT:0};
 const keys=new Set(),sprintKeys=new Set();let touchSprint=false,best=LS.get('sansa.best',0);
 $('best').textContent=best.toLocaleString();
@@ -210,7 +210,7 @@ function handleEvents(){
     switch(e.type){
       case 'go':SFX.go();banner('출발!','산신령은 저 앞에 있어요','#6ff2d6',1.4);break;
       case 'jump':SFX.jump();burst(G.p.x,6,5,'rgba(255,240,200,.8)',120,.35);break;
-      case 'dbl':SFX.dbl();burst(e.x,e.y+10,10,'#ffdc66',220,.4);FX.spin=1;break;
+      case 'dbl':SFX.dbl();burst(e.x,e.y+10,10,'#ffdc66',220,.4);break;
       case 'slip':SFX.slip();shake=.3;burst(e.x,10,8,'#ffe066',260,.5);addPop(e.x,110,'미끄덩!','#ffe066',32);break;
       case 'bonk':{SFX.bonk();burst(e.x,e.y,10,'#fff6e0',300,.45);const w=['퍽!','휘익!','비켜요!','쿵!'][(Math.random()*4)|0];addPop(e.x,e.y+60,w,'#fff6e0',28);break}
       case 'slide':SFX.slide();break;
@@ -617,11 +617,13 @@ function drawHero(p,t){
   else if(p.knock>0){im=IMG.g_fall;ctx.rotate(-.35*(p.knock/P.knockT))}
   else if(p.slip>0){im=IMG.g_fall;const k=1-p.slip/P.slipT;ctx.translate(0,-10);ctx.rotate(-1.1*Math.min(1,k*3));ctx.translate(0,10)}
   else if(p.slideT>0){
-    const si=IMG.g_slide;
-    if(si){const sh=86,w=sh*si.width/si.height;ctx.drawImage(si,-w*.5,-sh+8,w,sh);ctx.restore();return}
-    ctx.translate(0,-26);ctx.rotate(-1.38);ctx.translate(0,HH*.1);im=IMG.g_run3||im;
+    // 슬라이딩: 엉덩방아 찍는 그림을 작게 낮춰서 바닥을 미끄러지듯
+    const fi=IMG.g_fall||im,sh=HH*.66,sw=sh*fi.width/fi.height;
+    ctx.rotate(-.08);ctx.drawImage(fi,-sw*.5,-sh+16,sw,sh);ctx.restore();
+    if(Math.random()<.6)FX.parts.push({x:p.x-30-Math.random()*20,y:4,vx:-160-Math.random()*80,vy:60+Math.random()*80,life:.35,max:.35,size:3+Math.random()*4,color:'rgba(255,245,225,.85)',g:500});
+    return;
   }
-  else if(p.y>2||p.vy>0){im=p.vy>0?IMG.g_jump:IMG.g_fall;if(p.jumps===2&&p.vy>0){const a=(1-p.vy/P.dblV)*6.283;ctx.translate(0,-HH*.45);ctx.rotate(a);ctx.translate(0,HH*.45)}else if(p.vy<=0)ctx.rotate(clamp(-p.vy/9000,0,.1))}
+  else if(p.y>2||p.vy>0){im=p.vy>0?IMG.g_jump:IMG.g_fall;if(p.vy<=0)ctx.rotate(clamp(-p.vy/9000,0,.1))}
   ctx.drawImage(im,-wR/2,-HH+12,wR,HH);
   ctx.restore();
 }
@@ -654,7 +656,6 @@ function drawHUD(t){
   const left=G.cfg.limit-G.t,low=left<30;
   pill(W/2-96,14,192,52,low&&Math.floor(t*4)%2?'rgba(216,53,42,.8)':'rgba(28,18,10,.7)');
   text(fmtTime(left),W/2,41,38,low?'#ff9d8a':'#fff6e0','center');
-  text(G.cfg.name,W/2-96+12,18,12,'#ffdc66','left');
   // 산신령까지 거리 막대
   const bx=W/2-300,bw=600,by=92;
   pill(bx-12,by-16,bw+24,34);
@@ -746,12 +747,11 @@ function showTitle(){
   const si=stampInfo();
   card.innerHTML=`<p class="eyebrow">백양산 · 삼광사 · 구름 하늘길</p><h2>산사 수호런</h2>
   <p>백양산 산신령이 달아난다! 동자승·젊은승·늙은승·거북이·토끼·사슴과 함께 달리며<br>산신령을 <b>만지면</b> 잡은 거예요. 쿠폰은 달리다 먹고, 못 먹으면 그냥 지나가요.</p>
-  <div class="lvs" id="lvs">${lvButtons()}</div><p class="sub" id="lvHint">${esc(S.DIFF[diffKey].hint)} · 제한 시간 안에 못 잡으면 끝</p>
+  <p class="sub">제한 시간 <b>2분 30초</b> · 시간 안에 못 잡으면 끝</p>
   <div class="row"><button class="go" id="go" type="button">게임 시작하기</button></div>
   <p class="sub">${touchMode?'화면 아래 버튼으로 조작 · 가로로 돌려서 하면 편해요':'스페이스·↑ 점프(공중에서 한 번 더 = 2단 점프) · ↓ 슬라이딩 · Shift 스프린트 (누르고 있기)'} · 스탬프 ${si.done}/${si.total}${si.done>=si.total?(STP.entered?' · 응모 완료':' · 완성! 결과 화면에서 응모'):''}</p>`;
   ovl.hidden=false;
   $('go').onclick=start;$('go').focus({preventScroll:true});
-  card.querySelectorAll('.lv').forEach(b=>b.onclick=()=>{diffKey=b.dataset.k;LS.set('sansa.diff',diffKey);card.querySelectorAll('.lv').forEach(x=>x.setAttribute('aria-pressed',x.dataset.k===diffKey));$('lvHint').textContent=S.DIFF[diffKey].hint+' · 제한 시간 안에 못 잡으면 끝'});
 }
 function showResult(){
   phase='end';const R=G.result,win=R.how==='win',s0=best;
@@ -762,7 +762,7 @@ function showResult(){
   const newSet=Object.keys(G.p.newCoupons||{}).map(Number),oldSet=R.couponSet.filter(i=>!newSet.includes(i));
   const chips=newSet.map(i=>`<span class="chip" style="--c:${STORES[i].color}">${esc(STORES[i].name)} · ${esc(STORES[i].benefit)}</span>`).concat(oldSet.map(i=>`<span class="chip old" style="--c:${STORES[i].color}">${esc(STORES[i].name)} (이미 받음)</span>`)).join('');
   const m=Math.floor(R.time/60),sc=Math.floor(R.time%60);
-  card.innerHTML=`<p class="eyebrow">${win?'추격 성공':'추격 실패'} · ${esc(S.DIFF[diffKey].name)}</p>
+  card.innerHTML=`<p class="eyebrow">${win?'추격 성공':'추격 실패'}</p>
   <h2>${win?'산신령을 잡았다!':'산신령을 놓쳤다…'}</h2>
   <div class="big">${R.score.toLocaleString()}점${R.score>s0?'<small style="font-size:.4em;margin-left:.5em;color:#6ff2d6">최고 기록!</small>':''}</div>
   <p class="sub">${win?`${m}분 ${sc}초 만에 · STAGE ${R.stage}에서 잡았어요`:`산신령과 ${Math.round(R.dist/10).toLocaleString()}m 차이 · STAGE ${R.stage}까지 달렸어요`} · 쿠폰 ${R.coupons} · 음료 ${R.drinks} · 밀친 친구 ${R.bonks} · 부딪힘 ${R.hits} · 미끄럼 ${R.slips} · 구조 ${R.falls}</p>
