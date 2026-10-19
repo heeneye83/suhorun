@@ -131,7 +131,7 @@
         g.obs.push(o); return o;
       };
       // 공중에 떠 있는 장애물: 밑으로 슬라이딩하거나 2단 점프로 넘는다
-      const floatAt = (cx) => { const o = { x: cx, w: 84, h: 80, oy: 98, type: 'float', skin: (rnd() * 2) | 0 }; g.obs.push(o); return o; };
+      const floatAt = (cx) => { const o = { x: cx, w: 110, h: 80, oy: 98, type: 'float', skin: (rnd() * 2) | 0 }; g.obs.push(o); return o; };
       const bananaAt = (cx) => { const o = { x: cx, w: 40, h: 16, oy: 0, type: 'banana', used: false }; g.obs.push(o); return o; };
       const pitAt = (cx) => {
         const wd = (165 + rnd() * 55) * (1 + 0.05 * (stage - 1));

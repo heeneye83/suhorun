@@ -607,7 +607,8 @@ function drawObstacle(o,t){
   const okey=o.type==='banana'?'o_banana':o.type==='float'?(sky?'o_storm':temple?'o_lotus_float':'o_bees'):sky?'o_cloud':temple?(o.type==='tall'?'o_lantern_stone':'o_tower'):(o.type==='tall'?'o_boulder':'o_rock');
   const oim=IMG[okey];
   if(oim){
-    if(o.type==='float'){const hh=o.h*1.3,ww=Math.min(w*1.9,oim.width*hh/oim.height),h2=ww*oim.height/oim.width,bob=Math.sin(t*3+o.x*.01)*4;ctx.drawImage(oim,sx+w/2-ww/2,GY-o.oy-o.h/2-h2/2+bob,ww,h2)}
+    if(o.type==='float'){let hh=145,ww=oim.width*hh/oim.height;const cap=w*2;if(ww>cap){hh*=cap/ww;ww=cap}const bob=Math.sin(t*3+o.x*.01)*4;   // 크게, 아랫면은 통과 높이에 맞춤
+      ctx.save();ctx.shadowColor='rgba(20,10,0,.45)';ctx.shadowBlur=10;ctx.shadowOffsetY=6;ctx.drawImage(oim,sx+w/2-ww/2,GY-o.oy-hh+10+bob,ww,hh);ctx.restore()}
     else if(o.type==='banana'){const ww=o.w*1.9,hh=ww*oim.height/oim.width;ctx.save();if(o.used){ctx.globalAlpha=.55;ctx.translate(sx+w/2,GY);ctx.rotate(.5);ctx.translate(-(sx+w/2),-GY)}ctx.drawImage(oim,sx+w/2-ww/2,GY-hh+6,ww,hh);ctx.restore()}
     else if(temple){let hh=o.h*1.42,ww=oim.width*hh/oim.height;ctx.save();ctx.shadowColor='rgba(20,10,0,.7)';ctx.shadowBlur=12;ctx.shadowOffsetY=4;ctx.drawImage(oim,sx+w/2-ww/2,GY-hh+6,ww,hh);ctx.restore()}
     else{let hh=o.h*(okey==='o_cloud'?1.1:1.18),ww=oim.width*hh/oim.height;const cap=w*1.9;if(ww>cap){hh*=cap/ww;ww=cap}ctx.drawImage(oim,sx+w/2-ww/2,GY-hh+5,ww,hh)}
