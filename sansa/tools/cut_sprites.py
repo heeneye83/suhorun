@@ -114,8 +114,39 @@ for nm, f in zip(['o_rock', 'o_log', 'o_boulder', 'o_tower', 'o_lantern_stone', 
     tight(f).save(os.path.join(OUT, nm + '.png'))
 print('obs', [tight(x).size for x in ob])
 
-hg = save_frames('hang', p('hanging.png'), 3, crop=(0, 0, 1024, 252))
-extend_up(hg[0], 420).save(os.path.join(OUT, 'o_branch.png'))
-extend_up(hg[1], 420).save(os.path.join(OUT, 'o_lantern_hang.png'))
-tight(hg[2]).save(os.path.join(OUT, 'o_storm.png'))
-print('hang', [tight(x).size for x in hg])
+def strip_rim(img, px=3):
+    """스티커처럼 둘러진 흰 테두리를 바깥에서부터 벗겨 냄."""
+    a = np.asarray(img).copy()
+    for _ in range(px):
+        al = a[..., 3] > 20
+        edge = al & ~ndimage.binary_erosion(al)
+        c = a[..., :3].astype(int)
+        white = (c[..., 0] > 195) & (c[..., 2] > 195) & (c[..., 1] > 165)   # 흰색(자홍이 살짝 비친 흰색 포함)
+        a[..., 3] = np.where(edge & white, 0, a[..., 3])
+    return Image.fromarray(a)
+
+
+fl = save_frames('float', p('float.png'), 4, crop=(0, 0, 1024, 252))
+names = ['o_banana', 'o_bees', 'o_lotus_float', 'o_storm']
+for nm, f in zip(names, fl):
+    tight(strip_rim(f, 7)).save(os.path.join(OUT, nm + '.png'))
+print('float', [tight(x).size for x in fl])
+for old in ['o_branch.png', 'o_lantern_hang.png', 'o_log.png']:
+    if os.path.exists(os.path.join(OUT, old)): os.remove(os.path.join(OUT, old))
+
+
+def outline(img, dark=4, light=4):
+    img = tight(img); pad = dark + light + 2
+    c = Image.new('RGBA', (img.width + pad * 2, img.height + pad * 2), (0, 0, 0, 0)); c.paste(img, (pad, pad), img)
+    a = np.asarray(c).copy(); m = a[..., 3] > 40
+    m1 = ndimage.binary_dilation(m, iterations=dark); m2 = ndimage.binary_dilation(m1, iterations=light)
+    out = np.zeros_like(a)
+    out[m2] = (255, 240, 205, 235); out[m1] = (58, 35, 15, 255)
+    base = Image.fromarray(out); base.alpha_composite(c)
+    return base
+
+
+for nm in ['o_tower', 'o_lantern_stone']:
+    pth = os.path.join(OUT, nm + '.png')
+    outline(Image.open(pth).convert('RGBA')).save(pth)
+print('outlined temple obstacles')

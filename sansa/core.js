@@ -17,7 +17,8 @@
   const P = {
     base: 440,            // 기본 달리기 속도 (px/s) — 다른 수호런보다 빠르게
     sprintMul: 1.45,      // 스프린트 배율
-    gravity: 2800, jumpV: 870, cutG: 2.3,     // 점프 (손을 떼면 낮게 뜀)
+    gravity: 3000, jumpV: 780, dblV: 720, cutG: 2.0,   // 점프는 낮게 · 공중에서 한 번 더(2단 점프) · 손을 떼면 더 낮게
+    slipT: 0.75, slipMul: 0.3,                // 바나나 껍질: 미끄러져 넘어짐 → 속도 뚝
     coyote: 0.09, buffer: 0.12,
     hitHalfW: 22, standH: 112, slideH: 40, slideT: 0.6,
     knockT: 0.30, knockV: 520, slowT: 1.2, slowMin: 0.55, invul: 1.0,   // 부딪히면: 뒤로 튕김 → 잠깐 느려짐 (라이프 없음)
@@ -30,9 +31,9 @@
 
   // ---- 난이도: 제한 시간 안에 산신령을 못 잡으면 끝 ----
   const DIFF = {
-    easy:   { name: '쉬움',   limit: 240, spiritF: 1.03, gap0: 2300, drinkP: 0.75, spacing: 1.15, hint: '산신령이 느긋해요' },
-    normal: { name: '보통',   limit: 180, spiritF: 1.05,  gap0: 2600, drinkP: 0.60, spacing: 1.0,  hint: '잘 달리면 3스테이지 안에 잡을 수 있어요' },
-    hard:   { name: '어려움', limit: 150, spiritF: 1.085, gap0: 2800, drinkP: 0.45, spacing: 0.9,  hint: '빈틈없이 달려야 잡아요' },
+    easy:   { name: '쉬움',   limit: 240, spiritF: 1.07, gap0: 2300, drinkP: 0.75, spacing: 1.15, hint: '산신령이 느긋해요' },
+    normal: { name: '보통',   limit: 180, spiritF: 1.10,  gap0: 2600, drinkP: 0.60, spacing: 1.0,  hint: '잘 달리면 3스테이지 안에 잡을 수 있어요' },
+    hard:   { name: '어려움', limit: 150, spiritF: 1.12,  gap0: 2800, drinkP: 0.45, spacing: 0.9,  hint: '빈틈없이 달려야 잡아요' },
   };
 
   const RACERS = {
@@ -72,7 +73,7 @@
       p: {
         x: 0, y: 0, vy: 0, v: 0, energy: P.energyMax, sprinting: false, sprintDelay: 0, haste: 0,
         slideT: 0, slideQueued: false, knock: 0, slow: 0, slowMin: P.slowMin, invul: 0, coyote: 0, jumpBuf: 0,
-        rescue: null, grounded: true, jumping: false, hits: 0, falls: 0, coupons: 0, drinks: 0, couponSet: {},
+        rescue: null, grounded: true, jumping: false, jumps: 0, slip: 0, hits: 0, falls: 0, slips: 0, bonks: 0, coupons: 0, drinks: 0, couponSet: {},
       },
       input: { jumpHeld: false, sprint: false },
       racers: [],
@@ -116,47 +117,59 @@
       const m = mult(stage, 40 + stage * 30);     // 그 스테이지에서 쯤의 속도
       const sec = (s) => s * P.base * m * 1.12;    // s초 동안 달리는 거리
       const sky = kind === 'sky';
-      const w = [['rocks', 3], ['pit', sky ? 6 : 3], ['hang', 2.2], ['flat', 0.8]];
-      if (stage >= 2) w.push(['pitblock', 2], ['hangblock', 2], ['stack', 1.6]);
-      if (stage >= 3) w.push(['dblpit', sky ? 3 : 1.6]);
+      const w = [['rocks', 3], ['tall', 1.6], ['banana', 2.4], ['pit', sky ? 5 : 2.6], ['float', 2.4], ['flat', 0.5]];
+      if (stage >= 1) w.push(['bananablock', 1.6], ['floatblock', 1.6]);
+      if (stage >= 2) w.push(['pitblock', 2], ['stack', 1.8], ['bananas', 1.4], ['tallfloat', 1.2]);
+      if (stage >= 3) w.push(['dblpit', sky ? 3 : 1.6], ['pitbanana', 1.4]);
       let tot = 0; for (const e of w) tot += e[1];
       let r = rnd() * tot, kindP = 'rocks';
       for (const e of w) { r -= e[1]; if (r <= 0) { kindP = e[0]; break; } }
       let len = 0;
       const blockAt = (cx, tall) => {
-        const o = { x: cx, w: tall ? 64 : 56, h: tall ? 98 : 62, oy: 0, type: tall ? 'tall' : 'block', skin: (rnd() * 3) | 0 };
+        const tmp = kind.startsWith('samgwang');                   // 절 마당의 돌탑·석등은 더 크게
+        const o = { x: cx, w: tall ? (tmp ? 70 : 64) : (tmp ? 62 : 56), h: tall ? (tmp ? 104 : 98) : (tmp ? 76 : 62), oy: 0, type: tall ? 'tall' : 'block', skin: (rnd() * 3) | 0 };
         g.obs.push(o); return o;
       };
-      const hangAt = (cx) => { const o = { x: cx, w: 74, h: 400, oy: 50, type: 'hang', skin: (rnd() * 2) | 0 }; g.obs.push(o); return o; };
+      // 공중에 떠 있는 장애물: 밑으로 슬라이딩하거나 2단 점프로 넘는다
+      const floatAt = (cx) => { const o = { x: cx, w: 84, h: 92, oy: 58, type: 'float', skin: (rnd() * 2) | 0 }; g.obs.push(o); return o; };
+      const bananaAt = (cx) => { const o = { x: cx, w: 40, h: 16, oy: 0, type: 'banana', used: false }; g.obs.push(o); return o; };
       const pitAt = (cx) => {
         const wd = (165 + rnd() * 55) * (1 + 0.05 * (stage - 1));
         g.pits.push({ x0: cx, x1: cx + wd }); return wd;
       };
       if (kindP === 'rocks') {
-        const n = rnd() < 0.42 ? 2 : 1; let cx = x;
-        for (let i = 0; i < n; i++) {
-          const o = blockAt(cx, rnd() < 0.3);
-          if (i === 0) reward(g, cx + o.w / 2, 170);
-          cx += sec(0.8);
-        }
+        const n = rnd() < 0.5 ? 2 : 1; let cx = x;
+        for (let i = 0; i < n; i++) { const o = blockAt(cx, false); if (i === 0) reward(g, cx + o.w / 2, 170); cx += sec(0.62); }
         len = cx - x;
+      } else if (kindP === 'tall') {
+        const o = blockAt(x + 40, true); reward(g, x + 40 + o.w / 2, 230); len = 160;
+      } else if (kindP === 'banana') {
+        bananaAt(x + 40); reward(g, x + 60, 120); len = 120;
+      } else if (kindP === 'bananas') {
+        bananaAt(x + 40); bananaAt(x + 40 + sec(0.42)); bananaAt(x + 40 + sec(0.84)); len = sec(0.84) + 120;
+      } else if (kindP === 'bananablock') {
+        bananaAt(x + 40); blockAt(x + 40 + sec(0.5), false); len = sec(0.5) + 140;
       } else if (kindP === 'pit') {
         const wd = pitAt(x + 40); reward(g, x + 40 + wd / 2, 150); len = wd + 120;
-      } else if (kindP === 'hang') {
-        const o = hangAt(x + 40); reward(g, x + 40 + o.w / 2, 30); len = 150;
+      } else if (kindP === 'pitbanana') {
+        const wd = pitAt(x + 40); bananaAt(x + 40 + wd + sec(0.42)); len = wd + sec(0.42) + 120;
+      } else if (kindP === 'float') {
+        const o = floatAt(x + 40); reward(g, x + 40 + o.w / 2, rnd() < 0.5 ? 22 : 210); len = 170;
+      } else if (kindP === 'floatblock') {
+        const o = floatAt(x + 40); blockAt(x + 40 + o.w + sec(0.5), false); reward(g, x + 40 + o.w / 2, 22); len = o.w + sec(0.5) + 130;
+      } else if (kindP === 'tallfloat') {
+        const o = blockAt(x + 40, true); floatAt(x + 40 + o.w + sec(0.66)); len = o.w + sec(0.66) + 170;
       } else if (kindP === 'flat') {
-        reward(g, x + 60, 52); reward(g, x + 60 + sec(0.9), 52); len = sec(1.0);
+        reward(g, x + 60, 52); reward(g, x + 60 + sec(0.8), 52); len = sec(0.9);
       } else if (kindP === 'pitblock') {
-        const wd = pitAt(x + 40); blockAt(x + 40 + wd + sec(0.62), false); reward(g, x + 40 + wd / 2, 150); len = wd + sec(0.62) + 120;
-      } else if (kindP === 'hangblock') {
-        const o = hangAt(x + 40); blockAt(x + 40 + o.w + sec(0.6), rnd() < 0.4); reward(g, x + 40 + o.w / 2, 30); len = o.w + sec(0.6) + 130;
+        const wd = pitAt(x + 40); blockAt(x + 40 + wd + sec(0.55), false); reward(g, x + 40 + wd / 2, 150); len = wd + sec(0.55) + 120;
       } else if (kindP === 'stack') {
-        const o1 = blockAt(x + 40, true); const o2 = blockAt(x + 40 + sec(0.72), false); reward(g, o1.x + o1.w / 2, 190); len = sec(0.72) + 150;
+        const o1 = blockAt(x + 40, true); blockAt(x + 40 + sec(0.62), false); reward(g, o1.x + o1.w / 2, 230); len = sec(0.62) + 150;
       } else if (kindP === 'dblpit') {
-        const w1 = pitAt(x + 40); const x2 = x + 40 + w1 + sec(0.58); const w2 = pitAt(x2);
+        const w1 = pitAt(x + 40); const x2 = x + 40 + w1 + sec(0.5); const w2 = pitAt(x2);
         reward(g, x2 + w2 / 2, 150); len = x2 + w2 - x + 120;
       }
-      g.genX = x + len + sec((0.62 + rnd() * 0.75) * g.cfg.spacing);
+      g.genX = x + len + sec((0.4 + rnd() * 0.55) * g.cfg.spacing);   // 장애물을 촘촘하게
     }
   }
 
@@ -169,7 +182,7 @@
   function newRacer(g, id, x) {
     const d = RACERS[id];
     for (let k = 0; k < 14 && !clearSpot(g, x, 260); k++) x += 130;
-    return { id, x, y: 0, vy: 0, w: d.w, h: d.h, f: d.f * (0.96 + g.rnd() * 0.08), hop: 0, slide: 0,
+    return { id, x, y: 0, vy: 0, w: d.w, h: d.h, f: d.f * (0.96 + g.rnd() * 0.08), hop: 0, slide: 0, knock: 0, kv: 0, spin: 0,
       mode: 'run', modeT: 1 + g.rnd() * 2, ph: g.rnd() * 6 };
   }
 
@@ -218,6 +231,7 @@
     p.slow = Math.max(0, p.slow - dt);
     p.sprintDelay = Math.max(0, p.sprintDelay - dt);
     p.slideT = Math.max(0, p.slideT - dt);
+    p.slip = Math.max(0, p.slip - dt);
 
     // 스프린트
     let sprint = false;
@@ -230,6 +244,7 @@
 
     let v;
     if (p.knock > 0) v = -P.knockV * (p.knock / P.knockT);
+    else if (p.slip > 0) v = base * P.slipMul * (0.6 + 0.4 * (1 - p.slip / P.slipT));
     else {
       const k = p.slow > 0 ? p.slowMin + (1 - p.slowMin) * (1 - p.slow / P.slowT) : 1;
       v = base * (sprint ? P.sprintMul : 1) * k;
@@ -240,14 +255,19 @@
     // 점프 · 슬라이드
     const surf0 = surface(g, p.x, p.y);
     const grounded = surf0 > -Infinity && p.y <= surf0 + 0.5 && p.vy <= 0;
-    if (grounded) p.coyote = P.coyote;
-    if (p.jumpBuf > 0 && p.coyote > 0 && p.knock <= 0) {
-      p.vy = P.jumpV; p.y = Math.max(p.y, surf0 > -Infinity ? surf0 : 0) + 0.01; p.coyote = 0; p.jumpBuf = 0; p.slideT = 0; p.jumping = true;
-      g.events.push({ type: 'jump' });
+    if (grounded) { p.coyote = P.coyote; p.jumps = 0; }
+    if (p.jumpBuf > 0 && p.knock <= 0 && p.slip <= 0) {
+      if (p.coyote > 0) {
+        p.vy = P.jumpV; p.y = Math.max(p.y, surf0 > -Infinity ? surf0 : 0) + 0.01; p.coyote = 0; p.jumpBuf = 0; p.slideT = 0; p.jumping = true; p.jumps = 1;
+        g.events.push({ type: 'jump' });
+      } else if (p.jumps < 2 && p.y > 4) {                    // 2단 점프 (구덩이에 떨어지는 중에도 한 번)
+        p.vy = P.dblV; p.jumpBuf = 0; p.jumps = 2; p.slideQueued = false;
+        g.events.push({ type: 'dbl', x: p.x, y: p.y });
+      }
     }
     if (p.slideReq) {
       p.slideReq = false;
-      if (grounded && p.knock <= 0) { if (p.slideT <= 0) g.events.push({ type: 'slide' }); p.slideT = P.slideT; }
+      if (grounded && p.knock <= 0 && p.slip <= 0) { if (p.slideT <= 0) g.events.push({ type: 'slide' }); p.slideT = P.slideT; }
       else if (!grounded) { p.vy = Math.min(p.vy, -1000); p.slideQueued = true; }
     }
 
@@ -267,14 +287,13 @@
 
     // 장애물 부딪힘
     const o = hitObstacle(g, p);
-    if (o && p.invul <= 0) bump(g, 'obstacle', o);
-    // 같이 달리는 친구들과 부딪힘
-    if (p.invul <= 0) {
-      const ph = p.slideT > 0 ? P.slideH : P.standH;
-      for (const r of g.racers) {
-        if (r.x + r.w * 0.5 < p.x - 8) continue;           // 뒤에서 앞질러 가는 친구는 뛰어넘어 감
-        if (Math.abs(r.x - p.x) < r.w * 0.36 + P.hitHalfW && p.y < r.h * 0.66 - 14) { bump(g, 'racer', r); break; }
-      }
+    if (o && o.type === 'banana') { if (!o.used && p.slip <= 0 && p.knock <= 0) slip(g, o); }
+    else if (o && p.invul <= 0) bump(g, 'obstacle', o);
+    // 같이 달리는 친구들과 부딪히면: 나는 그대로 달리고, 친구가 뒤로 튕겨 나간다
+    const ph = p.slideT > 0 ? P.slideH : P.standH;
+    for (const r of g.racers) {
+      if (r.knock > 0) continue;
+      if (Math.abs(r.x - p.x) < r.w * 0.4 + P.hitHalfW && p.y < r.y + r.h * 0.8 && r.y < p.y + ph) bonk(g, r);
     }
   }
 
@@ -283,12 +302,8 @@
     const a = g.obs;
     for (let i = g.obsIdx; i < a.length && a[i].x < x + 40; i++) {
       const o = a[i];
-      if (o.type === 'hang' || o.x + o.w < x - 14 || o.x > x + 14) continue;
+      if (o.type === 'float' || o.type === 'banana' || o.x + o.w < x - 14 || o.x > x + 14) continue;
       if (y >= o.h - 16 && o.h > s) s = o.h;
-    }
-    for (const r of g.racers) {                          // 같이 달리는 친구 머리 위도 밟고 지나갈 수 있다
-      const top = r.h * 0.66;                 // 친구가 뛰어도 몸통 높이는 땅 기준
-      if (Math.abs(r.x - x) < r.w * 0.36 + 14 && y >= top - 16 && top > s) s = top;
     }
     return s;
   }
@@ -300,7 +315,8 @@
     for (let i = g.obsIdx; i < a.length && a[i].x < x1 + 10; i++) {
       const o = a[i];
       if (x1 <= o.x || x0 >= o.x + o.w) continue;
-      if (o.type === 'hang') { if (y1 > o.oy) return o; }
+      if (o.type === 'float') { if (y1 > o.oy + 6 && y0 < o.oy + o.h - 10) return o; }
+      else if (o.type === 'banana') { if (y0 < 8 && !o.used && x1 > o.x + 8 && x0 < o.x + o.w - 8) return o; }
       else if (y0 < o.h - 14) return o;
     }
     return null;
@@ -309,9 +325,21 @@
   function bump(g, kind, o) {
     const p = g.p;
     p.knock = P.knockT; p.slow = P.slowT; p.slowMin = P.slowMin; p.invul = P.invul; p.slideT = 0; p.hits++;
-    if (kind === 'obstacle' && o.type !== 'hang' && p.x > o.x - 24) p.x = Math.min(p.x, o.x - 24);
-    if (kind === 'obstacle' && o.type === 'hang') p.x = Math.min(p.x, o.x - 24);
-    g.events.push({ type: 'hit', kind, id: kind === 'racer' ? o.id : o.type, x: p.x, y: p.y + 60 });
+    p.x = Math.min(p.x, o.x - 24);
+    g.events.push({ type: 'hit', kind, id: o.type, x: p.x, y: p.y + 60 });
+  }
+
+  function slip(g, o) {                                // 바나나 껍질을 밟으면 미끄러져 넘어지고 속도가 뚝
+    const p = g.p;
+    o.used = true; p.slip = P.slipT; p.slideT = 0; p.slips++;
+    p.slow = 0.9; p.slowMin = 0.6;
+    g.events.push({ type: 'slip', x: o.x + o.w / 2, y: p.y });
+  }
+
+  function bonk(g, r) {                                // 친구를 밀치고 지나간다 → 친구가 뒤로 붕 튕겨 나감
+    const p = g.p;
+    r.knock = 1.1; r.vy = 520 + g.rnd() * 260; r.kv = -(260 + g.rnd() * 220); r.spin = 0; r.slide = 0; p.bonks++;
+    g.events.push({ type: 'bonk', id: r.id, x: r.x, y: r.y + r.h * 0.6 });
   }
 
   function startRescue(g) {
@@ -345,6 +373,14 @@
     const p = g.p, rn = g.rnd;
     for (let i = 0; i < g.racers.length; i++) {
       const r = g.racers[i];
+      if (r.knock > 0) {                                 // 튕겨 나가는 중: 뒤로 날아갔다가 다시 달린다
+        r.knock -= dt; r.spin += dt * 14;
+        r.x += r.kv * dt; r.vy -= 2600 * dt; r.y += r.vy * dt;
+        if (r.y < 0) { r.y = 0; r.vy = r.knock > 0.3 ? Math.abs(r.vy) * 0.3 : 0; r.kv *= 0.6; }
+        if (r.knock <= 0) { r.spin = 0; r.y = 0; r.vy = 0; }
+        if (r.x < p.x - 1400) { const id = FIELD[(rn() * FIELD.length) | 0]; g.racers[i] = newRacer(g, id, g.spirit.x - p.x > 1700 ? p.x + 1900 + rn() * 1500 : g.spirit.x + 500 + rn() * 700); }
+        continue;
+      }
       r.modeT -= dt;
       let f = r.f;
       if (r.id === 'rabbit') {              // 토끼: 전속력으로 달리다 낮잠
@@ -360,13 +396,11 @@
           const o = g.obs[j], d = o.x - (r.x + r.w * 0.5);
           if (d > lookA) break;
           if (d < -10) continue;
-          if (o.type === 'hang') { r.slide = 0.55; } else { hopOver(r); break; }
+          if (o.type === 'float') { r.slide = 0.55; } else { hopOver(r); break; }
         }
         if (r.y <= 0.5 && r.vy <= 0) {
           for (let j = 0; j < g.pits.length; j++) { const q = g.pits[j]; if (q.x1 < r.x - 50) continue; if (q.x0 - (r.x + r.w * 0.5) < lookA * 0.8 && q.x1 > r.x) { hopOver(r); break; } if (q.x0 > r.x + 400) break; }
         }
-        // 뒤에서 달려와 나를 앞지르는 친구는 뛰어넘는다
-        if (r.x < p.x && p.x - r.x < 130 && r.v > p.v) hopOver(r);
       }
       r.vy -= 2600 * dt; r.y += r.vy * dt; if (r.y < 0) { r.y = 0; r.vy = 0; }
       // 너무 뒤처지면 앞쪽에서 새로 달려 나온다
@@ -394,9 +428,9 @@
     g.state = how;
     const left = Math.max(0, g.cfg.limit - g.t);
     const dist = Math.max(0, g.spirit.x - p.x);
-    const score = Math.round(p.x / 10) + p.coupons * 200 + p.drinks * 60 + (how === 'win' ? 3000 + Math.round(left) * 25 : 0) - p.hits * 20;
+    const score = Math.round(p.x / 10) + p.coupons * 200 + p.drinks * 60 + p.bonks * 30 + (how === 'win' ? 3000 + Math.round(left) * 25 : 0) - p.hits * 20 - p.slips * 20;
     g.result = { how, time: g.t, left, stage: g.maxStage || 1, kind: kindOf(g.maxStage || 1), score: Math.max(0, score), coupons: p.coupons,
-      couponSet: Object.keys(p.couponSet).map(Number), drinks: p.drinks, hits: p.hits, falls: p.falls, dist };
+      couponSet: Object.keys(p.couponSet).map(Number), drinks: p.drinks, hits: p.hits, falls: p.falls, slips: p.slips, bonks: p.bonks, dist };
     g.events.push({ type: how });
   }
 
