@@ -32,7 +32,7 @@
   // ---- 난이도: 제한 시간 안에 산신령을 못 잡으면 끝 ----
   // 난이도 선택 없이 하나: 2분 안에 산신령을 잡아야 함 (시연 후 필요하면 limit·spiritF 조정)
   const DIFF = {
-    normal: { name: '기본', limit: 120, spiritF: 1.12, gap0: 2600, drinkP: 0.60, spacing: 1.85, hint: '2분 안에 산신령을 잡아요' },   // 장애물 간격 1.85 · 산신령 1.12배
+    normal: { name: '기본', limit: 120, spiritF: 1.12, gap0: 2600, drinkP: 0.60, spacing: 1.4, hint: '2분 안에 산신령을 잡아요' },   // 장애물 간격 1.4 · 산신령 1.12배
   };
 
 
