@@ -32,7 +32,7 @@
   // ---- 난이도: 제한 시간 안에 산신령을 못 잡으면 끝 ----
   // 난이도 선택 없이 하나: 2분 안에 산신령을 잡아야 함 (시연 후 필요하면 limit·spiritF 조정)
   const DIFF = {
-    normal: { name: '기본', limit: 120, spiritF: 1.12, gap0: 2600, drinkP: 0.60, spacing: 1.4, hint: '2분 안에 산신령을 잡아요' },   // 장애물 간격 1.4 · 산신령 1.12배
+    normal: { name: '기본', limit: 120, spiritF: 1.14, gap0: 3600, drinkP: 0.60, spacing: 1.05, hint: '2분 안에 산신령을 잡아요' },   // 장애물 간격 1.05 · 산신령 1.14배 · 출발 간격 3600
   };
 
 
@@ -421,7 +421,7 @@
     else if (s.breather > 0) s.breather -= dt;
     s.v = base * g.cfg.spiritF * (1 + 0.035 * Math.sin(g.t * 0.8 + s.phase)) * (s.surge > 0 ? 1.15 : s.breather > 0 ? 0.9 : 1);
     const gap = s.x - p.x;                           // 너무 멀어지면 산신령이 살짝 숨을 고른다 (끝없는 추격 방지)
-    if (gap > 2300) s.v *= Math.max(0.86, 1 - (gap - 2300) / 9000);
+    if (gap > g.cfg.gap0 + 300) s.v *= Math.max(0.86, 1 - (gap - g.cfg.gap0 - 300) / 9000);
     s.x += s.v * dt;
   }
 

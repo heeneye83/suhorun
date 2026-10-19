@@ -6,9 +6,9 @@
 <title>산사 수호런 (백양산-삼광사)</title>
 <meta name="description" content="진수호가 백양산 산신령을 따라잡는 추격 레이스 · 동자승·젊은승·늙은승·거북이·토끼·사슴과 함께 삼광사 마당과 구름 하늘길을 달리며 가게 쿠폰을 먹어요">
 <link rel="icon" href="../common/sprites/bot_happy.png">
-<script src="../common/sites.js?v=10200353"></script>
-<script src="../common/wallet.js?v=10200353"></script>
-<script src="core.js?v=10200353"></script>
+<script src="../common/sites.js?v=10200400"></script>
+<script src="../common/wallet.js?v=10200400"></script>
+<script src="core.js?v=10200400"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
@@ -180,41 +180,61 @@ const SFX={
   go(){tone(660,.3,'square',.06)},dbl(){tone(620,.13,'square',.06,1.9)},slip(){tone(700,.35,'sawtooth',.06,.25)},bonk(){tone(180,.12,'square',.08,.6);tone(520,.1,'triangle',.05,1.5,.05)},tick(){tone(440,.1,'square',.05)},surge(){tone(200,.5,'sawtooth',.05,2.5)},stage(){tone(587,.12,'triangle',.07);tone(880,.2,'triangle',.07,1,.12)}
 };
 
-/* ------------------------------------------------------------ 배경음악 (음원 파일 없이 바로 연주 · 국악풍 5음계) */
-let musicOn=LS.get('sansa.music',true),mBus=null,mTimer=null,mNext=0,mStep=0,track='mountain';
+/* ------------------------------------------------------------ 배경음악 (음원 파일 없이 바로 연주)
+ * 국악 추격 테마: 장구 자진모리 장단(12박 한 마디) + 가야금 뜯는 소리 + 대금 같은 긴 가락 + 은은한 드론.
+ * 스테이지마다 곡이 바뀜: 백양산(밝은 평조) · 삼광사(신비로운 계면조 + 풍경) · 구름 하늘길(높고 경쾌하게) */
+let musicOn=LS.get('sansa.music',true),mBus=null,mTimer=null,mNext=0,mStep=0,track='mountain',NOISE=null;
 const NT=(base,s)=>s==null?null:base*Math.pow(2,s/12);
+// 한 마디 = 12칸(자진모리). 가야금 G, 대금 F(길게, 시작 칸에만), 숫자는 반음
+const _=null;
 const TRACKS={
-  // 백양산: 경쾌한 산길 (궁조 5음계)
-  mountain:{tempo:.17,lead:523.25,bass:130.81,wave:'triangle',bell:false,
-    L:[0,2,4,7,4,2,0,null, 2,4,7,9,7,4,2,null, 4,7,9,12,9,7,4,2, 0,2,4,2,0,null,-3,null],
-    B:[0,null,7,null,0,null,7,null, -3,null,4,null,-3,null,4,null, -5,null,2,null,-5,null,2,null, 0,null,7,null,0,null,null,null]},
-  // 삼광사: 조금 신비로운 절 분위기 + 마디마다 풍경(종) 소리
-  temple:{tempo:.18,lead:440,bass:110,wave:'triangle',bell:true,
-    L:[0,3,5,7,10,7,5,3, 0,null,3,5,7,null,5,null, 7,10,12,10,7,5,3,5, 7,null,5,3,0,null,null,null],
-    B:[0,null,null,0,-5,null,null,-5, -2,null,null,-2,-5,null,-7,null, 0,null,null,0,-5,null,null,-5, -2,null,-5,null,0,null,null,null]},
-  // 구름 하늘길: 밝고 높게
-  sky:{tempo:.16,lead:659.25,bass:164.81,wave:'square',bell:false,
-    L:[0,4,7,12,9,7,4,7, 9,12,16,12,9,7,4,null, 0,4,7,9,7,4,2,4, 7,null,4,null,0,null,null,null],
-    B:[0,null,7,null,5,null,7,null, -3,null,4,null,2,null,4,null, 0,null,7,null,5,null,7,null, -5,null,2,null,0,null,null,null]},
+  mountain:{step:.105,root:293.66,drone:[0,7],
+    G:[[0,_,4,_,7,_, 9,_,7,4,_,2],[0,_,2,_,4,_, 7,_,9,_,7,_],[12,_,9,_,7,_, 9,_,7,4,_,2],[4,_,2,_,0,_, 2,_,-3,_,0,_]],
+    F:[[12,6],[14,6],[16,6],[12,6]], bell:false},
+  temple:{step:.115,root:220,drone:[0,7],
+    G:[[0,_,3,_,5,_, 7,_,5,3,_,0],[7,_,10,_,12,_, 10,_,7,_,5,_],[12,_,10,_,7,_, 5,_,7,10,_,7],[5,_,3,_,0,_, -2,_,0,_,_,_]],
+    F:[[12,12],[15,6],[17,6],[12,12]], bell:true},
+  sky:{step:.095,root:392,drone:[0,7],
+    G:[[0,4,7,_,9,_, 12,_,9,7,_,4],[2,_,4,7,_,9, 7,_,4,_,2,_],[0,4,7,_,12,_, 14,_,12,9,_,7],[9,_,7,_,4,_, 2,_,0,_,_,_]],
+    F:[[24,6],[19,6],[24,6],[21,6]], bell:false},
 };
+// 장구 자진모리: 덩 . 덕 쿵 덕 . | 덩 . 덕 쿵 덕 .   (덩=쿵+덕 함께)
+const JANGGU=['dung',_,'deok','kung','deok',_, 'dung',_,'deok','kung','deok','deok'];
 const trackOf=kind=>kind==='sky'?'sky':kind.startsWith('samgwang')?'temple':'mountain';
-function mbus(){if(!AC)return null;if(!mBus){mBus=AC.createGain();mBus.gain.value=.16;mBus.connect(AC.destination)}return mBus}
-function mnote(f,d,type,vol,when,slide){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,when);if(slide)o.frequency.exponentialRampToValueAtTime(f*slide,when+d);
-  g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(vol,when+.012);g.gain.exponentialRampToValueAtTime(.0001,when+d);o.connect(g);g.connect(mbus());o.start(when);o.stop(when+d+.03)}
+function mbus(){if(!AC)return null;if(!mBus){mBus=AC.createGain();mBus.gain.value=.5;mBus.connect(AC.destination)}
+  if(!NOISE){NOISE=AC.createBuffer(1,AC.sampleRate*.3,AC.sampleRate);const d=NOISE.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}return mBus}
+function env(g,when,vol,att,dec){g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(vol,when+att);g.gain.exponentialRampToValueAtTime(.0001,when+att+dec)}
+function gayageum(f,when,vol,bend){            // 뜯는 소리: 삼각파+옥타브 사인, 빠른 감쇠, 가끔 농현(음 흔들기)
+  for(const[mul,type,v]of[[1,'triangle',1],[2,'sine',.35],[3,'sine',.12]]){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f*mul,when);
+    if(bend){o.frequency.setValueAtTime(f*mul,when+.12);o.frequency.linearRampToValueAtTime(f*mul*1.03,when+.22);o.frequency.linearRampToValueAtTime(f*mul,when+.34)}
+    env(g,when,vol*v,.004,.55);o.connect(g);g.connect(mBus);o.start(when);o.stop(when+.65)}}
+function daegeum(f,when,dur,vol){              // 대금처럼 숨결 섞인 긴 가락 (비브라토)
+  const o=AC.createOscillator(),g=AC.createGain(),lfo=AC.createOscillator(),lg=AC.createGain();o.type='sine';o.frequency.value=f;
+  lfo.frequency.value=5.2;lg.gain.value=f*.012;lfo.connect(lg);lg.connect(o.frequency);
+  g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(vol,when+.12);g.gain.setValueAtTime(vol,when+dur*.7);g.gain.exponentialRampToValueAtTime(.0001,when+dur);
+  o.connect(g);g.connect(mBus);o.start(when);lfo.start(when);o.stop(when+dur+.05);lfo.stop(when+dur+.05);
+  const n=AC.createBufferSource(),bp=AC.createBiquadFilter(),ng=AC.createGain();n.buffer=NOISE;bp.type='bandpass';bp.frequency.value=f*2;bp.Q.value=6;   // 숨소리
+  ng.gain.setValueAtTime(.0001,when);ng.gain.exponentialRampToValueAtTime(vol*.35,when+.06);ng.gain.exponentialRampToValueAtTime(.0001,when+.3);n.connect(bp);bp.connect(ng);ng.connect(mBus);n.start(when);n.stop(when+.3)}
+function drum(kind,when){
+  if(kind==='kung'||kind==='dung'){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.setValueAtTime(140,when);o.frequency.exponentialRampToValueAtTime(55,when+.18);env(g,when,.55,.004,.26);o.connect(g);g.connect(mBus);o.start(when);o.stop(when+.32)}
+  if(kind==='deok'||kind==='dung'){const n=AC.createBufferSource(),hp=AC.createBiquadFilter(),g=AC.createGain();n.buffer=NOISE;hp.type='bandpass';hp.frequency.value=2400;hp.Q.value=1.2;env(g,when,kind==='dung'?.28:.2,.002,.07);n.connect(hp);hp.connect(g);g.connect(mBus);n.start(when);n.stop(when+.1)}}
+function drone(T,when,dur){for(const s of T.drone){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=NT(T.root/2,s);
+  g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(.045,when+.4);g.gain.setValueAtTime(.045,when+dur-.3);g.gain.exponentialRampToValueAtTime(.0001,when+dur);o.connect(g);g.connect(mBus);o.start(when);o.stop(when+dur+.05)}}
 function musicTick(){
   if(!AC||!musicOn)return;
   const playing=phase==='play'&&G&&G.state==='run'&&!paused&&!document.hidden;
   if(!playing){mNext=AC.currentTime+.08;return}
+  mbus();
   const T=TRACKS[track]||TRACKS.mountain,left=G.cfg.limit-G.t;
-  const sp=clamp(G.p.v/P.base,1,1.3),tempo=T.tempo/(1+(sp-1)*.35)*(left<30?.86:1);   // 빨라질수록, 마지막 30초엔 더 빠르게
-  while(mNext<AC.currentTime+.15){
-    const i=mStep%T.L.length,l=NT(T.lead,T.L[i]),b=NT(T.bass,T.B[i]);
-    if(l)mnote(l,tempo*.9,T.wave,T.wave==='square'?.035:.07,mNext);
-    if(b)mnote(b,tempo*.95,'triangle',.12,mNext);
-    if(i%4===0)mnote(120,.16,'sine',.22,mNext,.38);               // 북 (박자)
-    if(i%4===2)mnote(2600,.03,'square',.012,mNext);               // 작은 박
-    if(T.bell&&i%16===0)mnote(NT(T.lead,24),1.6,'sine',.05,mNext); // 풍경 소리
-    mStep++;mNext+=tempo;
+  const sp=clamp(G.p.v/P.base,1,1.3),step=T.step/(1+(sp-1)*.3)*(left<30?.88:1);   // 빨라질수록 · 마지막 30초엔 몰아치게
+  while(mNext<AC.currentTime+.2){
+    const bar=Math.floor(mStep/12)%T.G.length,i=mStep%12;
+    const n=T.G[bar][i];if(n!=null)gayageum(NT(T.root,n),mNext,.13,i===6&&bar%2===1);
+    const dr=JANGGU[i];if(dr)drum(dr,mNext);
+    if(i===0){const[fn,len]=T.F[bar];daegeum(NT(T.root,fn),mNext,step*len*.95,.07);drone(T,mNext,step*12)}
+    if(T.bell&&i===0&&bar===0)gayageum(NT(T.root,24),mNext,.06),daegeum(NT(T.root,31),mNext+.02,1.8,.025);   // 풍경
+    if(left<30&&i%3===0)drum('deok',mNext+step*.5);                                                  // 막판 잔가락
+    mStep++;mNext+=step;
   }
 }
 function musicStart(){if(!musicOn||!AC)return;musicStop();mbus();mNext=AC.currentTime+.08;mTimer=setInterval(musicTick,40)}
