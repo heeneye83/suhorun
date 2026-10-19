@@ -160,7 +160,7 @@ const COMMON=['g_run1','g_run2','g_run3','g_run4','g_run5','g_run6','g_run7','g_
 const OPT=[];
 Object.keys(S.RACERS).forEach(id=>{OPT.push(['r_'+id+'_1','sprites/r_'+id+'_1.png']);OPT.push(['r_'+id+'_2','sprites/r_'+id+'_2.png'])});
 ['i_coupon','i_drink','o_rock','o_log','o_boulder','o_tower','o_lantern_stone','o_cloud','o_storm','o_branch','o_lantern_hang','g_slide'].forEach(n=>OPT.push([n,'sprites/'+n+'.png']));
-S.KINDS.forEach(k=>OPT.push(['bg_'+k,'bg/'+k+'.jpg']));
+S.KINDS.forEach(k=>{OPT.push(['bg_'+k,'bg/'+k+'.jpg']);OPT.push(['gr_'+k,'bg/'+k+'_ground.jpg'])});
 function loadImg(key,src){return new Promise(res=>{const i=new Image();i.onload=()=>{IMG[key]=i;res()};i.onerror=()=>res();i.src=src})}
 const ready=Promise.race([Promise.all(COMMON.map(n=>loadImg(n,'../common/sprites/'+n+'.png')).concat(OPT.map(o=>loadImg(o[0],o[1])))),new Promise(r=>setTimeout(r,4000))]);
 
@@ -433,7 +433,8 @@ function drawBackground(kind,t){
   const th=THEME[kind];
   const im=IMG['bg_'+kind];
   if(im){
-    const hh=GY+30,ww=im.width*hh/im.height,off=camX*.3;let i=Math.floor(off/ww);
+    ctx.fillStyle=kind==='sky'?'#cfe8fb':'#140c08';ctx.fillRect(0,GY,W,H-GY);
+    const hh=GY+8,ww=im.width*hh/im.height,off=camX*.3;let i=Math.floor(off/ww);
     for(let x=i*ww-off;x<W;x+=ww,i++){ctx.save();if(i&1){ctx.translate(x+ww,0);ctx.scale(-1,1);ctx.drawImage(im,0,0,ww,hh)}else ctx.drawImage(im,x,0,ww,hh);ctx.restore()}
     return;
   }
@@ -470,6 +471,14 @@ function drawBackground(kind,t){
 /* ------------------------------------------------------------ 땅 · 구덩이 */
 function groundSeg(kind,x0,x1,t){
   const w=x1-x0;if(w<=0)return;
+  const gi=IMG['gr_'+kind];
+  if(gi){                                                    // 제미나이 배경의 땅 부분을 이어 붙여 깐다 (카메라와 같은 속도)
+    const th=H-GY+4,tw=gi.width*th/gi.height;
+    ctx.save();ctx.beginPath();ctx.rect(x0,GY-4,w,th+4);ctx.clip();
+    let i=Math.floor((x0+camX)/tw);
+    for(let x=i*tw-camX;x<x1;x+=tw,i++){if(i&1){ctx.save();ctx.translate(x+tw,0);ctx.scale(-1,1);ctx.drawImage(gi,0,GY-4,tw,th);ctx.restore()}else ctx.drawImage(gi,x,GY-4,tw,th)}
+    ctx.restore();return;
+  }
   if(kind==='sky'){
     ctx.save();ctx.beginPath();ctx.rect(x0,GY-60,w,H);ctx.clip();
     const g=ctx.createLinearGradient(0,GY,0,H);g.addColorStop(0,'#fbfdff');g.addColorStop(1,'#bfe0fa');ctx.fillStyle=g;ctx.fillRect(x0,GY-6,w,H);
