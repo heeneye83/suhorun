@@ -535,6 +535,7 @@ function groundSeg(kind,x0,x1,t){
     for(let x=i*tw-camX;x<x1;x+=tw,i++){if(i&1){ctx.save();ctx.translate(x+tw,0);ctx.scale(-1,1);ctx.drawImage(gi,0,GY-4,tw,th);ctx.restore()}else ctx.drawImage(gi,x,GY-4,tw,th)}
     ctx.restore();
     if(kind==='sky')cloudTop(x0,x1);
+    else if(kind.startsWith('baegyang'))dirtTop(kind,x0,x1);
     return;
   }
   if(kind==='sky'){
@@ -577,6 +578,30 @@ function cloudTop(x0,x1){
   ctx.fillStyle=g;ctx.fillRect(x0,GY+30,x1-x0,40);
   ctx.restore();
 }
+
+/* 백양산: 바닥 윗선을 흙 둔덕·풀이 올록볼록한 모양으로 (달리는 높이는 그대로 직선) */
+function dirtTop(kind,x0,x1){
+  const ridge=kind==='baegyang_b';
+  const C=ridge?{line:'#4e2f13',soil:'#a4705a',soil2:'#c08a6e',hi:'#d8a688',grass:'#8a8a4a',grass2:'#a7a35a'}
+               :{line:'#4e2f13',soil:'#b78552',soil2:'#d0a06c',hi:'#e3bb86',grass:'#5f9a3c',grass2:'#7cb84c'};
+  const step=34,off=camX,first=Math.floor((x0+off)/step)-1,last=Math.ceil((x1+off)/step)+1,b=[];
+  for(let i=first;i<=last;i++){const r=20+hash(i*5)*16,sx=i*step+hash(i*7)*12-off;if(sx<x0+r*.5||sx>x1-r*.5)continue;b.push([sx,GY+14-hash(i*3)*7,r,i])}
+  if(x1-x0>50){b.push([x0+20,GY+16,20,-1]);b.push([x1-20,GY+16,20,-2])}
+  ctx.save();ctx.beginPath();ctx.rect(x0-6,0,x1-x0+12,H);ctx.clip();
+  // 흙 둔덕: 테두리 → 흙 → 밝은 윗면
+  ctx.fillStyle=C.line;for(const[x,y,r]of b){ctx.beginPath();ctx.ellipse(x,y,r+3,r*.62+3,0,0,6.3);ctx.fill()}
+  ctx.fillStyle=C.soil;for(const[x,y,r]of b){ctx.beginPath();ctx.ellipse(x,y,r,r*.62,0,0,6.3);ctx.fill()}
+  ctx.fillStyle=C.soil2;for(const[x,y,r]of b){ctx.beginPath();ctx.ellipse(x-r*.08,y-r*.1,r*.84,r*.48,0,0,6.3);ctx.fill()}
+  ctx.fillStyle=C.hi;for(const[x,y,r]of b){ctx.beginPath();ctx.ellipse(x-r*.3,y-r*.32,r*.3,r*.1,-.2,0,6.3);ctx.fill()}
+  // 둔덕 위 풀 (드문드문)
+  for(const[x,y,r,i]of b){if(hash(i*11)<.45)continue;const gx=x+(hash(i*13)-.5)*r,gy=y-r*.5;
+    ctx.fillStyle=C.line;ctx.beginPath();ctx.moveTo(gx-9,gy+3);ctx.lineTo(gx-5,gy-11);ctx.lineTo(gx-1,gy+1);ctx.lineTo(gx+2,gy-15);ctx.lineTo(gx+5,gy+1);ctx.lineTo(gx+9,gy-9);ctx.lineTo(gx+11,gy+3);ctx.closePath();ctx.fill();
+    ctx.fillStyle=hash(i*17)<.5?C.grass:C.grass2;ctx.beginPath();ctx.moveTo(gx-7,gy+2);ctx.lineTo(gx-5,gy-8);ctx.lineTo(gx-2,gy);ctx.lineTo(gx+2,gy-12);ctx.lineTo(gx+4,gy);ctx.lineTo(gx+8,gy-6);ctx.lineTo(gx+9,gy+2);ctx.closePath();ctx.fill()}
+  // 아래쪽은 바닥 그림과 섞이게
+  const g=ctx.createLinearGradient(0,GY+20,0,GY+46);g.addColorStop(0,ridge?'rgba(192,138,110,.85)':'rgba(208,160,108,.85)');g.addColorStop(1,'rgba(208,160,108,0)');
+  ctx.fillStyle=g;ctx.fillRect(x0,GY+20,x1-x0,26);
+  ctx.restore();
+}
 function drawPit(kind,x0,x1,t){
   const w=x1-x0,sx=x0-camX;if(sx>W+50||sx+w<-50)return;
   if(kind==='sky'){
@@ -593,8 +618,14 @@ function drawPit(kind,x0,x1,t){
   ctx.restore();
   // 가장자리
   const rim=temple?'#cfc4b3':(kind==='baegyang_b'?'#a39080':'#86b04e'),st2=temple?'#a99d89':'#6a4c33';
+  if(!temple){   // 백양산: 흙 절벽처럼 둥글게 떨어지는 가장자리
+    const soil=kind==='baegyang_b'?'#8f5e48':'#9a6a3e';
+    for(const[ex,d]of[[sx,1],[sx+w,-1]]){ctx.fillStyle='#4e2f13';ctx.beginPath();ctx.moveTo(ex-d*14,GY+8);ctx.quadraticCurveTo(ex+d*8,GY+6,ex+d*6,GY+40);ctx.quadraticCurveTo(ex+d*2,GY+70,ex-d*6,GY+96);ctx.lineTo(ex-d*14,GY+96);ctx.closePath();ctx.fill();
+      ctx.fillStyle=soil;ctx.beginPath();ctx.moveTo(ex-d*14,GY+10);ctx.quadraticCurveTo(ex+d*4,GY+9,ex+d*2,GY+40);ctx.quadraticCurveTo(ex-d*1,GY+68,ex-d*8,GY+96);ctx.lineTo(ex-d*14,GY+96);ctx.closePath();ctx.fill()}
+  }else{
   ctx.fillStyle=rim;ctx.fillRect(sx-8,GY,10,14);ctx.fillRect(sx+w-2,GY,10,14);
   ctx.fillStyle=st2;poly(ctx,[[sx-8,GY+14],[sx+2,GY+14],[sx-2,GY+34]],st2);poly(ctx,[[sx+w-2,GY+14],[sx+w+8,GY+14],[sx+w+4,GY+34]],st2);
+  }
   // 위험 표시
   text('▼',sx+w/2,GY-22+Math.sin(t*6)*3,22,'#ffdc66','center','#4e2f13');
 }
