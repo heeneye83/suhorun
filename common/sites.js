@@ -55,7 +55,7 @@ window.SUHO = {
       ],
     },
     {
-      id: 'choeup', name: '공원 수호런 (초읍-시민공원)', place: '시민공원 · 어린이대공원 · 초읍동', status: 'open', url: 'choeup/',
+      id: 'choeup', name: '공원 수호런 (시민공원-초읍)', place: '시민공원 · 어린이대공원 · 초읍동', status: 'open', url: 'choeup/',
       color: '#4f9a5a', thumb: 'common/img/choeup.webp',
       pitch: '가족이 함께! 부산시민공원에서 초읍 어린이대공원, 성지곡 편백숲길까지 달리며 먼지뭉치·모기·너구리 장난꾸러기 4마리를 한 대도 안 맞고 잡으면 퍼펙트 쿠폰.',
       who: '아이와 함께 오는 가족 · 가게 쿠폰 · 쿠폰북 추첨',
@@ -77,7 +77,7 @@ window.SUHO = {
       ],
     },
     {
-      id: 'shoe', name: '수제화 수호런 (부전-범천)', place: '부전동 · 범천동 수제화 장인 로드', status: 'open', url: 'shoe/',
+      id: 'shoe', name: '신발거리 수호런 (범천 좀비 레이스)', place: '부전동 · 범천동 수제화 장인 로드', status: 'open', url: 'shoe/',
       color: '#b9722f', thumb: 'common/img/shoe.webp',
       pitch: '좀비가 덮친 수제화 골목! 구두 장인 할아버지를 업고 6개 스테이지를 달려 공방까지 구출하라. 폭주족 좀비의 바나나를 피하고, 로큰롤 킹의 선물상자에서 이벤트 쿠폰을 노려요.',
       who: '수제화 공방·수선집 쿠폰 · 쿠폰북 추첨',

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1a0f22">
-<title>수제화 수호런 · 구두 장인 구출 작전</title>
+<title>신발거리 수호런 (범천 좀비 레이스)</title>
 <script src="../common/sites.js"></script>
 <script src="../common/wallet.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -77,7 +77,7 @@ body.rot #fsBox .btn{padding:5px 12px;font-size:12px}body.rot .logo{font-size:52
 <div id="wrap"><div id="stage">
 <canvas id="game" width="960" height="540"></canvas>
 
-<div id="title" class="ov on">
+<div id="title" class="ov">
   <div class="demo"><a href="../" style="color:inherit">← 수호런 홈</a> · 부산진구 수호런</div>
   <div class="logo"><small>SUHO RUN · 수제화 골목</small>구두 장인 구출 작전</div>
   <div class="sub">좀비가 덮친 부전·범천 수제화 골목! 구두 장인 할아버지를 업고 구조 헬기까지 달려라</div>
@@ -1005,7 +1005,7 @@ function openExternal(){const u=location.href;if(KAKAO){location.href='kakaotalk
 function start(){if(TOUCH)goFull(true);MUS.track=-1;MUS.step=0;nick=($('nick').value||'').trim()||'러너'+(Math.random()*900+100|0);try{localStorage.setItem('kzr_nick',nick)}catch(e){}
   $('title').classList.remove('on');$('end').classList.remove('on');newGame();running=true;ac();SFX.neigh()}
 $('go').onclick=start;$('again').onclick=start;
-function goTitle(){$('end').classList.remove('on');$('pause').classList.remove('on');$('title').classList.add('on');newGame();G.state='idle';running=false;drawPick()}
+function goTitle(){location.href='../'}
 $('home').onclick=goTitle;
 $('fsBtn').onclick=()=>goFull(false);$('fsBtn2').onclick=()=>goFull(false);$('extBtn').onclick=openExternal;
 if(KAKAO){$('extBtn').hidden=false}
@@ -1054,7 +1054,7 @@ function cert(win,t,km){
   const g=x.createLinearGradient(0,0,0,1920);g.addColorStop(0,win?'#120f22':'#1a0b0b');g.addColorStop(1,'#05070a');x.fillStyle=g;x.fillRect(0,0,1080,1920);
   if(IMG.bgs1){x.globalAlpha=.25;x.drawImage(IMG[win?'bgs6':'bgs1'],-400,520,1880,800);x.globalAlpha=1;const f=x.createLinearGradient(0,520,0,1320);f.addColorStop(0,'rgba(5,7,10,1)');f.addColorStop(.3,'rgba(5,7,10,0)');f.addColorStop(.7,'rgba(5,7,10,0)');f.addColorStop(1,'rgba(5,7,10,1)');x.fillStyle=f;x.fillRect(0,520,1080,800)}
   x.strokeStyle=win?'#ff6fb5':'#ff3b3b';x.lineWidth=14;x.strokeRect(50,50,980,1820);x.lineWidth=3;x.strokeRect(78,78,924,1764);
-  x.textAlign='center';x.fillStyle='#f4f1e8';x.font="700 40px 'Noto Sans KR'";x.fillText('수제화 수호런 · 부산진구',540,190);
+  x.textAlign='center';x.fillStyle='#f4f1e8';x.font="700 40px 'Noto Sans KR'";x.fillText('신발거리 수호런 · 부산진구',540,190);
   x.fillStyle=win?'#ff6fb5':'#9cc58a';x.font="140px 'Black Han Sans'";x.fillText(win?'구출 증명서':'추격 기록서',540,370);
   x.save();x.shadowColor=win?'rgba(255,111,181,.55)':'rgba(255,60,60,.55)';x.shadowBlur=70;
   const seat=drawKonik(x,skin,win?4:5,540,1160,3.4,win?0:.3,win?1:.8);x.restore();if(win&&G.saved&&seat)drawRider(x,seat,0,3.4*.41/.97);
@@ -1073,7 +1073,7 @@ function cert(win,t,km){
 function makeGold(){for(const k of ['hero_walk','hero_jump','hero_slide']){const im=IMG[k];if(!im)continue;const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');
   x.drawImage(im,0,0);x.globalCompositeOperation='source-atop';const g=x.createLinearGradient(0,0,0,im.height);g.addColorStop(0,'rgba(255,246,170,.78)');g.addColorStop(.5,'rgba(255,196,40,.72)');g.addColorStop(1,'rgba(214,140,20,.78)');x.fillStyle=g;x.fillRect(0,0,c.width,c.height);
   x.globalCompositeOperation='source-over';x.globalAlpha=.35;x.drawImage(im,0,0);IMG['gold_'+k]=c}}
-loadAll().then(()=>{makeGold();drawPick();newGame();G.state='idle';requestAnimationFrame(loop)});
+loadAll().then(()=>{makeGold();drawPick();newGame();G.state='idle';requestAnimationFrame(loop);start()});
 if(document.fonts)document.fonts.ready.then(()=>{try{drawPick()}catch(e){}});
 setInterval(()=>{if(G&&!running&&G.state==='idle'){G.dist+=6;G.t+=.016}},16);
 window.__KZ={stampData,rollGift,get G(){return G},start,jump,slide,setSprint(v){keys.ShiftLeft=v?1:0},OB,tick(n,dt){running=false;for(let i=0;i<n&&G.state!=='over';i++){if(G.state==='run'||G.state==='dead'||G.state==='ending')update(dt);if(!$('end').classList.contains('on'))continue;break}render();return G.state},resume(){running=true}};
