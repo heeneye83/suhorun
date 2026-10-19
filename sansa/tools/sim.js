@@ -45,7 +45,7 @@ function makeBot(kind, rnd) {
 
 const TALLY = {};
 function run(kind, diff, seed) {
-  const g = S.create({ difficulty: diff, seed, storeCount: 6 });
+  const g = S.create({ difficulty: diff, seed, storeCount: 3 });
   const bot = makeBot(kind, S.rng(seed ^ 0x9e3779b9));
   let guard = 0;
   while (g.state !== 'win' && g.state !== 'timeout' && guard++ < 60 * 400) {

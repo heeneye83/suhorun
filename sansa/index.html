@@ -6,9 +6,9 @@
 <title>산사 수호런 (백양산-삼광사)</title>
 <meta name="description" content="진수호가 백양산 산신령을 따라잡는 추격 레이스 · 동자승·젊은승·늙은승·거북이·토끼·사슴과 함께 삼광사 마당과 구름 하늘길을 달리며 가게 쿠폰을 먹어요">
 <link rel="icon" href="../common/sprites/bot_happy.png">
-<script src="../common/sites.js?v=10200340"></script>
-<script src="../common/wallet.js?v=10200340"></script>
-<script src="core.js?v=10200340"></script>
+<script src="../common/sites.js?v=10200345"></script>
+<script src="../common/wallet.js?v=10200345"></script>
+<script src="core.js?v=10200345"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
@@ -126,7 +126,7 @@ a.go{text-decoration:none;display:inline-block}
       <li><b>점프</b> 스페이스·↑ — 공중에서 한 번 더 누르면 <b>2단 점프</b>. 낮은 바위·바나나 껍질은 한 번, 큰 바위·석등은 길게 누르거나 2단 점프로 넘어요.</li>
       <li><b>슬라이딩</b> ↓·S — 누르고 있는 동안 엉덩방아 자세로 계속 미끄러져요. 공중에 떠 있는 벌떼·연등·먹구름은 밑으로 슬라이딩하거나 2단 점프로 넘어요. 공중에서 누르면 바로 내려와요.</li>
       <li><b>스프린트</b> Shift·→ 누르고 있는 동안 — 게이지가 닳고, <b>에너지 음료</b>를 먹으면 채워지고 잠깐 전속력!</li>
-      <li><b>쿠폰</b>은 먹으면 가게 쿠폰함에 쏙. 놓치면 그냥 지나가요.</li>
+      <li><b>쿠폰</b>은 한 판에 3장만 나와요. 먹으면 가게 쿠폰함에 쏙, 놓치면 그냥 지나가요. 산신령을 잡으면 <b>마스터 쿠폰</b> 1장을 더 받아요.</li>
       <li>같이 달리는 친구들은 그냥 밀치고 지나가요. 부딪히면 <b>친구가 뒤로 튕겨 나가요.</b></li>
       <li>장애물에 부딪히면 뒤로 살짝 튕겨 나가 잠깐 느려지고, <b>바나나 껍질</b>을 밟으면 미끄러져 넘어져요. <b>라이프는 없어요.</b></li>
       <li>구덩이나 구름 밑으로 떨어지면 <b>볼트</b>가 끌어올려 줘요. 대신 시간이 조금 가요.</li>
@@ -858,10 +858,12 @@ function showResult(){
   phase='end';const R=G.result,win=R.how==='win',s0=best;
   if(R.score>best){best=R.score;LS.set('sansa.best',best);$('best').textContent=best.toLocaleString()}
   if(win&&SITE){STP.boss[LASTSTG]=true;saveStamps()}
+  let master=null;                                                      // 산신령을 잡으면 마스터 쿠폰 1장 더
+  if(win&&SITE&&SITE.eventStores&&SITE.eventStores[0]){const ms=SITE.eventStores[0];let isNew=true;if(WAL){const r=WAL.issue(SITE_ID,ms.name);isNew=!!(r&&r.isNew)}master={st:ms,isNew}}
   if(WAL&&SITE)WAL.logPlay(SITE_ID,{score:R.score,stage:R.stage,clear:win,stores:R.couponSet.length});
   const si=stampInfo(),done=si.done>=si.total,entered=WAL&&SITE?WAL.entered(SITE_ID):STP.entered;
   const newSet=Object.keys(G.p.newCoupons||{}).map(Number),oldSet=R.couponSet.filter(i=>!newSet.includes(i));
-  const chips=newSet.map(i=>`<span class="chip" style="--c:${STORES[i].color}">${esc(STORES[i].name)} · ${esc(STORES[i].benefit)}</span>`).concat(oldSet.map(i=>`<span class="chip old" style="--c:${STORES[i].color}">${esc(STORES[i].name)} (이미 받음)</span>`)).join('');
+  const chips=(master?`<span class="chip" style="--c:${master.st.color}"><b>마스터 쿠폰</b> · ${esc(master.st.name)} · ${esc(master.st.benefit.replace(' (마스터 쿠폰)',''))}${master.isNew?'':' (이미 받음)'}</span>`:'')+newSet.map(i=>`<span class="chip" style="--c:${STORES[i].color}">${esc(STORES[i].name)} · ${esc(STORES[i].benefit)}</span>`).concat(oldSet.map(i=>`<span class="chip old" style="--c:${STORES[i].color}">${esc(STORES[i].name)} (이미 받음)</span>`)).join('');
   const m=Math.floor(R.time/60),sc=Math.floor(R.time%60);
   card.innerHTML=`<p class="eyebrow">${win?'추격 성공':'추격 실패'}</p>
   <h2>${win?'산신령을 잡았다!':'산신령을 놓쳤다…'}</h2>

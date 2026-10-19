@@ -32,7 +32,7 @@
   // ---- 난이도: 제한 시간 안에 산신령을 못 잡으면 끝 ----
   // 난이도 선택 없이 하나: 2분 안에 산신령을 잡아야 함 (시연 후 필요하면 limit·spiritF 조정)
   const DIFF = {
-    normal: { name: '기본', limit: 120, spiritF: 1.06, gap0: 2600, drinkP: 0.60, spacing: 2.4, hint: '2분 안에 산신령을 잡아요' },   // spacing 2.4 = 장애물 40% 줄임
+    normal: { name: '기본', limit: 120, spiritF: 1.12, gap0: 2600, drinkP: 0.60, spacing: 1.85, hint: '2분 안에 산신령을 잡아요' },   // 장애물 간격 1.85 · 산신령 1.12배
   };
 
 
@@ -103,10 +103,10 @@
     const r = g.rnd();
     let type = null;
     if (g.pat % 2 === 0) { if (r < g.cfg.drinkP) type = 'drink'; }                 // 에너지 음료: 3번째 장애물마다 기회
-    else if (g.sc >= 2 && r < 0.85) { type = 'coupon'; g.sc = 0; }   // 장애물이 줄어든 만큼 쿠폰은 자주                  // 쿠폰: 서너 장애물에 하나꼴 (한 스테이지에 3~4장)
+    else if (g.couponSeq < g.storeCount && x > (g.couponSeq + 0.25) * STAGE_LEN * 0.8 && r < 0.85) { type = 'coupon'; }   // 쿠폰은 한 판에 가게 수(3장)만, 스테이지마다 하나꼴 · 놓치면 끝
     if (!type) return;
     const it = { x, y, type, taken: false };
-    if (type === 'coupon') it.store = g.couponSeq++ % g.storeCount;
+    if (type === 'coupon') it.store = g.couponSeq++;
     g.items.push(it);
   }
 

@@ -101,21 +101,22 @@ window.SUHO = {
     {
       id: 'baegyang', name: '산사 수호런 (백양산-삼광사)', place: '백양산 · 삼광사', status: 'open', url: 'sansa/',
       color: '#c46a8a', thumb: 'common/img/baegyang.webp',
-      pitch: '백양산 산신령이 달아난다! 동자승·젊은승·늙은승·거북이·토끼·사슴과 함께 삼광사 마당과 구름 하늘길을 달려 산신령을 따라잡아요. 달리다 먹는 가게 쿠폰은 쿠폰함에 쏙.',
+      pitch: '백양산 산신령이 달아난다! 동자승·젊은승·늙은승·거북이·토끼·사슴과 함께 삼광사 마당과 구름 하늘길을 달려 산신령을 따라잡아요. 달리며 쿠폰 3장을 먹고, 산신령을 잡으면 마스터 쿠폰 1장 더!',
       who: '산책·등산 가족 · 삼광사 입구 식당·카페 · 쿠폰북 추첨',
       season: { id: 's1-baegyang', name: '시즌 1 · 백양산·삼광사 스탬프 투어', ends: '' },
       lastStage: 3,   // 3스테이지 안에 산신령을 잡으면 '수호 완료' 도장
-      grand: { name: '산사 쿠폰북', desc: '참여 가게 6곳 대표 메뉴 1개씩 무료', winners: 30 },
+      grand: { name: '산사 쿠폰북', desc: '참여 가게 3곳 대표 메뉴 + 마스터 쿠폰 가게 혜택', winners: 30 },
+      // 산사 맵은 단순하게: 달리며 먹는 쿠폰 3장 + 산신령을 잡으면(마스터) 1장 더
       // 시연용 가상 가게 (제안서 승인 후 실제 협업 가게로 교체)
       stores: [
         { name: '삼광사 입구 두부집', benefit: '반찬 한 가지 추가', pin: '1111', color: '#e0702c' },
         { name: '백양산 등산로 카페', benefit: '음료 사이즈업', pin: '2222', color: '#3d5a80' },
         { name: '연등 찻집', benefit: '떡 1조각 추가', pin: '3333', color: '#d94f8a' },
-        { name: '산채비빔밥 식당', benefit: '500원 할인', pin: '4444', color: '#4f9a5a' },
-        { name: '산길 호떡집', benefit: '호떡 토핑 추가', pin: '5555', color: '#c8553d' },
-        { name: '하산길 전통찻집', benefit: '차 사이즈업', pin: '6666', color: '#8a5cc4' },
       ],
-      eventStores: [],
+      // 마스터 쿠폰: 산신령을 잡은 사람에게만
+      eventStores: [
+        { name: '산채비빔밥 식당', benefit: '500원 할인 (마스터 쿠폰)', pin: '4444', color: '#4f9a5a', master: true },
+      ],
     },
     {
       id: 'bujeon', name: '시장 수호런 (부전시장-부전도서관)', place: '부전시장 · 부전도서관', status: 'soon',
