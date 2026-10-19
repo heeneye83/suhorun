@@ -727,7 +727,7 @@ function render(dt,t){
   ctx.globalAlpha=1;
   for(let i=FX.pops.length-1;i>=0;i--){const q=FX.pops[i];q.t+=dt;if(q.t>1.1){FX.pops.splice(i,1);continue}ctx.globalAlpha=clamp(1.1-q.t,0,1);text(q.text,q.x-camX,GY-q.y-q.t*70,q.size,q.color,'center','#4e2f13')}
   ctx.globalAlpha=1;
-  if(G){drawSpeedLines(G.p.v/P.base,t);drawHUD(t)}
+  if(G){drawSpeedLines(G.p.v/P.base,t);if(!window.__noHud)drawHUD(t)}   // __noHud: 썸네일 촬영용
   if(flash>0){ctx.fillStyle='rgba(255,255,255,'+flash+')';ctx.fillRect(0,0,W,H);flash=Math.max(0,flash-dt*1.2)}
   if(paused&&phase==='play'){ctx.fillStyle='rgba(20,12,6,.6)';ctx.fillRect(0,0,W,H);text('잠깐 멈춤',W/2,H/2-20,80,'#ffdc66','center','#4e2f13');text('P 또는 Esc 로 계속',W/2,H/2+50,28,'#fff6e0','center')}
   ctx.restore();
