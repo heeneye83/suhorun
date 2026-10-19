@@ -488,7 +488,9 @@ function groundSeg(kind,x0,x1,t){
     ctx.save();ctx.beginPath();ctx.rect(x0,GY-4,w,th+4);ctx.clip();
     let i=Math.floor((x0+camX)/tw);
     for(let x=i*tw-camX;x<x1;x+=tw,i++){if(i&1){ctx.save();ctx.translate(x+tw,0);ctx.scale(-1,1);ctx.drawImage(gi,0,GY-4,tw,th);ctx.restore()}else ctx.drawImage(gi,x,GY-4,tw,th)}
-    ctx.restore();return;
+    ctx.restore();
+    if(kind==='sky')cloudTop(x0,x1);
+    return;
   }
   if(kind==='sky'){
     ctx.save();ctx.beginPath();ctx.rect(x0,GY-60,w,H);ctx.clip();
@@ -508,6 +510,26 @@ function groundSeg(kind,x0,x1,t){
   if(temple){ctx.strokeStyle=night?'rgba(20,20,50,.5)':'rgba(120,100,80,.4)';ctx.lineWidth=2;for(let wx=Math.floor((x0+off)/130)*130;wx<x1+off+130;wx+=130){ctx.beginPath();ctx.moveTo(wx-off,GY+10);ctx.lineTo(wx-off-30,H);ctx.stroke()}ctx.beginPath();ctx.moveTo(x0,GY+54);ctx.lineTo(x1,GY+54);ctx.moveTo(x0,GY+104);ctx.lineTo(x1,GY+104);ctx.stroke()}
   else{ctx.fillStyle='rgba(0,0,0,.14)';for(let wx=Math.floor((x0+off)/70)*70;wx<x1+off+70;wx+=70){const i=Math.floor(wx/70);ctx.beginPath();ctx.ellipse(wx-off+hash(i)*30,GY+30+hash(i+5)*100,6+hash(i+2)*10,4+hash(i+8)*5,0,0,6.3);ctx.fill()}
     if(kind!=='baegyang_b'){ctx.fillStyle='#6e9a3d';for(let wx=Math.floor((x0+off)/22)*22;wx<x1+off+22;wx+=22){const i=Math.floor(wx/22);ctx.beginPath();ctx.moveTo(wx-off,GY+2);ctx.lineTo(wx-off+4,GY-8-hash(i)*8);ctx.lineTo(wx-off+9,GY+2);ctx.fill()}}}
+  ctx.restore();
+}
+
+/* 구름 하늘길: 바닥 윗선을 몽글몽글한 구름 모양으로 (달리는 높이는 그대로 직선) */
+function cloudTop(x0,x1){
+  const step=44,off=camX,first=Math.floor((x0+off)/step)-1,last=Math.ceil((x1+off)/step)+1,puffs=[];
+  for(let i=first;i<=last;i++){
+    const r=30+hash(i*5)*18,sx=i*step+hash(i*7)*16-off;
+    if(sx<x0+r*.55||sx>x1-r*.55)continue;
+    puffs.push([sx,GY+24-hash(i*3)*6,r]);
+  }
+  if(x1-x0>60){puffs.push([x0+26,GY+26,28]);puffs.push([x1-26,GY+26,28])}   // 구덩이 쪽 끝도 둥글게
+  ctx.save();ctx.beginPath();ctx.rect(x0-6,0,x1-x0+12,H);ctx.clip();
+  ctx.fillStyle='#86b3da';for(const[x,y,r]of puffs){ctx.beginPath();ctx.arc(x,y,r+3,0,6.3);ctx.fill()}        // 테두리
+  ctx.fillStyle='#e2f0fb';for(const[x,y,r]of puffs){ctx.beginPath();ctx.arc(x,y,r,0,6.3);ctx.fill()}            // 그늘
+  ctx.fillStyle='#ffffff';for(const[x,y,r]of puffs){ctx.beginPath();ctx.arc(x-r*.1,y-r*.12,r*.84,0,6.3);ctx.fill()} // 밝은 몸통
+  ctx.fillStyle='rgba(255,255,255,.95)';for(const[x,y,r]of puffs){ctx.beginPath();ctx.ellipse(x-r*.32,y-r*.55,r*.24,r*.12,-.35,0,6.3);ctx.fill()}
+  // 아래쪽은 원래 구름 바닥 그림과 자연스럽게 섞이도록 옅은 띠
+  const g=ctx.createLinearGradient(0,GY+30,0,GY+70);g.addColorStop(0,'rgba(255,255,255,.9)');g.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=g;ctx.fillRect(x0,GY+30,x1-x0,40);
   ctx.restore();
 }
 function drawPit(kind,x0,x1,t){
