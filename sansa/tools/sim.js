@@ -39,7 +39,7 @@ function makeBot(kind, rnd) {
     else if (hz.k === 'banana' && hz.d <= v * (0.12 + j)) a.jump();
     else if (hz.k === 'tall' && hz.d <= v * (0.24 + j)) { a.jump(); wantDbl = true; }
     else if (hz.k === 'pit' && hz.d <= v * (0.03 + j * 0.3)) { a.jump(); wantDbl = hz.o.x1 - hz.o.x0 > 200; }
-    else if (hz.k === 'float' && hz.d <= v * (0.2 + j)) a.slide();
+    else if (hz.k === 'float' && hz.d <= v * (0.2 + j)) { a.slide(); a.slideUp(); }
   };
 }
 

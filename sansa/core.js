@@ -15,7 +15,7 @@
 
   // ---- 조작 감각 · 속도 ----
   const P = {
-    base: 500,            // 기본 달리기 속도 (px/s) — 신발거리 수호런과 같은 체감 속도(화면 폭 기준)
+    base: 600,            // 기본 달리기 속도 (px/s) — 신발거리 수호런과 같은 체감 속도(화면 폭 기준)
     sprintMul: 1.32,      // 스프린트 배율 (신발거리와 같게)
     gravity: 3000, jumpV: 855, dblV: 790, cutG: 2.0,   // 점프는 낮게 · 공중에서 한 번 더(2단 점프) · 손을 떼면 더 낮게
     slipT: 0.75, slipMul: 0.3,                // 바나나 껍질: 미끄러져 넘어짐 → 속도 뚝
@@ -75,7 +75,7 @@
         slideT: 0, slideQueued: false, knock: 0, slow: 0, slowMin: P.slowMin, invul: 0, coyote: 0, jumpBuf: 0,
         rescue: null, grounded: true, jumping: false, jumps: 0, slip: 0, hits: 0, falls: 0, slips: 0, bonks: 0, coupons: 0, drinks: 0, couponSet: {},
       },
-      input: { jumpHeld: false, sprint: false },
+      input: { jumpHeld: false, sprint: false, slideHeld: false },
       racers: [],
       spirit: { id: 'spirit', x: cfg.gap0, y: 0, v: 0, surge: 0, breather: 0, nextSurge: 9 + rnd() * 5, hop: 0, phase: rnd() * 6 },
       obsIdx: 0, itemIdx: 0,
@@ -231,6 +231,8 @@
     p.slow = Math.max(0, p.slow - dt);
     p.sprintDelay = Math.max(0, p.sprintDelay - dt);
     p.slideT = Math.max(0, p.slideT - dt);
+    if (inp.slideHeld && p.slideT > 0) p.slideT = Math.max(p.slideT, 0.08);   // 누르고 있는 동안 계속 슬라이딩
+    if (inp.slideHeld && p.slideT <= 0 && !p.slideReq && p.y <= 0.5 && p.vy <= 0 && p.knock <= 0 && p.slip <= 0) p.slideReq = true;
     p.slip = Math.max(0, p.slip - dt);
 
     // 스프린트
@@ -438,7 +440,8 @@
     return {
       jump() { g.p.jumpBuf = P.buffer; g.input.jumpHeld = true; },
       jumpUp() { g.input.jumpHeld = false; },
-      slide() { g.p.slideReq = true; },
+      slide() { g.p.slideReq = true; g.input.slideHeld = true; },
+      slideUp() { g.input.slideHeld = false; },
       sprint(on) { g.input.sprint = !!on; },
       update(dt) { update(g, dt); },
     };

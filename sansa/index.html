@@ -124,7 +124,7 @@ a.go{text-decoration:none;display:inline-block}
   <div class="panel"><h3>조작과 규칙</h3>
     <ol class="rules">
       <li><b>점프</b> 스페이스·↑ — 공중에서 한 번 더 누르면 <b>2단 점프</b>. 낮은 바위·바나나 껍질은 한 번, 큰 바위·석등은 길게 누르거나 2단 점프로 넘어요.</li>
-      <li><b>슬라이딩</b> ↓·S — 엉덩방아 자세로 쭉 미끄러져요. 공중에 떠 있는 벌떼·연등·먹구름은 밑으로 슬라이딩하거나 2단 점프로 넘어요. 공중에서 누르면 바로 내려와요.</li>
+      <li><b>슬라이딩</b> ↓·S — 누르고 있는 동안 엉덩방아 자세로 계속 미끄러져요. 공중에 떠 있는 벌떼·연등·먹구름은 밑으로 슬라이딩하거나 2단 점프로 넘어요. 공중에서 누르면 바로 내려와요.</li>
       <li><b>스프린트</b> Shift·→ 누르고 있는 동안 — 게이지가 닳고, <b>에너지 음료</b>를 먹으면 채워지고 잠깐 전속력!</li>
       <li><b>쿠폰</b>은 먹으면 가게 쿠폰함에 쏙. 놓치면 그냥 지나가요.</li>
       <li>같이 달리는 친구들은 그냥 밀치고 지나가요. 부딪히면 <b>친구가 뒤로 튕겨 나가요.</b></li>
@@ -225,7 +225,7 @@ function musicTrack(t){if(track===t)return;track=t;mStep=0}
 let G=null,phase='title',camX=0,shake=0,flash=0,paused=false,endT=0;
 let diffKey='normal';
 const FX={parts:[],pops:[],banner:null,bolt:null,boltExit:null,toast:null,tAnim:0,surgeT:0,hasteGlow:0,catchT:0};
-const keys=new Set(),sprintKeys=new Set();let touchSprint=false,best=LS.get('sansa.best',0);
+const keys=new Set(),sprintKeys=new Set(),slideKeys=new Set();let touchSprint=false,best=LS.get('sansa.best',0);
 $('best').textContent=best.toLocaleString();
 const STAMP_KEY=SITE?'bjrun.stamps.'+SITE.season.id:'bjrun.stamps.x';
 let STP=LS.get(STAMP_KEY,null);if(!STP||typeof STP!=='object'||!STP.got)STP={got:{},boss:{},entered:false};if(!STP.boss)STP.boss={};
@@ -293,18 +293,19 @@ addEventListener('keydown',e=>{
   if(e.repeat)return;
   if(c==='KeyP'||c==='Escape'){paused=!paused;return}
   if(c==='Space'||c==='ArrowUp'||c==='KeyW'){keys.add(c);doJump()}
-  else if(c==='ArrowDown'||c==='KeyS'){doSlide()}
+  else if(c==='ArrowDown'||c==='KeyS'){slideKeys.add(c);doSlide()}
   else if(c==='ShiftLeft'||c==='ShiftRight'||c==='ArrowRight'||c==='KeyD'||c==='KeyJ'){sprintKeys.add(c);syncSprint()}
 });
 addEventListener('keyup',e=>{
   const c=e.code;
   if(keys.delete(c)&&keys.size===0&&G)G.api.jumpUp();
   if(sprintKeys.delete(c))syncSprint();
+  if(slideKeys.delete(c)&&slideKeys.size===0&&G)G.api.slideUp();
 });
-addEventListener('blur',()=>{keys.clear();sprintKeys.clear();touchSprint=false;if(G){G.api.jumpUp();syncSprint()}});
+addEventListener('blur',()=>{keys.clear();sprintKeys.clear();slideKeys.clear();if(G)G.api.slideUp();touchSprint=false;if(G){G.api.jumpUp();syncSprint()}});
 function bindBtn(id,down,up){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();unlockAudio();b.classList.add('on');down()});['pointerup','pointercancel','pointerleave'].forEach(t=>b.addEventListener(t,e=>{if(b.classList.contains('on')){b.classList.remove('on');up&&up()}}))}
 bindBtn('tbJump',doJump,()=>{if(G)G.api.jumpUp()});
-bindBtn('tbSlide',doSlide);
+bindBtn('tbSlide',doSlide,()=>{if(G)G.api.slideUp()});
 bindBtn('tbSprint',()=>{touchSprint=true;syncSprint()},()=>{touchSprint=false;syncSprint()});
 cvs.addEventListener('pointerdown',e=>{if(phase==='play'&&!touchMode){unlockAudio()}});
 $('snd').addEventListener('click',()=>{soundOn=!soundOn;LS.set('sansa.snd',soundOn);$('snd').textContent=soundOn?'소리 켬':'소리 끔';$('snd').setAttribute('aria-pressed',soundOn);unlockAudio()});
