@@ -6,9 +6,9 @@
 <title>산사 수호런 (백양산-삼광사)</title>
 <meta name="description" content="진수호가 백양산 산신령을 따라잡는 추격 레이스 · 동자승·젊은승·늙은승·거북이·토끼·사슴과 함께 삼광사 마당과 구름 하늘길을 달리며 가게 쿠폰을 먹어요">
 <link rel="icon" href="../common/sprites/bot_happy.png">
-<script src="../common/sites.js?v=10200406"></script>
-<script src="../common/wallet.js?v=10200406"></script>
-<script src="core.js?v=10200406"></script>
+<script src="../common/sites.js?v=10200411"></script>
+<script src="../common/wallet.js?v=10200411"></script>
+<script src="core.js?v=10200411"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
@@ -181,7 +181,7 @@ const SFX={
 };
 
 /* ------------------------------------------------------------ 배경음악 (음원 파일 없이 바로 연주)
- * 국악 추격 테마: 장구 자진모리 장단(12박 한 마디) + 가야금 뜯는 소리 + 대금 같은 긴 가락 + 은은한 드론.
+ * 가야금 독주: 가야금 뜯는 소리만 (장구·대금·드론은 빼서 단순하게).
  * 스테이지마다 곡이 바뀜: 백양산(밝은 평조) · 삼광사(신비로운 계면조 + 풍경) · 구름 하늘길(높고 경쾌하게) */
 let musicOn=LS.get('sansa.music',true),mBus=null,mTimer=null,mNext=0,mStep=0,track='mountain',NOISE=null;
 const NT=(base,s)=>s==null?null:base*Math.pow(2,s/12);
@@ -229,13 +229,8 @@ function musicTick(){
   const sp=clamp(G.p.v/P.base,1,1.3),step=T.step/(1+(sp-1)*.3)*(left<30?.88:1);   // 빨라질수록 · 마지막 30초엔 몰아치게
   while(mNext<AC.currentTime+.2){
     if(pendingTrack&&mStep%12===0){track=pendingTrack;pendingTrack=null;mStep=0;T=TRACKS[track]}
-    if(pendingTrack&&mStep%12>=9)drum('deok',mNext+step*.5);              // 곡 바뀌기 전 잔가락
     const bar=Math.floor(mStep/12)%T.G.length,i=mStep%12;
-    const n=T.G[bar][i];if(n!=null)gayageum(NT(T.root,n),mNext,.13,i===6&&bar%2===1);
-    const dr=JANGGU[i];if(dr)drum(dr,mNext);
-    if(i===0){const[fn,len]=T.F[bar];daegeum(NT(T.root,fn),mNext,step*len*.95,.07);drone(T,mNext,step*12)}
-    if(T.bell&&i===0&&bar===0)gayageum(NT(T.root,24),mNext,.06),daegeum(NT(T.root,31),mNext+.02,1.8,.025);   // 풍경
-    if(left<30&&i%3===0)drum('deok',mNext+step*.5);                                                  // 막판 잔가락
+    const n=T.G[bar][i];if(n!=null)gayageum(NT(T.root,n),mNext,.16,i===6&&bar%2===1);
     mStep++;mNext+=step;
   }
 }
