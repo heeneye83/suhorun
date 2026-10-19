@@ -815,7 +815,7 @@ function showTitle(){
   const si=stampInfo();
   card.innerHTML=`<p class="eyebrow">백양산 · 삼광사 · 구름 하늘길</p><h2>산사 수호런</h2>
   <p>백양산 산신령이 달아난다! 동자승·젊은승·늙은승·거북이·토끼·사슴과 함께 달리며<br>산신령을 <b>만지면</b> 잡은 거예요. 쿠폰은 달리다 먹고, 못 먹으면 그냥 지나가요.</p>
-  <p class="sub">제한 시간 <b>2분 30초</b> · 시간 안에 못 잡으면 끝</p>
+  <p class="sub">제한 시간 <b>2분</b> · 시간 안에 못 잡으면 끝</p>
   <div class="row"><button class="go" id="go" type="button">게임 시작하기</button></div>
   <p class="sub">${touchMode?'화면 아래 버튼으로 조작 · 가로로 돌려서 하면 편해요':'스페이스·↑ 점프(공중에서 한 번 더 = 2단 점프) · ↓ 슬라이딩 · Shift 스프린트 (누르고 있기)'} · 스탬프 ${si.done}/${si.total}${si.done>=si.total?(STP.entered?' · 응모 완료':' · 완성! 결과 화면에서 응모'):''}</p>`;
   ovl.hidden=false;

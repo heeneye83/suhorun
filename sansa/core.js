@@ -30,9 +30,9 @@
   };
 
   // ---- 난이도: 제한 시간 안에 산신령을 못 잡으면 끝 ----
-  // 난이도 선택 없이 하나: 2분 30초 안에 산신령을 잡아야 함 (시연 후 필요하면 limit·spiritF 조정)
+  // 난이도 선택 없이 하나: 2분 안에 산신령을 잡아야 함 (시연 후 필요하면 limit·spiritF 조정)
   const DIFF = {
-    normal: { name: '기본', limit: 150, spiritF: 1.05, gap0: 2600, drinkP: 0.60, spacing: 1.0, hint: '2분 30초 안에 산신령을 잡아요' },
+    normal: { name: '기본', limit: 120, spiritF: 1.06, gap0: 2600, drinkP: 0.60, spacing: 2.4, hint: '2분 안에 산신령을 잡아요' },   // spacing 2.4 = 장애물 40% 줄임
   };
 
 
@@ -102,8 +102,8 @@
     g.pat++; g.sc = (g.sc || 0) + 1;
     const r = g.rnd();
     let type = null;
-    if (g.pat % 3 === 0) { if (r < g.cfg.drinkP) type = 'drink'; }                 // 에너지 음료: 3번째 장애물마다 기회
-    else if (g.sc >= 3 && r < 0.85) { type = 'coupon'; g.sc = 0; }                  // 쿠폰: 서너 장애물에 하나꼴 (한 스테이지에 3~4장)
+    if (g.pat % 2 === 0) { if (r < g.cfg.drinkP) type = 'drink'; }                 // 에너지 음료: 3번째 장애물마다 기회
+    else if (g.sc >= 2 && r < 0.85) { type = 'coupon'; g.sc = 0; }   // 장애물이 줄어든 만큼 쿠폰은 자주                  // 쿠폰: 서너 장애물에 하나꼴 (한 스테이지에 3~4장)
     if (!type) return;
     const it = { x, y, type, taken: false };
     if (type === 'coupon') it.store = g.couponSeq++ % g.storeCount;
@@ -444,7 +444,7 @@
     };
   }
 
-  const Sansa = { P, DIFF, RACERS, FIELD, KINDS, KIND_NAMES, STAGE_LEN, kindOf, create, update, mult, inPit, rng };
+  const Sansa = { P, DIFF, RACERS, FIELD, KINDS, KIND_NAMES, STAGE_LEN, kindOf, create, update, mult, inPit, rng, gen };
   if (typeof module !== 'undefined' && module.exports) module.exports = Sansa;
   root.Sansa = Sansa;
 })(typeof window !== 'undefined' ? window : globalThis);
