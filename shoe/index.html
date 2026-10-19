@@ -757,11 +757,11 @@ function drawHorde(){
 /* 주인공: 시트에서 뽑은 달리기 6칸 + 점프·슬라이딩 그림 (발이 땅에 붙도록 이동 거리에 맞춰 칸을 넘김) */
 const KM={"cw": 220, "ch": 190, "ax": 104, "sad": [[104, 106], [104, 105], [104, 105], [104, 100], [104, 103], [104, 128]], "seat": [145, 228], "rw": 200, "rh": 300};
 const KS=.83,RS=.41*KS/.97,KCX=115;
-const WALK_N=6,WALK_CYC=150;   // 달리기 한 주기 동안 땅이 움직이는 거리(게임 px)
+const WALK_N=12,WALK_CYC=98;   // 걷기 한 주기 동안 땅이 움직이는 거리(게임 px, 기본 크기 기준)
 let SPRING_ON=0;               // 무지개 운동화 효과(신발이 무지개빛으로 반짝)
 const SHOE_CV=document.createElement('canvas'),SHOE_CX=SHOE_CV.getContext('2d');
 function konikFrame(){const p=G.p;if(G.state==='dead')return 5;if(p.slide>0&&p.y>=GY-1)return 5;if(p.y<GY-1)return 4;
-  const d=(G.dist+(G.tread||0))/WALK_CYC;return ((d%1)+1)%1*4}
+  const d=(G.dist+(G.tread||0))/(WALK_CYC*(1+.55*p.giant));return ((d%1)+1)%1*4}
 function heroImg(key,kind){return IMG[(key.indexOf('gold')===0?'gold_':'')+'hero_'+kind]}
 function rainbowShoes(c,mask,sx,sy,sw,sh,dx,dy,dw,dh){if(!mask)return;const w=Math.ceil(dw)+2,h=Math.ceil(dh)+2;if(SHOE_CV.width<w)SHOE_CV.width=w;if(SHOE_CV.height<h)SHOE_CV.height=h;
   const x=SHOE_CX;x.clearRect(0,0,SHOE_CV.width,SHOE_CV.height);x.globalCompositeOperation='source-over';x.drawImage(mask,sx,sy,sw,sh,0,0,dw,dh);
