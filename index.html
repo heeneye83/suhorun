@@ -98,7 +98,7 @@ a.site:hover{transform:translateY(-3px)}
     const inner=`<div class="pic">${s.thumb?`<img src="${esc(s.thumb)}" alt="" loading="lazy">`:`<div class="ph" style="--c:${s.color}"><b>${esc(s.place.split(' · ').pop())}</b></div>`}<span class="chip">${esc(s.place)}</span>${open?'':'<span class="soonbadge">준비 중</span>'}</div>
       <div class="body"><h3><i style="--c:${s.color}"></i>${esc(s.name)}</h3><p class="pitch">${esc(s.pitch)}</p>
       <div class="row"><span class="who">${esc(s.who)}</span>${open?`<span class="prog">${st?`스탬프 ${st.done}/${st.total}`:''}${n?` · 쿠폰 ${n}장`:''}</span>`:''}</div>
-      ${open?'<span class="btn" style="margin-top:6px">${s.cta||'지금 달리기'} →</span>':''}</div>`;
+      ${open?'<span class="btn" style="margin-top:6px">'+(s.cta||'지금 달리기')+' →</span>':''}</div>`;
     return open?`<a class="site card" href="${esc(s.url)}" aria-label="${esc(s.name)} 시작하기">${inner}</a>`:`<div class="site card soon" aria-disabled="true">${inner}</div>`;
   }).join('');
   const u=W.unused();
