@@ -119,10 +119,26 @@ window.SUHO = {
       ],
     },
     {
-      id: 'bujeon', name: '시장 수호런 (부전시장-부전도서관)', place: '부전시장 · 부전도서관', status: 'soon',
+      id: 'bujeon', name: '시장 수호런 (부전시장-부전도서관)', place: '부전시장 · 부전도서관', status: 'open', url: 'bujeon/',
       color: '#e0702c', thumb: 'common/img/bujeon.webp',
-      pitch: '과일·생선·떡 가게가 늘어선 부전시장 골목을 달려 부전도서관까지. 상인 가게 쿠폰으로 꾸밀 예정이에요.',
-      who: '시장 상인 · 장보러 온 주민',
+      pitch: '악덕 건물주와 단속반이 몰려왔다! 부전시장 아주머니를 업고 농산물·수산물·먹자골목을 지나 부전도서관 앞 구조 헬기까지. 킥보드 빌런의 바나나를 피하고, 품바 엿장수의 선물상자에서 이벤트 쿠폰을 노려요.',
+      who: '시장 상인 · 장보러 온 주민 · 쿠폰북 추첨',
+      season: { id: 's1-bujeon', name: '시즌 1 · 부전시장 스탬프 투어', ends: '' },
+      lastStage: 6,
+      grand: { name: '부전시장 쿠폰북', desc: '참여 가게 6곳 대표 혜택 1개씩', winners: 30 },
+      // 시연용 가상 가게 (제안서 승인 후 실제 협업 가게로 교체) — 스테이지를 지날 때마다 한 곳씩 스탬프
+      stores: [
+        { name: '부전시장 정문 과일가게', benefit: '귤 한 봉지 덤', pin: '1111', color: '#e0702c' },
+        { name: '농산물 골목 채소가게', benefit: '대파 한 단 덤', pin: '2222', color: '#4f9a5a' },
+        { name: '수산물 골목 생선가게', benefit: '손질 무료', pin: '3333', color: '#3d5a80' },
+        { name: '먹자골목 어묵집', benefit: '어묵 1개 추가', pin: '4444', color: '#c8553d' },
+        { name: '부전역 앞 떡집', benefit: '500원 할인', pin: '5555', color: '#d94f8a' },
+        { name: '도서관 앞 북카페', benefit: '음료 사이즈업', pin: '6666', color: '#8a5cc4' },
+      ],
+      eventStores: [
+        { name: '부전떡갈비', benefit: '떡갈비 1개 추가', pin: '7777', color: '#b9722f' },
+        { name: '시장 국밥집', benefit: '공깃밥 무료', pin: '8888', color: '#6b4a2b' },
+      ],
     },
     {
       id: 'gaegeum', name: '골목시장 수호런 (개금골목시장)', place: '개금동 · 개금골목시장', status: 'soon',

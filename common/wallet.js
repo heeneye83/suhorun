@@ -6,7 +6,7 @@
   'use strict';
   const KEY = 'suhorun.v1', OUTBOX = 'suhorun.outbox';
   const ABC = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const PREFIX = { jeonpo: 'JP', seomyeon: 'SM', choeup: 'CE', baegyang: 'BY' };
+  const PREFIX = { jeonpo: 'JP', seomyeon: 'SM', choeup: 'CE', baegyang: 'BY', bujeon: 'BJ', shoe: 'SH' };
   const cfg = () => window.SUHO || { sites: [], endpoint: '' };
   const rid = (n) => { let s = ''; const a = new Uint32Array(n); (window.crypto || window.msCrypto).getRandomValues(a); for (const v of a) s += ABC[v % ABC.length]; return s; };
   const now = () => new Date().toISOString();
