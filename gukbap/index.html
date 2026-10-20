@@ -192,7 +192,7 @@ input[type=range]{width:100%;accent-color:var(--gold);margin:1cqw 0}
 const $=id=>document.getElementById(id);
 const SITE_ID='gukbap',W=window.SuhoWallet||null,SAVE='gukbap.save.v1',BEST='gukbap.best.v1';
 const SEASON=(()=>{const s=W&&W.site(SITE_ID);return s&&s.season?s.season.id:'s1-gukbap'})();
-const IMG=k=>'img/'+k;
+const IMG=k=>'img/'+k+'?v=2';
 const FACE={suho:'../common/sprites/g_hero.png',bolt:'../common/sprites/bot_a.png',boltH:'../common/sprites/bot_happy.png',misuk:IMG('p_misuk.png'),minho:IMG('p_minho.png'),choi:IMG('p_choi.png'),j:IMG('p_j.png'),yang:IMG('p_yang.png')};
 const NAME={suho:'진수호',bolt:'볼트',boltH:'볼트',misuk:'미숙 할매',minho:'손자 민호',choi:'국밥왕 최 상무',j:'먹방킹 J',yang:'양 기사님',nar:''};
 const ITEMS={

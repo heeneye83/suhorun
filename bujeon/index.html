@@ -263,7 +263,7 @@ const SHEETS={gift:1,bgs1:1,bgs2:1,bgs3:1,bgs4:1,bgs5:1,bgs6:1,z_walk:2,z_run:2,
   kingdj:4,heli:2,boom:1,bomb:1,arch:1,it_coin:1,it_drink:1,it_vaccine:1,it_candy:1,z_boss:3,fireball:1,ob_pipe:1,ob_beams:1,ob_tires:1,ob_cube:1,ob_car:1,ob_aframe:1,ob_pole:1,ob_neon:1,hero_walk:1,hero_jump:1,hero_slide:1,chopper:2,z_gym:5,dumbbell:1,it_spring:1,i_heart:1,
   tmachine:2,p_party:4};
 const IMG={};
-function loadAll(){const ps=[];for(const k in SHEETS){const src=(window.SPRITES&&SPRITES[k])||('sprites/'+k+(k.startsWith('bg')?'.jpg':'.png')+'?v=20261020b3');   // ?v= : 그림을 바꾸면 이 값을 바꿔야 휴대폰 캐시에 남은 옛 그림을 안 씀
+function loadAll(){const ps=[];for(const k in SHEETS){const src=(window.SPRITES&&SPRITES[k])||('sprites/'+k+(k.startsWith('bg')?'.jpg':'.png')+'?v=20261021c1');   // ?v= : 그림을 바꾸면 이 값을 바꿔야 휴대폰 캐시에 남은 옛 그림을 안 씀
   ps.push(new Promise(res=>{const im=new Image();im.onload=()=>{IMG[k]=im;res()};im.onerror=()=>res();im.src=src}))}return Promise.all(ps)}
 function spr(k,f,x,yb,h,flip,rot){const im=IMG[k];if(!im)return false;const n=SHEETS[k],cw=im.width/n,ch=im.height,w=cw*h/ch;
   cx.save();cx.translate(x,yb);if(rot){cx.translate(0,-h/2);cx.rotate(rot);cx.translate(0,h/2)}if(flip)cx.scale(-1,1);cx.drawImage(im,(f%n)*cw,0,cw,ch,-w/2,-h,w,h);cx.restore();return true}
