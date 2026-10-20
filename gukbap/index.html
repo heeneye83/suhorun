@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1b120c">
+<title>국밥 수호런 · 사라진 육수 장부 (서면 돼지국밥골목)</title>
+<script src="../common/sites.js"></script>
+<script src="../common/wallet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1b120c;--paper:#fff6e6;--gold:#ffcf5a;--gold2:#c9902a;--red:#e2533a;--mint:#6ff2d6;--muted:#d9c4a6;--panel:rgba(32,20,12,.92)}
+html{background:var(--ink)}
+body{margin:0;min-height:100vh;color-scheme:dark;color:var(--paper);font-family:'Gowun Dodum','Noto Sans KR',sans-serif;background:var(--ink);
+  background-image:radial-gradient(120% 70% at 50% 0%,#3d2615,var(--ink) 70%);padding:14px 16px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:12px;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+.bar,#wrap,.info{width:min(100%,1180px,calc((100vh - 190px) * 16 / 9));min-width:min(100%,320px)}
+@supports (height:100dvh){.bar,#wrap,.info{width:min(100%,1180px,calc((100dvh - 190px) * 16 / 9))}}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bar h1{font-family:'Jua',sans-serif;font-weight:400;font-size:clamp(22px,3.2vw,34px);margin:0;color:var(--gold);white-space:nowrap}
+.bar h1 small{font-family:'Gowun Dodum',sans-serif;font-size:.45em;color:var(--muted);letter-spacing:.1em;margin-left:.6em;vertical-align:middle}
+.home{display:inline-flex;align-items:center;justify-content:center;width:1.25em;height:1.25em;margin-right:.3em;border-radius:50%;background:rgba(255,246,230,.1);color:var(--paper);text-decoration:none;font-size:.8em;vertical-align:middle}
+.tbtn{font:inherit;font-size:13px;color:var(--paper);background:rgba(255,246,230,.08);border:1px solid rgba(255,246,230,.22);border-radius:999px;padding:6px 12px;cursor:pointer;text-decoration:none}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:12px 28px;font-size:14px;line-height:1.65;color:var(--muted)}
+.info h3{margin:0 0 4px;font-family:'Jua',sans-serif;font-weight:400;font-size:15px;color:var(--gold)}
+.info b{color:var(--paper);font-weight:400}
+@media (max-width:720px){.info{grid-template-columns:1fr}}
+
+/* ===== 게임 화면 ===== */
+#wrap{position:relative;aspect-ratio:16/9;border-radius:18px;overflow:hidden;container-type:size;background:#0d0805;
+  box-shadow:0 0 0 6px #3d2615,0 0 0 8px rgba(255,207,90,.35),0 24px 60px rgba(0,0,0,.5);-webkit-user-select:none;user-select:none}
+body.playing{padding:0;overflow:hidden}
+body.playing .bar,body.playing .info{display:none}
+body.playing #wrap{position:fixed;inset:0;margin:auto;width:min(100vw,calc(100vh * 16 / 9));height:auto;border-radius:0;box-shadow:none}
+@supports (height:100dvh){body.playing #wrap{width:min(100vw,calc(100dvh * 16 / 9))}}
+.layer{position:absolute;inset:0}
+#scene{background:#000}
+#bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .5s}
+#hots button{position:absolute;background:transparent;border:0;padding:0;cursor:pointer;border-radius:1.2cqw}
+#hots button:hover,#hots button:focus-visible{outline:.35cqw dashed rgba(255,207,90,.85);outline-offset:-.2cqw;background:rgba(255,207,90,.08)}
+#hots button.glow{animation:glow 1.4s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 2cqw .6cqw rgba(255,207,90,.75)}}
+#hots .sign{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;color:#3a230f;font-family:'Jua',sans-serif;line-height:1.05;text-align:center}
+#hots .sign b{font-weight:400;font-size:2cqw}#hots .sign i{font-style:normal;font-size:1.3cqw;opacity:.8}
+#hots .who{border-radius:50%!important;background:rgba(255,246,230,.18)!important;border:.3cqw solid var(--gold)!important;overflow:hidden;box-shadow:0 .6cqw 1.4cqw rgba(0,0,0,.5)}
+#hots .who img{width:100%;height:100%;object-fit:cover;object-position:top}
+#hots .who span{position:absolute;left:50%;bottom:-2.6cqw;transform:translateX(-50%);white-space:nowrap;font-size:1.3cqw;background:var(--panel);padding:.1cqw .8cqw;border-radius:9px;color:var(--paper)}
+#hots .whowrap{position:absolute}
+#hots .jar{position:absolute;pointer-events:none;filter:drop-shadow(0 .4cqw .4cqw rgba(0,0,0,.4))}
+.exit{position:absolute;right:1.6cqw;bottom:14cqh;font-family:'Jua',sans-serif;font-size:2.1cqw;border:0;border-radius:999px;padding:1cqw 2.2cqw;background:var(--gold);color:#3a230f;box-shadow:0 .5cqw 0 var(--gold2);cursor:pointer;animation:glow 1.4s infinite}
+/* 위쪽 표시 */
+#hud{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:1cqw;padding:1.2cqw 1.6cqw;pointer-events:none;
+  background:linear-gradient(rgba(0,0,0,.55),transparent)}
+#hud>*{pointer-events:auto}
+#roomName{font-family:'Jua',sans-serif;font-size:2.2cqw;color:var(--gold);text-shadow:0 .2cqw 0 #000}
+#clock{font-family:'Jua',sans-serif;font-size:2cqw;background:rgba(0,0,0,.45);padding:.3cqw 1.2cqw;border-radius:999px;font-variant-numeric:tabular-nums}
+#hud .sp{flex:1}
+.hbtn{font-family:'Jua',sans-serif;font-size:1.8cqw;color:var(--paper);background:rgba(32,20,12,.8);border:.2cqw solid rgba(255,207,90,.6);border-radius:999px;padding:.5cqw 1.4cqw;cursor:pointer;display:inline-flex;align-items:center;gap:.5cqw}
+.hbtn img{height:2.6cqw}
+/* 아이템 */
+#inv{position:absolute;left:1.4cqw;bottom:1.4cqw;display:flex;gap:.8cqw;padding:.8cqw;border-radius:1.6cqw;background:rgba(20,12,7,.72);border:.15cqw solid rgba(255,207,90,.3);max-width:88%;flex-wrap:wrap}
+#inv:empty{display:none}
+#inv button{width:5.6cqw;height:5.6cqw;border-radius:1.2cqw;border:.2cqw solid rgba(255,246,230,.25);background:rgba(255,246,230,.08);padding:.4cqw;cursor:pointer;position:relative}
+#inv button img{width:100%;height:100%;object-fit:contain}
+#inv button.sel{border-color:var(--gold);background:rgba(255,207,90,.25);box-shadow:0 0 1.2cqw rgba(255,207,90,.7)}
+#inv button.ev::after{content:'증거';position:absolute;right:-.4cqw;top:-.6cqw;font-size:1cqw;background:var(--red);color:#fff;border-radius:6px;padding:0 .4cqw}
+#selHint{position:absolute;left:50%;bottom:10.5cqw;transform:translateX(-50%);font-size:1.6cqw;background:var(--panel);padding:.4cqw 1.4cqw;border-radius:999px;border:.15cqw solid var(--gold);pointer-events:none}
+/* 대화 */
+#talk{position:absolute;left:2cqw;right:2cqw;bottom:2cqw;min-height:15cqw;display:flex;gap:1.6cqw;align-items:flex-end;cursor:pointer;z-index:9}
+#talk .face{width:17cqw;flex-shrink:0;align-self:flex-end;filter:drop-shadow(0 .6cqw 1cqw rgba(0,0,0,.6))}
+#talk .face img{width:100%;display:block}
+#talk .box{flex:1;background:var(--panel);border:.25cqw solid rgba(255,207,90,.55);border-radius:1.8cqw;padding:1.4cqw 2cqw 1.6cqw;min-height:13cqw;position:relative}
+#talk .name{font-family:'Jua',sans-serif;font-size:2cqw;color:var(--gold);margin-bottom:.4cqw}
+#talk .text{font-size:2.15cqw;line-height:1.55;word-break:keep-all;white-space:pre-line}
+#talk .next{position:absolute;right:1.6cqw;bottom:.8cqw;font-size:1.4cqw;color:var(--muted);animation:bob 1s infinite}
+@keyframes bob{50%{transform:translateY(-.4cqw)}}
+#talk.flash .box{background:rgba(48,34,20,.9);font-style:italic}
+/* 창(가까이 보기·퍼즐·수첩·추리) */
+#modal{position:absolute;inset:0;background:rgba(10,6,3,.72);display:flex;align-items:center;justify-content:center;z-index:6;backdrop-filter:blur(2px)}
+#modal .card{position:relative;width:min(80cqw,860px);max-height:88cqh;overflow:auto;background:#2a1a0f;border:.3cqw solid var(--gold);border-radius:2cqw;padding:2.4cqw 3cqw;box-shadow:0 2cqw 5cqw rgba(0,0,0,.6)}
+#modal h2{margin:0 0 1cqw;font-family:'Jua',sans-serif;font-weight:400;font-size:2.8cqw;color:var(--gold)}
+#modal p{margin:.5cqw 0;font-size:2cqw;line-height:1.6;word-break:keep-all}
+#modal .x{position:absolute;right:1.4cqw;top:1.2cqw;font-family:'Jua',sans-serif;font-size:2cqw;background:none;border:0;color:var(--muted);cursor:pointer}
+#modal .zoom{width:100%;aspect-ratio:16/8;border-radius:1.2cqw;background-repeat:no-repeat;border:.2cqw solid rgba(255,246,230,.25);margin-bottom:1cqw}
+#modal .row{display:flex;gap:1.2cqw;flex-wrap:wrap;justify-content:center;margin-top:1.4cqw}
+.btn{font-family:'Jua',sans-serif;font-size:2.1cqw;border:0;border-radius:999px;padding:.9cqw 2.6cqw;background:var(--gold);color:#3a230f;box-shadow:0 .45cqw 0 var(--gold2);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--paper);box-shadow:inset 0 0 0 .2cqw rgba(255,246,230,.45)}
+.btn[disabled]{opacity:.4;cursor:default}
+.note{background:#f4e6c4;color:#3a230f;border-radius:1cqw;padding:1.6cqw 2cqw;font-size:2.1cqw;line-height:1.7;transform:rotate(-1deg);box-shadow:0 .6cqw 1.4cqw rgba(0,0,0,.4)}
+.note b{color:#b0331f}
+/* 금고 다이얼 */
+.dial{display:flex;gap:1.6cqw;justify-content:center;margin:1.6cqw 0}
+.dial div{display:flex;flex-direction:column;align-items:center;gap:.4cqw}
+.dial button{font-family:'Jua',sans-serif;font-size:2cqw;width:7cqw;border:0;border-radius:.8cqw;background:#4a3020;color:var(--paper);cursor:pointer;padding:.3cqw 0}
+.dial span{font-family:'Jua',sans-serif;font-size:5cqw;width:7cqw;text-align:center;background:#11161a;color:#9ff;border-radius:1cqw;border:.3cqw solid #556}
+/* 자물쇠 기호 */
+.symrow{display:flex;gap:1.2cqw;justify-content:center;margin:1.2cqw 0}
+.slot{width:9cqw;height:9cqw;border-radius:1.2cqw;border:.3cqw dashed rgba(255,207,90,.6);display:flex;align-items:center;justify-content:center;font-size:5cqw;background:rgba(0,0,0,.25)}
+.sym{font-size:4.4cqw;width:10cqw;height:10cqw;border-radius:1.2cqw;border:.2cqw solid rgba(255,246,230,.3);background:rgba(255,246,230,.08);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--paper)}
+.sym small{font-size:1.3cqw;font-family:'Jua',sans-serif}
+/* 장독 퍼즐 */
+.jars{display:grid;grid-template-columns:repeat(3,9.5cqw);gap:1cqw;justify-content:center;margin:1.2cqw 0}
+.jars button{width:9.5cqw;height:9.5cqw;border:0;background:url(img/jar.png) center/contain no-repeat;cursor:pointer;position:relative}
+.jars button img{position:absolute;left:50%;top:6%;width:52%;transform:translateX(-50%);filter:drop-shadow(0 .2cqw .2cqw rgba(0,0,0,.5))}
+.jars button.ok{filter:drop-shadow(0 0 1cqw rgba(111,242,214,.9))}
+.legend{display:flex;gap:2cqw;justify-content:center;font-size:1.7cqw;align-items:center}
+.legend img{height:3.4cqw;vertical-align:middle}
+/* 영상 */
+.video{position:relative;width:78%;margin:0 auto;aspect-ratio:16/9;border-radius:1cqw;overflow:hidden;background:#000;border:.3cqw solid #222}
+.video img.bgv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.7) brightness(.8)}
+.video .who{position:absolute;bottom:4%;height:62%}
+.video .rec{position:absolute;left:2%;top:3%;font-family:'Jua',sans-serif;font-size:2cqw;color:#ff4c4c}
+.video .tc{position:absolute;right:2%;top:3%;font-family:'Jua',sans-serif;font-size:2cqw;color:#fff;background:rgba(0,0,0,.5);padding:0 .8cqw;border-radius:.6cqw}
+.video .cap{position:absolute;left:0;right:0;bottom:0;padding:.6cqw 1.4cqw;background:rgba(0,0,0,.6);font-size:1.6cqw}
+input[type=range]{width:100%;accent-color:var(--gold);margin:1cqw 0}
+/* 수첩 */
+.nb{display:grid;grid-template-columns:1fr 1fr;gap:1.4cqw}
+.nb h3{font-family:'Jua',sans-serif;font-weight:400;font-size:2cqw;color:var(--gold);margin:0 0 .4cqw}
+.nb ul{margin:0;padding-left:2cqw;font-size:1.75cqw;line-height:1.6}
+.nb li.no{color:#8d7b66}
+/* 추리 */
+.pick{display:grid;gap:1.2cqw;margin:1.2cqw 0}
+.pick.p4{grid-template-columns:repeat(4,1fr)}.pick.p3{grid-template-columns:repeat(3,1fr)}
+.pick button{font:inherit;font-size:1.7cqw;color:var(--paper);background:rgba(255,246,230,.07);border:.25cqw solid rgba(255,246,230,.2);border-radius:1.4cqw;padding:1cqw;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.5cqw}
+.pick button img{height:9cqw;max-width:100%;object-fit:contain}
+.pick button.on{border-color:var(--gold);background:rgba(255,207,90,.2)}
+.pick button b{font-family:'Jua',sans-serif;font-weight:400;font-size:1.9cqw}
+/* 타이틀·회상·엔딩 */
+#title{background:center/cover no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqw;text-align:center;z-index:8}
+#title::before{content:'';position:absolute;inset:0;background:radial-gradient(70% 70% at 50% 50%,rgba(20,12,7,.55),rgba(20,12,7,.88))}
+#title>*{position:relative}
+#title .eyebrow{font-size:1.8cqw;letter-spacing:.3em;color:var(--muted)}
+#title h2{margin:0;font-family:'Jua',sans-serif;font-weight:400;font-size:6.4cqw;color:var(--gold);text-shadow:0 .5cqw 0 #3a230f}
+#title p{margin:0;font-size:2.1cqw;line-height:1.6;max-width:66cqw;word-break:keep-all}
+#title .row{display:flex;gap:1.4cqw;flex-wrap:wrap;justify-content:center}
+#title .best{font-size:1.7cqw;color:var(--muted)}
+#flash{z-index:7;background:#000}
+#flash img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:kb 14s ease-out forwards}
+@keyframes kb{from{transform:scale(1.08)}to{transform:scale(1)}}
+#flash .ov .sign{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Jua',sans-serif;color:#3a230f;text-align:center;line-height:1.1;animation:tin2 1.6s ease-out}
+#flash .ov .sign b{font-weight:400;font-size:3cqw}#flash .ov .sign i{font-style:normal;font-size:1.6cqw}
+@keyframes tin2{from{opacity:0;transform:scale(.9)}to{opacity:1}}
+#flash .yr{position:absolute;left:3cqw;top:3cqw;font-family:'Jua',sans-serif;font-size:3cqw;color:#f4e6c4;text-shadow:0 .3cqw .6cqw #000}
+#toast{position:absolute;left:50%;top:9cqw;transform:translateX(-50%);background:var(--panel);border:.2cqw solid var(--gold);border-radius:999px;padding:.7cqw 2cqw;font-size:1.9cqw;z-index:10;pointer-events:none;white-space:nowrap;animation:tin 2.4s forwards}
+@keyframes tin{0%{opacity:0;transform:translate(-50%,-1cqw)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+.coupon{display:flex;gap:1.4cqw;align-items:center;background:#f4e6c4;color:#3a230f;border-radius:1.2cqw;padding:1cqw 1.6cqw;margin:.6cqw 0;font-size:1.8cqw}
+.coupon b{font-family:'Jua',sans-serif;font-weight:400;font-size:2.1cqw}
+.coupon code{margin-left:auto;font-size:1.6cqw;background:#3a230f;color:var(--gold);padding:.2cqw .8cqw;border-radius:.6cqw}
+.rank{font-size:1.8cqw;margin:.6cqw 0 0;padding-left:2.4cqw}
+</style>
+</head>
+<body>
+<div class="bar">
+  <h1><a class="home" href="../" aria-label="수호런 홈">⌂</a>국밥 수호런<small>서면 돼지국밥골목 · 방탈출 추리</small></h1>
+  <div><button class="tbtn" id="fsBtn">⛶ 전체 화면</button></div>
+</div>
+
+<div id="wrap">
+  <div id="scene" class="layer">
+    <img id="bg" alt="">
+    <div id="hots" class="layer"></div>
+  </div>
+  <div id="hud" hidden>
+    <span id="roomName"></span><span id="clock">04:00</span><span class="sp"></span>
+    <button class="hbtn" id="noteBtn">📒 수사 수첩</button>
+    <button class="hbtn" id="hintBtn"><img src="../common/sprites/bot_a.png" alt="">볼트 힌트</button>
+    <button class="hbtn" id="menuBtn" aria-label="멈춤">Ⅱ</button>
+  </div>
+  <div id="inv"></div>
+  <div id="selHint" hidden></div>
+  <div id="talk" hidden><div class="face"><img alt=""></div><div class="box"><div class="name"></div><div class="text"></div><div class="next">▼ 눌러서 계속</div></div></div>
+  <div id="flash" class="layer" hidden><img alt=""><div class="yr"></div><div class="ov"></div></div>
+  <div id="modal" hidden><div class="card"><button class="x" aria-label="닫기">✕</button><div class="body"></div></div></div>
+  <div id="title" class="layer">
+    <div class="eyebrow">SUHO RUN · MYSTERY</div>
+    <h2>사라진 육수 장부</h2>
+    <p>축제 날 새벽, 서면 돼지국밥골목 '피란돼지국밥'에서 70년 된 육수 장부가 사라졌다. 아침 9시 방송 촬영 전까지 수호와 볼트가 장부를 되찾아야 한다.</p>
+    <div class="row"><button class="btn" id="startBtn">수사 시작</button><button class="btn ghost" id="contBtn" hidden>이어서 하기</button></div>
+    <div class="best" id="bestLine"></div>
+  </div>
+</div>
+
+<div class="info">
+  <div><h3>어떻게 하나요</h3>장면에서 수상한 곳을 <b>눌러서</b> 살펴보세요. 주운 물건은 아래 칸에 모여요. 물건을 <b>한 번 눌러 고른 뒤</b> 장면이나 사람을 누르면 그곳에 써요. 막히면 <b>볼트 힌트</b>(기록에 30초 추가). 방을 하나 끝낼 때마다 저장돼요.</div>
+  <div><h3>이야기</h3>방 세 개(주방 · 밤의 골목 · 옥상 장독대)를 풀고 마지막에 <b>범인 · 증거 3개 · 동기</b>를 지목해요. 동기까지 맞히면 <b>진실 엔딩</b>. 등장하는 가게와 인물, 쿠폰은 시연용으로 지어낸 것입니다.</div>
+</div>
+
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const SITE_ID='gukbap',W=window.SuhoWallet||null,SAVE='gukbap.save.v1',BEST='gukbap.best.v1';
+const SEASON=(()=>{const s=W&&W.site(SITE_ID);return s&&s.season?s.season.id:'s1-gukbap'})();
+const IMG=k=>'img/'+k;
+const FACE={suho:'../common/sprites/g_hero.png',bolt:'../common/sprites/bot_a.png',boltH:'../common/sprites/bot_happy.png',misuk:IMG('p_misuk.png'),minho:IMG('p_minho.png'),choi:IMG('p_choi.png'),j:IMG('p_j.png'),yang:IMG('p_yang.png')};
+const NAME={suho:'진수호',bolt:'볼트',boltH:'볼트',misuk:'미숙 할매',minho:'손자 민호',choi:'국밥왕 최 상무',j:'먹방킹 J',yang:'양 기사님',nar:''};
+const ITEMS={
+  flash:{n:'손전등',img:'i_flash.png',d:'서랍장에서 찾은 노란 손전등.'},
+  photo52:{n:'1952년 사진',img:'flash1.jpg',d:'액자 뒤의 흑백 사진. 가게 앞의 순임과 덕수, 그리고 갓난아기. 뒷면: "순임·덕수, 우리 둘이 같이 만든 국밥집".'},
+  badge:{n:'금색 배지',img:'i_badge.png',d:'금고 앞에 떨어져 있던 국밥왕 직원 배지.',ev:1},
+  screw:{n:'작은 나사',img:'i_screw.png',d:'그릇 더미 사이에 있던 카메라 짐벌 나사.',ev:1},
+  phone:{n:'J의 촬영 영상',img:'i_phone.png',d:'먹방킹 J가 밤새 찍은 골목 영상. 눌러서 돌려 보기.'},
+  video:{n:'영상 캡처 01:40',img:'i_phone.png',d:'새벽 1시 40분, 정장 차림 남자가 피란돼지국밥 옆 계단으로 올라가는 장면.',ev:1},
+  receipt:{n:'택시 영수증',img:'i_receipt.png',d:'양 기사님이 준 영수증. 01:05 서면 → 범천동.',ev:1},
+  key:{n:'옥상 열쇠',img:'i_key.png',d:'골목 창고에서 찾은 옥상 문 열쇠.'},
+  glove:{n:'분홍 고무장갑',img:'i_glove.png',d:'물탱크 옆에 벗어 둔 고무장갑. 민호 것이다.',ev:1},
+  ledger:{n:'육수 장부',img:'i_ledger.png',d:'1951년부터 적은 장부. 마지막 몇 장이 찢겨 나갔다.'},
+  oldphoto:{n:'낡은 사진',img:'flash2.jpg',d:'옥상 계단에 떨어진 사진. 교복 입은 중학생. 뒷면: "아버지 — 기철, 1964".',ev:1},
+};
+const ROOMS={kitchen:{name:'방 1 · 피란돼지국밥 주방',bg:'bg_kitchen.jpg',t0:0},alley:{name:'방 2 · 새벽 2시의 국밥골목',bg:'bg_alley.jpg'},roof:{name:'방 3 · 옥상 장독대',bg:'bg_roof.jpg'}};
+const STORES=['피란돼지국밥','골목 솥단지국밥','서면 등불국밥'];   // 방마다 한 곳씩 (시연용 가상 가게)
+const MASTER='국밥골목 상인회';
+
+/* ---------- 상태 ---------- */
+let S=null,sel=null,clockT=null;
+function fresh(){return {room:'kitchen',f:{},inv:[],notes:[],elapsed:0,hints:0,stage:0,tries:0}}
+function save(){try{localStorage.setItem(SAVE,JSON.stringify(S))}catch(e){}}
+function loadSave(){try{return JSON.parse(localStorage.getItem(SAVE))}catch(e){return null}}
+function has(k){return S.inv.includes(k)}
+function give(k,quiet){if(has(k))return;S.inv.push(k);renderInv();if(!quiet)toast('얻음: '+ITEMS[k].n);sfx('get')}
+function note(t){if(!S.notes.includes(t))S.notes.push(t)}
+function toast(t){const d=document.createElement('div');d.id='toast';d.textContent=t;$('wrap').appendChild(d);setTimeout(()=>d.remove(),2400)}
+
+/* ---------- 소리 ---------- */
+let AC=null;
+function sfx(k){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime;
+  const seq={get:[[660,.08],[990,.12]],ok:[[523,.1],[659,.1],[784,.18]],no:[[220,.16],[180,.2]],tap:[[440,.04]],page:[[330,.05]]}[k]||[[440,.05]];
+  let at=t;for(const [f,d] of seq){const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.12,at);g.gain.exponentialRampToValueAtTime(.001,at+d);o.connect(g);g.connect(AC.destination);o.start(at);o.stop(at+d+.02);at+=d*.9}}catch(e){}}
+
+/* ---------- 대화 ---------- */
+let talkQ=[],talkDone=null;
+function say(lines,done){talkQ=lines.slice();talkDone=done||null;nextLine()}
+function nextLine(){
+  const L=talkQ.shift();
+  if(!L){$('talk').hidden=true;const d=talkDone;talkDone=null;if(d)d();return}
+  const [who,text]=L;const t=$('talk');t.hidden=false;t.classList.toggle('flash',who==='nar');
+  const f=t.querySelector('.face');f.hidden=!FACE[who];if(FACE[who])f.querySelector('img').src=FACE[who];
+  t.querySelector('.name').textContent=NAME[who]||'';t.querySelector('.text').textContent=text;sfx('page');
+}
+$('talk').addEventListener('click',nextLine);
+
+/* ---------- 창 ---------- */
+function modal(html,onClose){const m=$('modal');m.hidden=false;m.querySelector('.body').innerHTML=html;m._close=onClose||null;return m.querySelector('.body')}
+function closeModal(){const m=$('modal');if(m.hidden)return;m.hidden=true;const c=m._close;m._close=null;if(c)c()}
+$('modal').querySelector('.x').addEventListener('click',closeModal);
+function look(title,text,zoom,done){
+  const z=zoom?`<div class="zoom" style="background-image:url(${IMG(ROOMS[S.room].bg)});background-size:${zoom[2]}% auto;background-position:${zoom[0]}% ${zoom[1]}%"></div>`:'';
+  modal(`<h2>${title}</h2>${z}${text}<div class="row"><button class="btn" data-ok>확인</button></div>`,done).querySelector('[data-ok]').onclick=closeModal;
+}
+
+/* ---------- 회상 ---------- */
+function flashback(img,yr,lines,done,over){const f=$('flash');f.hidden=false;f.querySelector('.ov').innerHTML=over||'';const i=f.querySelector('img');i.src=IMG(img);i.style.animation='none';void i.offsetWidth;i.style.animation='';
+  f.querySelector('.yr').textContent=yr;say(lines,()=>{f.hidden=true;done&&done()})}
+
+/* ---------- 장면 ---------- */
+// 좌표는 1024×572 원본 기준 [x0,y0,x1,y1]
+const P=(b)=>`left:${b[0]/10.24}%;top:${b[1]/5.72}%;width:${(b[2]-b[0])/10.24}%;height:${(b[3]-b[1])/5.72}%`;
+function hot(box,label,fn,cls){const b=document.createElement('button');b.style.cssText=P(box);b.setAttribute('aria-label',label);if(cls)b.className=cls;
+  b.onclick=()=>{if(!$('talk').hidden)return;sfx('tap');fn()};$('hots').appendChild(b);return b}
+function person(who,x,y,size,fn){const w=document.createElement('div');w.className='whowrap';w.style.cssText=`left:${x/10.24}%;top:${y/5.72}%;width:${size/10.24}%;aspect-ratio:1`;
+  const b=document.createElement('button');b.className='who';b.style.cssText='left:0;top:0;width:100%;height:100%';b.innerHTML=`<img src="${FACE[who]}" alt=""><span>${NAME[who]}</span>`;
+  b.setAttribute('aria-label',NAME[who]+'와 이야기하기');b.onclick=()=>{if(!$('talk').hidden)return;sfx('tap');fn()};w.appendChild(b);$('hots').appendChild(w)}
+function useOr(target,map,dflt){if(sel&&map[sel]){const k=sel;setSel(null);map[k]()}else if(sel){const k=sel;setSel(null);say([['bolt',`여기엔 ${ITEMS[k].n}을(를) 쓸 데가 없어 보여.`]])}else dflt()}
+
+function enter(room,intro){
+  S.room=room;save();setSel(null);
+  $('bg').src=IMG(ROOMS[room].bg);$('roomName').textContent=ROOMS[room].name;
+  build();if(intro)intro();
+}
+function build(){
+  const h=$('hots');h.innerHTML='';
+  ({kitchen:buildKitchen,alley:buildAlley,roof:buildRoof})[S.room]();
+}
+
+/* ===== 방 1: 주방 ===== */
+function digits(){return [S.f.calendar?'12':'?',S.f.ladle?'3':'?',S.f.clock?'5':'?']}
+function buildKitchen(){
+  const F=S.f;
+  hot([28,205,78,276],'메모',()=>{F.memo=1;note('금고 번호 = 뼈 고는 시간 · 토렴 횟수 · 첫 그릇 나가는 시각');look('가마솥 옆 메모',`<div class="note">할매 글씨로 꾹꾹 눌러 쓴 메모<br><b>금고 번호</b> = 뼈 고는 <b>시간</b> · 토렴 <b>횟수</b> · 첫 그릇 나가는 <b>시각</b></div>`,null,build)});
+  hot([220,125,346,264],'달력',()=>{F.calendar=1;note('달력: 사골은 꼭 12시간 고을 것');look('벽 달력',`<p>오늘 날짜에 빨간 동그라미. 그 아래 작은 글씨.</p><div class="note">사골 넣음 — <b>꼭 12시간</b> 고을 것!</div>`,[22,22,320],build)});
+  hot([352,183,494,320],'국자 걸이',()=>{F.ladle=1;note('국자 3개 — 토렴은 국자마다 한 번씩, 3번');look('국자 걸이',`<p>국자가 딱 <b>세 개</b> 걸려 있다.</p><p>볼트: "토렴은 뜨거운 국물을 부었다 따랐다 하며 밥을 데우는 거야. 할매는 국자마다 한 번씩, 꼭 세 번!"</p>`,[42,40,320],build)});
+  hot([503,85,610,192],'벽시계',()=>{F.clock=1;note('시계 4시 + 1시간 = 가게 문 여는 5시, 첫 그릇도 5시');look('벽시계',`<p>지금은 새벽 <b>4시</b>. 시계 아래 붙은 쪽지.</p><div class="note">가게 문은 <b>지금부터 한 시간 뒤</b>에 연다. 첫 그릇은 문 열자마자!</div>`,[54,14,320],build)});
+  hot([504,198,614,308],'액자',()=>{if(F.photo){look('비뚤어진 액자','<p>사진은 이미 빼 두었다. 가게 옛 모습이 담긴 그림이 걸려 있다.</p>');return}
+    F.photo=1;give('photo52');note('과거 조각 1: 1952년, 순임과 덕수가 함께 만든 국밥집');
+    flashback('flash1.jpg','1952년 · 부산 서면',[
+      ['nar','액자 뒤에서 흑백 사진 한 장이 미끄러져 나왔다.'],
+      ['nar','1951년 겨울, 피란민 순임은 서면의 작은 국밥집 주인 덕수에게서 잠자리와 밥을 얻었다.'],
+      ['nar','은혜를 갚으려 함께 가게를 꾸리며, 소고기 대신 돼지 뼈로 국물을 내는 법을 둘이 같이 찾아냈다.'],
+      ['nar','사진 뒷면: "순임·덕수, 우리 둘이 같이 만든 국밥집"'],
+      ['suho','덕수 씨가 안고 있는 아기는… 누구지?'],['bolt','수첩에 적어 둘게. 아직은 모르는 사람이야.']],build)});
+  hot([626,282,762,424],'금고',()=>{if(F.safe){look('빈 금고','<p>텅 빈 금고. 찢어진 장부 표지만 남아 있다.</p>');return}safePuzzle()});
+  if(F.safe&&!has('badge')&&!F.badgeGot)hot([626,424,760,470],'금고 앞 바닥',()=>{F.badgeGot=1;give('badge');say([['nar','금고 앞 바닥에서 반짝이는 금색 배지를 주웠다. 돼지와 국그릇 로고…'],['bolt','이거 건너편 프랜차이즈 "국밥왕" 직원 배지야!']],build)},'glow');
+  hot([783,330,945,545],'서랍장',()=>{if(F.flashGot){look('서랍장','<p>행주와 수저통뿐이다.</p>');return}F.flashGot=1;give('flash');say([['nar','서랍 맨 아래 칸에서 노란 손전등을 찾았다.'],['bolt','어두운 데 들여다볼 때 쓰자.']],build)});
+  hot([372,362,618,500],'그릇 더미',()=>{if(F.screwGot){look('그릇 더미','<p>뚝배기와 스테인리스 그릇이 층층이 쌓여 있다.</p>');return}F.screwGot=1;give('screw');say([['nar','그릇 더미 사이에 작은 쇠 나사가 끼어 있다.'],['bolt','카메라 짐벌 나사 같아. 촬영 장비… 유튜버 J?']],build)});
+  hot([55,250,310,392],'가마솥',()=>look('가마솥','<p>사골이 밤새 끓고 있다. 구수한 김이 주방을 가득 채운다.</p><p>수호: "이 냄새를 70년 동안 지켜 온 거구나."</p>'));
+  if(F.safe&&F.badgeGot&&F.photo&&F.flashGot)exitBtn('골목으로 나가기 →',()=>roomClear(0,()=>enter('alley',alleyIntro)));
+}
+function safePuzzle(){
+  const v=[0,0,0,0];
+  const body=modal(`<h2>금고 다이얼</h2><p>네 자리 숫자를 맞추세요. 지금까지 찾은 단서: 뼈 <b>${digits()[0]}</b>시간 · 토렴 <b>${digits()[1]}</b>번 · 첫 그릇 <b>${digits()[2]}</b>시</p>
+   <div class="dial">${v.map((_,i)=>`<div><button data-u="${i}">▲</button><span id="d${i}">0</span><button data-d="${i}">▼</button></div>`).join('')}</div>
+   <div class="row"><button class="btn" id="tryS">열어 보기</button></div>`,build);
+  body.querySelectorAll('[data-u],[data-d]').forEach(b=>b.onclick=()=>{const i=+(b.dataset.u??b.dataset.d);v[i]=(v[i]+(b.dataset.u!=null?1:9))%10;$('d'+i).textContent=v[i];sfx('tap')});
+  $('tryS').onclick=()=>{if(v.join('')==='1235'){sfx('ok');S.f.safe=1;S.tries=0;closeModal();
+      say([['nar','철컥! 금고 문이 열렸다.'],['suho','…비어 있어. 찢어진 표지만 남았네.'],['bolt','범인이 다녀간 거야. 금고 앞 바닥을 봐, 뭔가 반짝여!']],build)}
+    else{sfx('no');S.tries++;toast(S.tries>=3?'철컥… 볼트 힌트를 써 봐요':'철컥… 안 열린다')}};
+}
+
+/* ===== 방 2: 골목 ===== */
+const SHOPS=[{n:'돼지네국밥',y:1971,sym:'🐷',sn:'돼지 등',box:[40,112,248,470],sign:[44,122,244,188]},
+  {n:'솥단지국밥',y:1958,sym:'🍲',sn:'솥 간판',box:[268,112,478,470],sign:[272,124,474,192]},
+  {n:'골목순대',y:1983,sym:'🪑',sn:'빨간 의자',box:[500,112,720,470],sign:[510,126,710,194]},
+  {n:'등불국밥',y:1966,sym:'🏮',sn:'등불',box:[724,112,920,470],sign:[732,120,918,188]}];
+const LOCK=[1,3,0,2];   // 개업이 빠른 순서: 솥(1958) 등불(1966) 돼지(1971) 의자(1983)
+function buildAlley(){
+  const F=S.f;
+  for(const s of SHOPS){const d=document.createElement('div');d.className='sign';d.style.cssText=P(s.sign);d.innerHTML=`<b>${s.n}</b><i>SINCE ${s.y}</i>`;$('hots').appendChild(d)}
+  SHOPS.forEach((s,i)=>hot([s.box[0],s.box[1],s.box[2],s.box[1]+90],s.n+' 간판',()=>{F['sign'+i]=1;note(`${s.n} — ${s.y}년 개업 (${s.sn})`);look(s.n,`<p>간판: <b>${s.n} · SINCE ${s.y}</b></p><p>가게 앞 표시: ${s.sym} ${s.sn}</p>`)}));
+  hot([922,278,1012,474],'골목 창고 문',()=>{if(F.storage){look('골목 창고','<p>비어 있는 창고. 플라스틱 상자뿐이다.</p>');return}lockPuzzle()});
+  person('minho',318,250,96,talkMinho);
+  person('j',600,330,96,talkJ);
+  person('choi',790,300,96,talkChoi);
+  person('yang',120,260,96,talkYang);
+  if(F.storage&&has('video')&&F.past2)exitBtn('옥상으로 올라가기 →',()=>{if(!has('key'))return;roomClear(1,()=>enter('roof',roofIntro))});
+}
+function alleyIntro(){say([['nar','새벽 2시, 국밥골목. 가게들은 모두 문을 닫았다.'],['bolt','용의자 넷이 다 골목에 있어! 한 명씩 이야기를 들어 보자.'],['suho','배지 주인… 그리고 촬영 장비 주인부터 찾아야겠어.']])}
+function talkMinho(){useOr('minho',{
+    photo52:()=>say([['minho','증조할머니 사진이네요. 할매가 그 옆 아저씨 얘기는 한 번도 안 해 주셨어요.']]),
+    glove:()=>say([['minho','…제 장갑 맞아요. 장부를 옥상에 옮겨 둔 건 저예요. 할매가 가게 판다는 말 들을까 봐 숨겨 두려 했는데, 다시 가 보니 없더라고요.']]),
+  },()=>say([['minho','장부, 장부… 맛은 손이 기억하는 거라고 했지, 훔쳤다곤 안 했어요!'],['minho','난 밤 12시에 문 닫고 2층에서 잤어요. 계단은 가게 옆으로 쭉 옥상까지 이어지고요.']],()=>{note('민호: 밤 12시에 문 닫고 2층에서 잠. 가게 옆 계단은 옥상까지 이어짐')}))}
+function talkJ(){useOr('j',{
+    screw:()=>say([['j','어? 제 짐벌 나사! 저녁에 주방 촬영할 때 빠졌나 봐요. 할매가 들어오게 해 주셨거든요.'],['bolt','저녁에 허락받고 찍었다면… 나사로는 범인이라 할 수 없겠어.']],()=>note('J: 짐벌 나사는 저녁 주방 촬영 때 빠진 것')),
+    badge:()=>say([['j','국밥왕 배지요? 그거 최 상무님 거랑 똑같은데요.']]),
+  },()=>{if(has('phone')||has('video')){say([['j','영상은 다 보셨어요? 구독 좋아요~!']]);return}
+    say([['j','안녕하세요 먹방킹 J입니다~ 새벽 국밥골목 특집 찍는 중이에요!'],['j','밤새 카메라 켜 놨어요. 혹시 모르니까 원본 보실래요?']],()=>{give('phone');note('J: 밤새 골목을 찍은 영상이 있음')})})}
+function talkChoi(){useOr('choi',{
+    badge:()=>say([['choi','…요즘 배지 하나를 잃어버렸죠. 그게 왜요?'],['suho','피란돼지국밥 금고 바로 앞에 떨어져 있었어요.'],['choi','어제 낮에 인수 상담하러 들렀으니까요. 그때 떨어졌겠죠.']],()=>note('최 상무: 배지는 어제 낮 인수 상담 때 떨어뜨렸다고 함')),
+    video:()=>{if(S.f.choiLie)return say([['choi','…']]);S.f.choiLie=1;say([['suho','새벽 1시 40분, 정장 입은 사람이 피란돼지국밥 옆 계단으로 올라갔어요.'],['choi','(잠시 굳었다가) 서면에 정장 입은 사람이 저 하나겠습니까.'],['bolt','12시에 호텔에 들어갔다더니, 말이 흔들려.']],()=>note('최 상무: 12시에 호텔 → 그런데 영상 1:40의 정장 남자'))},
+    photo52:()=>say([['choi','(사진을 한참 들여다본다) …오래된 사진이네요. 잘 모르겠습니다.'],['bolt','수호, 방금 표정 봤어?']]),
+  },()=>say([['choi','국밥왕 최 상무입니다. 할머님께 가게 인수 제안을 드렸을 뿐이에요.'],['choi','어젯밤엔 12시쯤 호텔로 들어갔습니다. 촬영 때문에 일찍 나온 거고요.']],()=>note('최 상무: 어젯밤 12시쯤 호텔로 들어갔다고 함')))}
+function talkYang(){useOr('yang',{
+    photo52:()=>{if(S.f.past2)return say([['yang','그 사진… 몇 번을 봐도 짠하구마.']]);S.f.past2=1;
+      say([['yang','이 사진… 이 아가 기철이 아이가.'],['yang','덕수 아재는 전쟁통에 피란촌 불에 돌아가시고, 순임 할매가 이 아를 친자식처럼 키웠지.']],()=>
+      flashback('flash2.jpg','1964년 · 서면',[
+        ['nar','기철이 중학생이 되던 해, 동네 노인이 무심코 말했다. "니 엄마는 진짜 엄마가 아이다."'],
+        ['nar','엄마가 자신을 속였다고, 가게도 원래 아버지 것이었다고 오해한 기철은 그날 밤 짐을 싸서 사라졌다.'],
+        ['yang','그 노인이 우리 아부지요. 아부지는 평생 그 말을 후회하셨지.'],
+        ['yang','기철이는 다시 안 돌아왔고… 듣기론 아들 하나 두고, 그 아들은 큰 회사에 다닌다 카더라.']],()=>{note('과거 조각 2: 1964년 기철이 출생의 비밀을 듣고 가출. 기철의 아들은 큰 회사에 다닌다');build()}))},
+  },()=>{const L=[['yang','30년 단골 양가요. 어제도 마지막까지 국밥 한 그릇 묵고 1시쯤 나왔지.']];
+    if(!has('receipt'))L.push(['yang','의심되면 이거 보소. 1시 5분에 찍힌 택시 영수증이오.']);
+    L.push(['yang','옛날 일이라면 내가 좀 알지. 뭐 보여 줄 거라도 있소?']);
+    say(L,()=>{give('receipt',1);note('양 기사: 1시쯤 가게를 나옴 (영수증 01:05)');})})}
+function lockPuzzle(){
+  const pick=[];
+  const body=modal(`<h2>창고 자물쇠</h2><div class="note">상인회 공지 — 창고 자물쇠는 <b>개업이 빠른 집</b>부터 차례로 그 집 표시를 누를 것</div>
+   <div class="symrow" id="slots">${[0,1,2,3].map(()=>'<div class="slot"></div>').join('')}</div>
+   <div class="symrow">${SHOPS.map((s,i)=>`<button class="sym" data-i="${i}">${s.sym}<small>${s.sn}</small></button>`).join('')}</div>
+   <div class="row"><button class="btn ghost" id="clrL">지우기</button></div>`,build);
+  const show=()=>[...$('slots').children].forEach((c,i)=>c.textContent=pick[i]!=null?SHOPS[pick[i]].sym:'');
+  body.querySelectorAll('.sym').forEach(b=>b.onclick=()=>{if(pick.length>=4)return;pick.push(+b.dataset.i);show();sfx('tap');
+    if(pick.length===4){if(pick.join()===LOCK.join()){sfx('ok');S.f.storage=1;closeModal();give('key');say([['nar','달칵! 자물쇠가 풀렸다. 창고 안 고리에 오래된 열쇠가 걸려 있다.'],['bolt','"옥상" 이라고 적힌 꼬리표! 옥상 문 열쇠야.']],build)}
+      else{sfx('no');setTimeout(()=>{pick.length=0;show()},500);toast('찰칵… 순서가 틀렸어요')}}});
+  $('clrL').onclick=()=>{pick.length=0;show()};
+}
+function videoViewer(){
+  const body=modal(`<h2>J의 촬영 영상</h2><div class="video"><img class="bgv" src="${IMG('bg_alley.jpg')}" alt=""><img class="who" id="vWho" alt="" hidden><div class="rec">● REC</div><div class="tc" id="vTc">00:00</div><div class="cap" id="vCap"></div></div>
+   <input type="range" id="vR" min="0" max="180" value="0" aria-label="영상 시간"><div class="row"><button class="btn" id="vCap2">이 장면 캡처</button></div>`,build);
+  const r=$('vR'),upd=()=>{const s=+r.value,m=Math.floor(s/60),ss=s%60,tc=`01:${String(Math.floor(s/3)).padStart(2,'0')}`;
+    const t=Math.floor(s/3);$('vTc').textContent=`새벽 ${tc}`;const w=$('vWho');
+    if(t>=38&&t<=42){w.hidden=false;w.src=FACE.choi;w.style.cssText='left:66%;filter:brightness(0) contrast(1.2);opacity:.85;transform:scaleX(-1)';$('vCap').textContent='정장 차림 남자가 피란돼지국밥 옆 계단을 올라간다…'}
+    else if(t<15){w.hidden=false;w.src=FACE.j;w.style.cssText='left:6%';$('vCap').textContent='J: "새벽 국밥골목 특집! 다들 문 닫았네요~"'}
+    else if(t>=20&&t<26){w.hidden=false;w.src=FACE.yang;w.style.cssText='left:40%';$('vCap').textContent='양 기사님이 가게를 나서 택시를 잡는다.'}
+    else{w.hidden=true;$('vCap').textContent='고요한 골목. 고양이 한 마리가 지나간다.'}};
+  r.oninput=upd;upd();
+  $('vCap2').onclick=()=>{const t=Math.floor(+r.value/3);if(t>=38&&t<=42){sfx('ok');closeModal();S.inv=S.inv.filter(k=>k!=='phone');give('video');
+      say([['bolt','캡처 완료! 새벽 1시 40분, 정장 차림 남자가 계단으로 올라갔어.'],['suho','그 계단은 옥상까지 이어진다고 했지. 12시에 호텔로 갔다던 사람이 누구였더라…']],build)}
+    else{sfx('no');toast('수상한 장면이 아니에요. 계속 돌려 보세요')}};
+}
+
+/* ===== 방 3: 옥상 ===== */
+const SOL=[[0,1,2],[2,0,1],[1,2,0]],SEAS=[{k:'s_shrimp.png',n:'새우젓'},{k:'s_chive.png',n:'정구지'},{k:'s_chili.png',n:'다대기'}];
+function buildRoof(){
+  const F=S.f;
+  // 장독 9개 (장식) + 누르면 퍼즐
+  const rows=[[318,62,[425,515,605]],[342,74,[405,515,625]],[370,88,[383,515,647]]];   // [바닥 y, 높이, 가운데 x들]
+  for(const [base,h,xs] of rows)for(const cx of xs){const im=document.createElement('img');im.className='jar';im.src=IMG('jar.png');im.alt='';const w=h*.91;
+    im.style.cssText=`left:${(cx-w/2)/10.24}%;top:${(base-h)/5.72}%;height:${h/5.72}%`;$('hots').appendChild(im)}
+  hot([300,215,770,400],'장독대',()=>{if(F.jars&&!F.ledgerGot){if(sel==='flash'){setSel(null);F.ledgerGot=1;give('ledger');sfx('ok');
+        say([['nar','손전등을 비추자 가운데 장독 바닥에 끈으로 묶인 낡은 장부가 보였다!'],['suho','찾았다! …그런데 마지막 몇 장이 찢겨 나갔어.'],['bolt','범인이 제일 중요한 장만 가져간 거야. 계단 쪽에 뭔가 떨어져 있어!']],build);return}
+      say([['nar','가운데 장독 뚜껑이 열렸다. 안은 깜깜해서 아무것도 안 보인다.'],['bolt','어두운 데는… 주방에서 챙긴 그걸 골라서 써 봐!']]);return}
+    if(F.ledgerGot){look('장독대','<p>뚜껑마다 새우젓·정구지·다대기 그림이 붙어 있다. 할매의 장독대.</p>');return}
+    jarPuzzle()},F.jars&&!F.ledgerGot?'glow':'');
+  if(F.ledgerGot&&!F.oldGot)hot([60,388,230,445],'계단 앞',()=>{F.oldGot=1;give('oldphoto');note('과거 조각 3: 옥상 계단의 사진 — "아버지 — 기철, 1964"');
+    say([['nar','계단 앞에 사진 한 장이 떨어져 있다. 교복을 입은 중학생.'],['nar','사진 뒷면: "아버지 — 기철, 1964"'],['suho','기철… 양 기사님이 말한 그 아이야. 그런데 "아버지"라고 쓴 건, 기철의 자식이 이걸 갖고 다녔다는 뜻이야.'],['bolt','범인이 장부를 들고 계단으로 내려가다 흘린 거야!']],build)},'glow');
+  hot([28,150,205,384],'옥상 계단 문',()=>look('계단 문','<p>아래층 피란돼지국밥 옆으로 이어지는 계단. 새벽 1시 40분, 누군가 여기로 올라왔다.</p>'));
+  if(!F.gloveGot)hot([745,130,870,300],'물탱크',()=>{F.gloveGot=1;give('glove');say([['nar','물탱크 옆에 분홍 고무장갑이 벗겨져 있다. 안쪽에 "민호" 이름표.'],['bolt','민호가 옥상에 왔었다는 거네. 민호한테 물어볼 수도 있었는데… 일단 챙겨 두자.']],build)});
+  hot([650,400,1020,572],'고추 화분',()=>look('고추 화분','<p>할매가 다대기용으로 키우는 고추. 빨갛게 잘 익었다.</p>'));
+  if(F.ledgerGot&&F.oldGot)exitBtn('범인 지목하러 가기 →',()=>roomClear(2,deduce));
+}
+function roofIntro(){say([['nar','옥상 문을 열자 새벽 하늘이 밝아 오고 있다.'],['misuk','(전화) 수호야, 옥상 장독대는 내가 아끼는 데다. 뚜껑 양념을 맞춰야 가운데 장독이 열린다.'],
+  ['misuk','가로줄, 세로줄 모두 새우젓·정구지·다대기가 하나씩. 왼쪽 위는 새우젓, 오른쪽 위는 다대기, 한가운데는 새우젓이다.']],()=>note('장독 규칙: 가로·세로 줄마다 새우젓·정구지·다대기 하나씩 / 왼쪽 위 새우젓, 오른쪽 위 다대기, 한가운데 새우젓'))}
+function jarPuzzle(){
+  const g=S.f.jg||[[0,-1,2],[-1,0,-1],[-1,-1,-1]];
+  const fixed=(r,c)=>(r===0&&c===0)||(r===0&&c===2)||(r===1&&c===1);
+  const body=modal(`<h2>장독 뚜껑 맞추기</h2><div class="note" style="font-size:1.7cqw">가로줄·세로줄마다 <b>새우젓·정구지·다대기</b>가 하나씩. 왼쪽 위 <b>새우젓</b>, 오른쪽 위 <b>다대기</b>, 한가운데 <b>새우젓</b>.</div>
+   <div class="jars" id="jg"></div><div class="legend">${SEAS.map(s=>`<span><img src="${IMG(s.k)}" alt=""> ${s.n}</span>`).join('')}<span>· 장독을 누르면 양념이 바뀌어요</span></div>`,()=>{S.f.jg=g;build()});
+  const draw=()=>{$('jg').innerHTML='';for(let r=0;r<3;r++)for(let c=0;c<3;c++){const b=document.createElement('button');const v=g[r][c];
+    if(v>=0)b.innerHTML=`<img src="${IMG(SEAS[v].k)}" alt="${SEAS[v].n}">`;b.setAttribute('aria-label',`${r+1}번째 줄 ${c+1}번째 장독`+(v>=0?' '+SEAS[v].n:''));
+    if(fixed(r,c))b.style.opacity='.85';b.onclick=()=>{if(fixed(r,c)){toast('할매가 정해 둔 자리예요');return}g[r][c]=(g[r][c]+1)%3;sfx('tap');draw();check()};$('jg').appendChild(b)}};
+  const check=()=>{if(g.every((row,r)=>row.every((v,c)=>v===SOL[r][c]))){sfx('ok');[...$('jg').children].forEach(b=>b.classList.add('ok'));S.f.jars=1;S.f.jg=g;
+    setTimeout(()=>{closeModal();say([['nar','쿵… 가운데 장독 뚜껑이 스르륵 열렸다.']])},700)}};
+  draw();
+}
+
+/* ===== 추리 ===== */
+const SUS=[{k:'minho',n:'손자 민호'},{k:'choi',n:'국밥왕 최 상무'},{k:'j',n:'먹방킹 J'},{k:'yang',n:'양 기사님'}];
+const EVS=['badge','video','oldphoto','screw','glove','receipt'];
+const MOT=[{k:'money',n:'돈 — 레시피를 회사에 넘겨 큰돈을 벌려고'},{k:'revenge',n:'복수 — 가게를 망하게 하려고'},{k:'father',n:'아버지의 한 — 빼앗겼다고 믿은 아버지 몫을 되찾으려고'}];
+function deduce(){
+  S.room='deduce';save();$('roomName').textContent='추리 · 범인은 누구인가';$('bg').src=IMG('bg_roof.jpg');$('hots').innerHTML='';
+  say([['misuk','(옥상으로 올라와) 수호야, 장부를 찾았나!'],['suho','네, 할머니. 그런데 마지막 장이 없어요. 이제 가져간 사람을 짚어 낼 차례예요.']],stepSuspect);
+}
+function stepSuspect(){let p=null;
+  const body=modal(`<h2>1단계 · 범인은 누구?</h2><div class="pick p4">${SUS.map(s=>`<button data-k="${s.k}"><img src="${FACE[s.k]}" alt=""><b>${s.n}</b></button>`).join('')}</div><div class="row"><button class="btn" id="nx" disabled>지목하기</button></div>`);
+  body.querySelectorAll('.pick button').forEach(b=>b.onclick=()=>{p=b.dataset.k;body.querySelectorAll('.pick button').forEach(x=>x.classList.toggle('on',x===b));$('nx').disabled=false});
+  $('nx').onclick=()=>{closeModal();if(p==='choi'){sfx('ok');stepEvidence()}else{sfx('no');S.tries++;
+    const why={minho:'민호는 장부를 지키려고 옮겨 둔 거였어. 다시 가 보니 없었다잖아.',j:'J는 저녁에 허락받고 촬영했어. 오히려 범인 모습을 찍어 준 사람이지.',yang:'양 기사님은 1시 5분에 택시를 탔어. 1시 40분엔 골목에 없었어.'}[p];
+    say([['bolt',why],['bolt','다시 생각해 보자. 12시에 호텔로 갔다던 말과 영상이 안 맞는 사람은?']],stepSuspect)}};
+}
+function stepEvidence(){const on=new Set();
+  const body=modal(`<h2>2단계 · 최 상무를 가리키는 증거 3개</h2><div class="pick p3">${EVS.map(k=>`<button data-k="${k}"><img src="${IMG(ITEMS[k].img)}" alt=""><b>${ITEMS[k].n}</b></button>`).join('')}</div><div class="row"><button class="btn" id="nx" disabled>이 증거로 간다</button></div>`);
+  body.querySelectorAll('.pick button').forEach(b=>b.onclick=()=>{const k=b.dataset.k;if(on.has(k))on.delete(k);else if(on.size<3)on.add(k);b.classList.toggle('on',on.has(k));$('nx').disabled=on.size!==3});
+  $('nx').onclick=()=>{closeModal();const ok=['badge','video','oldphoto'].every(k=>on.has(k));
+    if(ok){sfx('ok');say([['suho','금고 앞에 떨어진 국밥왕 배지.'],['suho','12시에 호텔로 갔다던 최 상무님이, 새벽 1시 40분 계단을 오르는 영상.'],['suho','그리고 계단에 떨어진 사진. 뒷면에 "아버지 — 기철".'],['choi','…']],stepMotive)}
+    else{sfx('no');S.tries++;say([['bolt','그중엔 최 상무와 상관없는 게 섞여 있어. 나사는 J 것, 장갑은 민호 것, 영수증은 양 기사님 거잖아.']],stepEvidence)}};
+}
+function stepMotive(){let p=null;
+  const body=modal(`<h2>3단계 · 왜 가져갔을까?</h2><div class="pick" style="grid-template-columns:1fr">${MOT.map(m=>`<button data-k="${m.k}" style="flex-direction:row;justify-content:flex-start"><b>${m.n}</b></button>`).join('')}</div><div class="row"><button class="btn" id="nx" disabled>이게 이유다</button></div>`);
+  body.querySelectorAll('.pick button').forEach(b=>b.onclick=()=>{p=b.dataset.k;body.querySelectorAll('.pick button').forEach(x=>x.classList.toggle('on',x===b));$('nx').disabled=false});
+  $('nx').onclick=()=>{closeModal();if(p==='father')trueEnding();else normalEnding()};
+}
+function normalEnding(){
+  say([['choi','…돈 때문이라고 해 두죠. 찢은 장은 여기 있습니다.'],['nar','최 상무는 찢어 간 장을 돌려주고 말없이 골목을 떠났다.'],['misuk','장부는 돌아왔는데… 저 사람 눈이 와 저리 슬프노.'],
+    ['bolt','수호, 뭔가 놓친 것 같아. 사진 두 장과 양 기사님 이야기를 다시 떠올려 봐.']],()=>finish(false));
+}
+function trueEnding(){
+  S.f.truth=1;
+  say([['suho','최 상무님. 당신은 기철 씨의 아들이죠.'],['choi','…네. 제 아버지 기철은 평생 "그 국밥은 원래 우리 집안 것"이라고 하셨습니다. 돌아가시는 날까지요.'],
+    ['choi','저는 아버지 몫을 되찾고 싶었을 뿐입니다. 회사 일도, 인수 제안도… 다 그 가게 곁에 있고 싶어서였어요.'],
+    ['misuk','기철 오빠 아들이라꼬…? (떨리는 손으로 장부 뒤표지를 연다) 이거 봐라. 우리 엄마가 평생 끼워 둔 기다.'],
+    ['nar','장부 마지막 장에는 두 사람의 필체로 적힌 육수 비법과, 나란히 쓴 이름 "순임·덕수".'],
+    ['nar','그리고 끝내 부치지 못한 편지 한 장. "기철아, 이 맛은 네 아버지와 내가 같이 만들었다. 가게의 반은 네 것이다. 언제든 돌아오너라."'],
+    ['choi','(한참을 울다가) …아버지가 이걸 보셨어야 했는데.'],
+    ['misuk','이제 니가 봤으니 됐다. 국밥 한 그릇 묵고 가라. 니 할배랑 우리 엄마가 같이 만든 맛이다.'],
+  ],()=>flashback('bg_end.jpg','아침 9시 · 국밥골목 축제',[
+    ['nar','아침 9시, 축제 방송이 시작됐다. 피란돼지국밥에 새 간판이 걸렸다.'],
+    ['misuk','오늘 첫 그릇은 손님 말고, 기철 오빠 아들한테 줄란다.'],
+    ['choi','…맛있습니다. 아버지가 말하던 그 맛이에요.'],
+    ['bolt','국밥의 비밀은 재료가 아니었네. 같이 만들고, 나눠 먹는 거!'],
+    ['suho','오늘은 골목 사람들 모두가 한 상에서 먹는 날이네요.']],()=>finish(true),
+    `<div class="sign" style="${P([382,84,628,138])}"><b>피란돼지국밥</b><i>창업 순임 · 덕수 1951</i></div>`));
+}
+
+/* ===== 끝 ===== */
+function roomClear(i,next){
+  if(W){const r=W.issue(SITE_ID,STORES[i]);if(r&&r.isNew)toast(`🎟 ${STORES[i]} 쿠폰 획득!`)}
+  stamp(STORES[i]);S.stage=Math.max(S.stage,i+1);save();next();
+}
+function stamp(name,boss){try{const k='bjrun.stamps.'+SEASON,st=JSON.parse(localStorage.getItem(k))||{got:{},boss:{}};if(name)st.got[name]=1;if(boss)st.boss[boss]=1;localStorage.setItem(k,JSON.stringify(st))}catch(e){}}
+function finish(truth){
+  clearInterval(clockT);const sec=Math.round(S.elapsed+S.hints*30);
+  let cp='';
+  if(W){const got=W.coupons(SITE_ID);if(truth&&S.hints===0){const r=W.issue(SITE_ID,MASTER);if(r)got.push(r.coupon)}
+    const seen=new Set();cp=got.filter(c=>!seen.has(c.store)&&seen.add(c.store)).map(c=>`<div class="coupon"><b>${c.store}</b> ${c.benefit}<code>${c.code}</code></div>`).join('')}
+  if(truth)stamp(null,'4');
+  if(W)W.logPlay(SITE_ID,{score:Math.max(0,3600-sec),stage:truth?4:3,clear:true,stores:STORES.length});
+  let best=[];try{best=JSON.parse(localStorage.getItem(BEST))||[]}catch(e){}
+  best.push({t:sec,truth:!!truth,h:S.hints,at:Date.now()});best.sort((a,b)=>(b.truth-a.truth)||(a.t-b.t));best=best.slice(0,5);try{localStorage.setItem(BEST,JSON.stringify(best))}catch(e){}
+  try{localStorage.removeItem(SAVE)}catch(e){}
+  if(truth)$('bg').src=IMG('bg_end.jpg');
+  const m=modal(`<h2>${truth?'🍲 진실 엔딩 · 두 사람의 국밥':'보통 엔딩 · 장부는 돌아왔지만'}</h2>
+    <p>걸린 시간 <b>${fmt(sec)}</b> (힌트 ${S.hints}번 · 1번에 30초) · 틀린 지목 ${S.tries}번</p>
+    ${truth?'':'<p>동기를 다르게 골랐다면 다른 결말이 기다려요. 다시 해서 <b>진실 엔딩</b>을 찾아보세요.</p>'}
+    ${cp?'<p>받은 쿠폰 (시연용)</p>'+cp:''}${truth&&S.hints>0?'<p>힌트 없이 진실 엔딩을 보면 <b>상인회 마스터 쿠폰</b>을 더 받아요.</p>':''}
+    <p>내 기록</p><ol class="rank">${best.map(b=>`<li>${fmt(b.t)} ${b.truth?'· 진실':'· 보통'} ${b.h?'· 힌트 '+b.h:''}</li>`).join('')}</ol>
+    <div class="row"><button class="btn" id="again">다시 하기</button><a class="btn ghost" href="../wallet/" style="text-decoration:none">쿠폰함 보기</a><a class="btn ghost" href="../" style="text-decoration:none">수호런 홈</a></div>`,()=>location.reload());
+  $('again').onclick=()=>location.reload();
+}
+function fmt(s){return `${Math.floor(s/60)}분 ${String(s%60).padStart(2,'0')}초`}
+
+/* ---------- 공통 UI ---------- */
+function exitBtn(t,fn){const b=document.createElement('button');b.className='exit';b.textContent=t;b.onclick=()=>{if(!$('talk').hidden)return;fn()};$('hots').appendChild(b)}
+function setSel(k){sel=k;renderInv();const h=$('selHint');h.hidden=!k;if(k)h.textContent=`${ITEMS[k].n}을(를) 골랐어요 — 쓸 곳을 누르세요`}
+function renderInv(){const v=$('inv');v.innerHTML='';for(const k of S?S.inv:[]){const b=document.createElement('button');const it=ITEMS[k];b.title=it.n;b.setAttribute('aria-label',it.n);
+  b.innerHTML=`<img src="${IMG(it.img)}" alt="">`;if(it.ev)b.classList.add('ev');if(sel===k)b.classList.add('sel');
+  b.onclick=()=>{if(!$('talk').hidden)return;if(k==='phone'&&sel==='phone'){setSel(null);videoViewer();return}
+    if(sel===k){setSel(null);look(it.n,`<div style="text-align:center"><img src="${IMG(it.img)}" alt="" style="max-height:22cqw;max-width:60%;border-radius:1cqw"></div><p>${it.d}</p>`);return}
+    setSel(k);if(k==='phone')toast('한 번 더 누르면 영상을 볼 수 있어요')};v.appendChild(b)}}
+$('noteBtn').onclick=()=>{const ev=S.inv.filter(k=>ITEMS[k].ev);
+  modal(`<h2>📒 수사 수첩</h2><div class="nb"><div><h3>단서와 증언</h3><ul>${S.notes.map(n=>`<li>${n}</li>`).join('')||'<li class="no">아직 없음</li>'}</ul></div>
+   <div><h3>용의자</h3><ul><li>손자 민호 — 3대 후계자</li><li>국밥왕 최 상무 — 가게 인수 제안</li><li>먹방킹 J — 밤새 골목 촬영</li><li>양 기사님 — 30년 단골</li></ul>
+   <h3 style="margin-top:1cqw">증거물</h3><ul>${ev.map(k=>`<li>${ITEMS[k].n}</li>`).join('')||'<li class="no">아직 없음</li>'}</ul></div></div>`)};
+$('menuBtn').onclick=()=>{modal(`<h2>잠깐 멈춤</h2><p>진행은 방마다 자동 저장돼요.</p><div class="row"><button class="btn" id="rs">계속하기</button><button class="btn ghost" id="rt">처음 화면으로</button></div>`);
+  $('rs').onclick=closeModal;$('rt').onclick=()=>{save();location.reload()}};
+
+/* ---------- 볼트 힌트 ---------- */
+function hint(){const F=S.f;let t;
+  if(S.room==='kitchen'){
+    if(!F.safe){if(!F.memo)t=['가마솥 옆 메모부터 읽어 봐.','왼쪽 벽돌 아궁이 옆에 붙은 종이야.','메모를 누르면 금고 번호 규칙이 나와.'];
+      else if(!(F.calendar&&F.ladle&&F.clock))t=['숫자 세 개가 필요해. 달력, 국자, 시계를 살펴봐.','달력에 동그라미, 국자는 개수, 시계 아래엔 쪽지가 있어.','12시간 · 3번 · 5시. 금고 번호는 1235야!'];
+      else t=['찾은 숫자를 순서대로 이어 붙여 봐.','12 · 3 · 5 를 이어 쓰면?','금고 번호는 1235야!'];}
+    else if(!F.badgeGot)t=['금고 앞 바닥에 뭔가 반짝여.','금고 바로 아래를 눌러 봐.','금고 아래 반짝이는 곳을 눌러!'];
+    else if(!F.photo)t=['벽에 비뚤어진 게 하나 있어.','시계 아래 액자를 봐.','액자를 누르면 뒤에 사진이 있어.'];
+    else if(!F.flashGot)t=['나중에 어두운 데를 볼 물건이 필요해.','오른쪽 서랍장을 열어 봐.','서랍장을 누르면 손전등이 있어.'];
+    else t=['주방은 다 봤어! 오른쪽 아래 버튼으로 골목에 나가자.'];}
+  else if(S.room==='alley'){
+    if(!has('phone')&&!has('video'))t=['밤새 카메라를 켜 둔 사람이 있대.','먹방킹 J랑 이야기해 봐.','J를 누르면 영상을 받을 수 있어.'];
+    else if(!has('video'))t=['J의 영상을 돌려 보자.','아래 칸의 휴대폰을 두 번 누르면 영상이 열려.','새벽 1시 40분쯤에 멈추고 캡처해!'];
+    else if(!F.past2)t=['옛날 일을 아는 사람이 있다고 했지.','양 기사님에게 무언가 보여 줘 봐.','1952년 사진을 고른 뒤 양 기사님을 눌러!'];
+    else if(!F.storage)t=['창고 자물쇠는 개업 순서야.','간판마다 SINCE 연도가 적혀 있어.','솥(1958) → 등불(1966) → 돼지(1971) → 의자(1983)!'];
+    else t=['준비 끝! 오른쪽 아래 버튼으로 옥상에 올라가자.'];}
+  else if(S.room==='roof'){
+    if(!F.jars)t=['장독대를 눌러 뚜껑 양념을 맞춰 봐.','가로·세로 줄마다 세 양념이 하나씩. 정해진 칸부터 채워.','첫 줄 새우젓·정구지·다대기 / 둘째 줄 다대기·새우젓·정구지 / 셋째 줄 정구지·다대기·새우젓.'];
+    else if(!F.ledgerGot)t=['가운데 장독 안이 깜깜해.','주방에서 챙긴 손전등을 써 봐.','아래 칸에서 손전등을 고르고 장독대를 눌러!'];
+    else if(!F.oldGot)t=['계단 쪽에 떨어진 게 있어.','왼쪽 계단 문 앞을 봐.','반짝이는 계단 앞을 눌러!'];
+    else t=['오른쪽 아래 버튼으로 범인을 지목하러 가자.'];}
+  else t=['배지, 영상, 계단의 사진 — 이 셋이 한 사람을 가리켜.'];
+  const lv=Math.min(t.length-1,(F['h_'+S.room+t[0]]|0));F['h_'+S.room+t[0]]=lv+1;S.hints++;save();
+  say([['boltH',t[lv]+(lv<t.length-1?'\n(한 번 더 누르면 더 자세히 알려 줄게)':'')]]);}
+$('hintBtn').onclick=()=>{if(!$('talk').hidden||!$('modal').hidden)return;hint()};
+
+/* ---------- 시작 ---------- */
+function tick(){S.elapsed+=1;const m=Math.min(300,Math.floor(S.elapsed/4));const h=4+Math.floor(m/60),mm=m%60;$('clock').textContent=`${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;if(S.elapsed%10===0)save()}
+function begin(s){S=s;$('title').hidden=true;$('hud').hidden=false;document.body.classList.add('playing');renderInv();clearInterval(clockT);clockT=setInterval(tick,1000);
+  if(S.room==='deduce'){S.room='roof';enter('roof');deduce();return}
+  if(S.room==='kitchen'&&!S.f.intro){S.f.intro=1;enter('kitchen');prologue();return}
+  enter(S.room,S.room==='alley'?alleyIntro:null)}
+function prologue(){say([
+  ['bolt','수호! 새벽 3시 50분이야. 국밥골목 미숙 할매한테서 긴급 전화!'],
+  ['misuk','수호야… 우리 피란돼지국밥 육수 장부가 없어졌다. 우리 엄마가 1951년부터 적어 온 기다.'],
+  ['misuk','오늘 아침 9시에 축제 방송 촬영인데… 장부 없으면 가게 문 닫아야 한다 아이가.'],
+  ['suho','걱정 마세요, 할머니. 9시 전에 꼭 찾아 드릴게요.'],
+  ['bolt','어젯밤 가게에 드나든 사람은 넷. 손자 민호, 국밥왕 최 상무, 유튜버 먹방킹 J, 단골 양 기사님.'],
+  ['suho','장부는 금고에 있었다고 하셨지. 주방부터 살펴보자.'],
+  ['bolt','수상한 곳을 눌러 봐! 막히면 오른쪽 위 힌트 버튼.']])}
+const old=loadSave();
+if(old&&old.inv){$('contBtn').hidden=false;$('contBtn').onclick=()=>begin(old)}
+$('startBtn').onclick=()=>{try{localStorage.removeItem(SAVE)}catch(e){}begin(fresh())};
+(()=>{let b=[];try{b=JSON.parse(localStorage.getItem(BEST))||[]}catch(e){}if(b[0])$('bestLine').textContent=`내 최고 기록 ${fmt(b[0].t)} ${b[0].truth?'· 진실 엔딩':''}`})();
+$('title').style.backgroundImage=`url(${IMG('bg_alley.jpg')})`;
+$('fsBtn').onclick=()=>{const e=document.documentElement;(e.requestFullscreen||e.webkitRequestFullscreen||(()=>{})).call(e)};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('modal').hidden)closeModal();else if(sel)setSel(null)}else if((e.key===' '||e.key==='Enter')&&!$('talk').hidden){e.preventDefault();nextLine()}});
+window.__G={get S(){return S},hint,enter,deduce};
+</script>
+</body>
+</html>

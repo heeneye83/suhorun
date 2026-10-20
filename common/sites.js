@@ -147,10 +147,21 @@ window.SUHO = {
       who: '시장 상인 · 장보러 온 주민',
     },
     {
-      id: 'gukbap', name: '국밥골목 수호런 (서면시장)', place: '부전동 · 서면시장 돼지국밥골목', status: 'soon',
-      color: '#b9722f',
-      pitch: '김이 모락모락 나는 서면시장 돼지국밥골목을 달리는 스테이지를 준비 중이에요.',
-      who: '국밥집 · 서면을 찾는 관광객',
+      id: 'gukbap', name: '국밥 수호런 (서면 돼지국밥골목)', place: '부전동 · 서면시장 돼지국밥골목', status: 'open', url: 'gukbap/',
+      color: '#b9722f', thumb: 'common/img/gukbap.webp', cta: '수사 시작하기',
+      pitch: '축제 날 새벽, 70년 된 육수 장부가 사라졌다! 주방 금고, 밤의 국밥골목, 옥상 장독대를 뒤져 범인과 증거, 동기를 짚어 내는 방탈출 추리. 동기까지 맞히면 피란 시절 두 사람이 함께 만든 국밥의 진실이 드러나요.',
+      who: '국밥집 · 서면을 찾는 관광객 · 추리 게임 팬',
+      season: { id: 's1-gukbap', name: '시즌 1 · 국밥골목 방탈출', ends: '' },
+      lastStage: 4,
+      // 시연용 가상 가게 — 방을 하나 풀 때마다 한 곳씩 쿠폰, 진실 엔딩(힌트 없이)이면 상인회 마스터 쿠폰
+      stores: [
+        { name: '피란돼지국밥', benefit: '수육 한 접시 서비스', pin: '1111', color: '#b9722f' },
+        { name: '골목 솥단지국밥', benefit: '순대 추가 무료', pin: '2222', color: '#3d5a80' },
+        { name: '서면 등불국밥', benefit: '공깃밥 무료', pin: '3333', color: '#d9822b' },
+      ],
+      eventStores: [
+        { name: '국밥골목 상인회', benefit: '국밥 한 그릇 무료', pin: '7777', color: '#8a5a2b' },
+      ],
     },
     {
       id: 'gaya', name: '대학가 수호런 (가야동)', place: '가야동 · 동의대 앞 대학가', status: 'soon',
