@@ -65,7 +65,7 @@ if __name__ == '__main__':
     if J('s_landlord.png'):
         im = Image.open(os.path.join(RAW, 's_landlord.png')).convert('RGB'); im.paste((255, 0, 255), (585, 110, 670, 170)); im.save(os.path.join(RAW, '_land.png'))
         L = lambda box: frames('_land.png', 1, crop=box)[0]
-        sheet('z_gym', [L((0, 0, 200, 319)), L((195, 0, 400, 319)), L((395, 0, 600, 319)), L((600, 50, 818, 319)), L((818, 0, 1024, 319))], 300, flip=(2,))
+        sheet('z_gym', [L((0, 0, 200, 319)), L((195, 0, 400, 319)), L((395, 0, 600, 319)), L((600, 50, 818, 319)), L((818, 0, 1024, 319))], 300, flip=(0, 1, 2, 3, 4))
     if J('s_items.png'):
         I = lambda box: frames('s_items.png', 1, crop=box)[0]
         single('dumbbell', I((70, 30, 300, 270)), 80)
