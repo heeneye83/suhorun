@@ -197,7 +197,7 @@ input[type=range]{width:100%;accent-color:var(--gold);margin:1cqw 0}
 const $=id=>document.getElementById(id);
 const SITE_ID='gaegeum',W=window.SuhoWallet||null,SAVE='gaegeum.save.v1',BEST='gaegeum.best.v1';
 const SEASON=(()=>{const s=W&&W.site(SITE_ID);return s&&s.season?s.season.id:'s1-gaegeum'})();
-const IMG=k=>'img/'+k+'?v=1';
+const IMG=k=>'img/'+k+'?v=2';
 const FACE={suho:'../common/sprites/g_hero.png',bolt:'../common/sprites/bot_a.png',boltH:'../common/sprites/bot_happy.png',soon:IMG('p_soon.png'),park:IMG('p_park.png'),miyoung:IMG('p_miyoung.png'),jiwoo:IMG('p_jiwoo.png'),kang:IMG('p_kang.png'),police:IMG('p_police.png')};
 const NAME={suho:'진수호',bolt:'볼트',boltH:'볼트',soon:'순덕 회장',park:'골목밀면 박 영감',miyoung:'개금손만두 미영 사장',jiwoo:'꽃집 지우',kang:'시행사 강 실장',police:'경찰',nar:''};
 const ITEMS={
@@ -339,6 +339,8 @@ const END_SIGN=[452,464,573,524];
 function buildOffice(){
   const F=S.f;
   const sg=document.createElement('div');sg.className='sign';sg.style.cssText=P([505,72,816,152]);sg.innerHTML='<b style="color:#f4e2bf">개금골목시장 상인회</b><i style="color:#e8cfa0">SINCE 1975</i>';$('hots').appendChild(sg);
+  const wc=document.createElement('div');wc.id='wallclk';wc.style.cssText='position:absolute;left:86.48%;top:13%;width:5%;aspect-ratio:1;pointer-events:none';
+  wc.innerHTML='<svg viewBox="-32 -32 64 64" style="width:100%;height:100%"><circle r="30" fill="rgb(221,212,205)"/><line id="wcH" x1="0" y1="0" x2="0" y2="-19" stroke="#1e1e1e" stroke-width="5" stroke-linecap="round"/><line id="wcM" x1="0" y1="0" x2="0" y2="-28" stroke="#1e1e1e" stroke-width="3" stroke-linecap="round"/><circle r="3" fill="#1e1e1e"/></svg>';$('hots').appendChild(wc);showClock();
   hot([536,356,650,400],'협박 편지',()=>{F.letter=1;give('letter',1);note('편지: "정오, 골목 어딘가에 숨긴 폭탄이 터진다" — 옛 신문 글자, 1966년 날짜');
     look('협박 편지',`<div class="note" style="font-family:'Jua',sans-serif;letter-spacing:.1em">정오, 골목 어딘가에 숨긴 <b>폭탄</b>이 터진다.<br>1966년의 <b>차가운 면</b>에서 시작해 1976년의 <b>주름</b>을 지나<br>40년 된 <b>냄새</b>가 멈추는 곳.<br>골목이 끝나기 싫으면 찾아라. — 골목의 유령</div><p>글자는 누렇게 바랜 옛 신문에서 오려 붙였다. 오린 귀퉁이에 <b>"1966. 3."</b> 날짜가 보인다.</p>`,null,build)});
   hot([464,352,536,390],'봉투',()=>{if(F.env){look('봉투','<p>편지가 들어 있던 봉투.</p>');return}F.env=1;give('env');say([['nar','봉투에 하얀 가루가 묻어 있다. 밀가루다.'],['bolt','밀가루라… 이 골목엔 밀가루 쓰는 가게가 한둘이 아니야.']],build)});
@@ -588,7 +590,7 @@ $('hintBtn').onclick=()=>{if(!$('talk').hidden||!$('modal').hidden)return;hint()
 let tickT=null;
 function showClock(){const l=Math.max(0,Math.ceil(S.left)),pass=LIMIT-l,gm=30+Math.floor(pass/60);const h=gm>=60?12:11,mm=gm>=60?gm-60:gm;
   $('clock').textContent=`${h}:${String(mm).padStart(2,'0')} · 남은 ${Math.floor(l/60)}:${String(l%60).padStart(2,'0')}`;
-  $('clock').classList.toggle('hurry',l<=180);BGM.urg=l<=600?(l<=180?2:1):0}
+  $('clock').classList.toggle('hurry',l<=180);{const H=$('wcH'),Mi=$('wcM');if(H){const min=30+pass/60;H.setAttribute('transform',`rotate(${330+min*.5})`);Mi.setAttribute('transform',`rotate(${min*6})`)}}BGM.urg=l<=600?(l<=180?2:1):0}
 function startTimer(){clearInterval(tickT);tickT=setInterval(()=>{if(!S||S.f.defused)return;const paused=!$('modal').hidden&&$('modal').dataset.pause==='1';
   S.elapsed+=1;S.left-=1;showClock();const bt=$('bTimer');if(bt)bt.textContent='0'+Math.floor(Math.max(0,S.left)/60)+':'+String(Math.max(0,Math.ceil(S.left))%60).padStart(2,'0');if(S.elapsed%10===0)save();if(S.left<=0)timeUp()},1000);showClock()}
 function stopTimer(){clearInterval(tickT);tickT=null}
