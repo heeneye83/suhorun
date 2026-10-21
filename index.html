@@ -41,6 +41,7 @@ a.site:hover{transform:translateY(-3px)}
   background:radial-gradient(120% 90% at 30% 20%,color-mix(in srgb,var(--c) 70%,#fff6e0),var(--c) 55%,#24160d);filter:saturate(.7) brightness(.8)}
 .site .pic .ph b{font-family:var(--display);font-weight:400;font-size:26px;color:var(--cream);text-shadow:0 2px 0 rgba(0,0,0,.35);word-break:keep-all}
 .site .genre{position:absolute;right:10px;top:10px;font-family:var(--display);font-size:13px;background:#2b1a3d;color:#e9d8ff;border:1px solid rgba(233,216,255,.45);border-radius:999px;padding:2px 10px}
+.site .genre.arc{background:#0f3d63;color:#cfeaff;border-color:rgba(160,215,255,.55)}
 .site .genre.race{background:#3d1f12;color:#ffd9b8;border-color:rgba(255,190,140,.5)}
 .site .soonbadge{position:absolute;inset:auto 10px 10px auto;font-family:var(--display);font-size:14px;background:var(--cream);color:#3a230f;border-radius:999px;padding:3px 12px}
 .site .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
@@ -97,7 +98,7 @@ a.site:hover{transform:translateY(-3px)}
   const box=document.getElementById('sites');
   box.innerHTML=W.sites().map(s=>{
     const open=s.status==='open',st=open?W.stamps(s.id):null,n=open?W.coupons(s.id).length:0;
-    const inner=`<div class="pic">${s.thumb?`<img src="${esc(s.thumb)}?v=20261022a" alt="" loading="lazy">`:`<div class="ph" style="--c:${s.color}"><b>${esc(s.place.split(' · ').pop())}</b></div>`}<span class="chip">${esc(s.place)}</span>${s.genre?(g=>`<span class="genre ${g==='레이스'?'race':''}">${g==='레이스'?'🏃':'🔍'} ${g}</span>`)(/레이스/.test(s.genre)?'레이스':'추리'):''}${open?'':'<span class="soonbadge">준비 중</span>'}</div>
+    const inner=`<div class="pic">${s.thumb?`<img src="${esc(s.thumb)}?v=20261022a" alt="" loading="lazy">`:`<div class="ph" style="--c:${s.color}"><b>${esc(s.place.split(' · ').pop())}</b></div>`}<span class="chip">${esc(s.place)}</span>${s.genre?(g=>`<span class="genre ${g==='레이스'?'race':g==='아케이드'?'arc':''}">${g==='레이스'?'🏃':g==='아케이드'?'🕹':'🔍'} ${g}</span>`)(/레이스/.test(s.genre)?'레이스':/아케이드/.test(s.genre)?'아케이드':'추리'):''}${open?'':'<span class="soonbadge">준비 중</span>'}</div>
       <div class="body"><h3><i style="--c:${s.color}"></i>${esc(s.name)}</h3><p class="pitch">${esc(s.pitch)}</p>
       <div class="row"><span class="who">${esc(s.who)}</span>${open?`<span class="prog">${st?`스탬프 ${st.done}/${st.total}`:''}${n?` · 쿠폰 ${n}장`:''}</span>`:''}</div>
       ${open?'<span class="btn" style="margin-top:6px">'+(s.cta||'지금 달리기')+' →</span>':''}</div>`;

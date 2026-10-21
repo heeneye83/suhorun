@@ -175,6 +175,23 @@ window.SUHO = {
       ],
     },
     {
+      id: 'olympic', name: '수호 올림픽 (아케이드)', place: '서면 · 부전시장 · 시민공원', status: 'open', url: 'olympic/', genre: '아케이드',
+      color: '#2f8fe0', thumb: 'common/img/olympic.webp', cta: '경기 시작하기',
+      pitch: '좌우 연타로 겨루는 다섯 종목! 서면 100m 달리기, 부전시장 어묵 꼬치, 국밥골목 토렴, 시민공원 풍선 불기와 원반 던지기. 혼자서 볼트와, 휴대폰 하나로 둘이서도 대결해요.',
+      who: '누구나 · 가족 · 행사 부스',
+      season: { id: 's1-olympic', name: '시즌 1 · 수호 올림픽', ends: '' },
+      lastStage: 5,
+      // 시연용 가상 가게 — 금메달 1개·3개·5개마다 쿠폰
+      stores: [
+        { name: '수호분식', benefit: '떡볶이 사리 추가', pin: '1111', color: '#e0702c' },
+        { name: '부전시장 어묵집', benefit: '어묵 1개 추가', pin: '2222', color: '#c8553d' },
+        { name: '시민공원 매점', benefit: '음료 500원 할인', pin: '3333', color: '#4f9a5a' },
+      ],
+      eventStores: [
+        { name: '수호 올림픽 조직위', benefit: '기념 스티커 증정', pin: '7777', color: '#2f8fe0' },
+      ],
+    },
+    {
       id: 'gaya', name: '대학가 수호런 (가야동)', place: '가야동 · 동의대 앞 대학가', status: 'soon', genre: '추리',
       color: '#3d5a80',
       pitch: '밀면집과 카페, 자취방 골목이 이어지는 동의대 앞 대학가에서 벌어지는 방탈출 추리를 준비 중이에요.',
