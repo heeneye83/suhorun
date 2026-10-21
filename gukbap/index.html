@@ -166,6 +166,7 @@ input[type=range]{width:100%;accent-color:var(--gold);margin:1cqw 0}
     <span id="roomName"></span><span id="clock">04:00</span><span class="sp"></span>
     <button class="hbtn" id="noteBtn">📒 수사 수첩</button>
     <button class="hbtn" id="hintBtn"><img src="../common/sprites/bot_a.png" alt="">볼트 힌트</button>
+    <button class="hbtn bgmBtn" id="bgmBtn">🔊 음악</button>
     <button class="hbtn" id="menuBtn" aria-label="멈춤">Ⅱ</button>
   </div>
   <div id="inv"></div>
@@ -177,7 +178,7 @@ input[type=range]{width:100%;accent-color:var(--gold);margin:1cqw 0}
     <div class="eyebrow">SUHO RUN · MYSTERY</div>
     <h2>사라진 육수 장부</h2>
     <p>축제 날 새벽, 서면 돼지국밥골목 '피란돼지국밥'에서 70년 된 육수 장부가 사라졌다. 아침 9시 방송 촬영 전까지 수호와 볼트가 장부를 되찾아야 한다.</p>
-    <div class="row"><button class="btn" id="startBtn">수사 시작</button><button class="btn ghost" id="contBtn" hidden>이어서 하기</button></div>
+    <div class="row"><button class="btn" id="startBtn">수사 시작</button><button class="btn ghost" id="contBtn" hidden>이어서 하기</button><button class="btn ghost bgmBtn" id="bgmBtn2">🔊 음악</button></div>
     <div class="best" id="bestLine"></div>
   </div>
 </div>
@@ -228,6 +229,57 @@ function sfx(k){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)(
   const seq={get:[[660,.08],[990,.12]],ok:[[523,.1],[659,.1],[784,.18]],no:[[220,.16],[180,.2]],tap:[[440,.04]],page:[[330,.05]]}[k]||[[440,.05]];
   let at=t;for(const [f,d] of seq){const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.12,at);g.gain.exponentialRampToValueAtTime(.001,at+d);o.connect(g);g.connect(AC.destination);o.start(at);o.stop(at+d+.02);at+=d*.9}}catch(e){}}
 
+
+/* ---------- 배경음악: 조용하고 긴장감 있는 수사 음악 (웹오디오로 그 자리에서 연주) ---------- */
+const BGM={on:true,mood:'',ctx:null,out:null,drone:null,timer:null,next:0,step:0};
+try{BGM.on=localStorage.getItem('gukbap.bgm')!=='off'}catch(e){}
+const MOODS={   // 음계(D 단조 계열), 템포, 성부 비율
+  title:{tempo:66,notes:[62,65,69,72,70,69],root:38,pulse:0,tick:0,wind:0,lead:.55,box:0},
+  kitchen:{tempo:60,notes:[62,65,67,69,70,72],root:38,pulse:0,tick:1,wind:0,lead:.45,box:0},
+  alley:{tempo:72,notes:[62,63,66,67,69,70],root:38,pulse:.7,tick:0,wind:0,lead:.4,box:0},
+  roof:{tempo:64,notes:[62,65,69,70,74,72],root:38,pulse:.3,tick:0,wind:1,lead:.45,box:0},
+  deduce:{tempo:84,notes:[62,63,66,69,70,73],root:38,pulse:1,tick:1,wind:0,lead:.5,box:0},
+  flash:{tempo:58,notes:[74,77,81,79,77,76,74,72],root:50,pulse:0,tick:0,wind:0,lead:0,box:1},
+  end:{tempo:70,notes:[74,76,78,81,83,81,78,76],root:50,pulse:0,tick:0,wind:0,lead:0,box:1},
+};
+const mtof=m=>440*Math.pow(2,(m-69)/12);
+function bgmInit(){if(BGM.ctx)return true;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();}catch(e){return false}
+  const c=AC;BGM.ctx=c;BGM.out=c.createGain();BGM.out.gain.value=0;
+  const comp=c.createDynamicsCompressor();BGM.out.connect(comp);comp.connect(c.destination);
+  // 공간감: 짧은 메아리
+  const dl=c.createDelay(1);dl.delayTime.value=.42;const fb=c.createGain();fb.gain.value=.38;const wet=c.createGain();wet.gain.value=.35;const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2200;
+  dl.connect(lp);lp.connect(fb);fb.connect(dl);lp.connect(wet);wet.connect(BGM.out);BGM.echo=dl;
+  // 낮게 깔리는 드론 (두 음이 살짝 어긋나 일렁임)
+  const df=c.createBiquadFilter();df.type='lowpass';df.frequency.value=380;df.Q.value=4;const dg=c.createGain();dg.gain.value=.11;
+  const lfo=c.createOscillator(),lg=c.createGain();lfo.frequency.value=.07;lg.gain.value=160;lfo.connect(lg);lg.connect(df.frequency);lfo.start();
+  const o1=c.createOscillator(),o2=c.createOscillator(),o3=c.createOscillator();o1.type='sawtooth';o2.type='sawtooth';o3.type='sine';
+  [o1,o2,o3].forEach(o=>{o.connect(df);o.start()});df.connect(dg);dg.connect(BGM.out);BGM.drone={o1,o2,o3,dg,df};
+  // 바람(옥상) — 걸러 낸 잡음
+  const nb=c.createBuffer(1,c.sampleRate*2,c.sampleRate),d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  const ns=c.createBufferSource();ns.buffer=nb;ns.loop=true;const nf=c.createBiquadFilter();nf.type='bandpass';nf.frequency.value=500;nf.Q.value=.7;const ng=c.createGain();ng.gain.value=0;
+  const wl=c.createOscillator(),wg=c.createGain();wl.frequency.value=.11;wg.gain.value=300;wl.connect(wg);wg.connect(nf.frequency);wl.start();
+  ns.connect(nf);nf.connect(ng);ng.connect(BGM.out);ns.start();BGM.wind=ng;
+  BGM.next=c.currentTime+.2;BGM.timer=setInterval(bgmTick,90);return true}
+function tone(t,f,dur,vol,type,echo){const c=BGM.ctx,o=c.createOscillator(),g=c.createGain();o.type=type||'triangle';o.frequency.value=f;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.012);g.gain.exponentialRampToValueAtTime(.0008,t+dur);
+  o.connect(g);g.connect(BGM.out);if(echo)g.connect(BGM.echo);o.start(t);o.stop(t+dur+.05)}
+function bgmTick(){const c=BGM.ctx;if(!c||!BGM.mood)return;const M=MOODS[BGM.mood];const beat=60/M.tempo/2;   // 8분음표 단위
+  while(BGM.next<c.currentTime+.35){const t=BGM.next,st=BGM.step++;
+    if(M.tick&&st%2===0)tone(t,st%4===0?2600:2200,.03,.018,'square');                       // 시계 초침
+    if(M.pulse&&st%8===0){tone(t,55,.32,.22*M.pulse,'sine');tone(t+.16,52,.28,.15*M.pulse,'sine')} // 심장 박동처럼 낮게 두 번
+    if(M.lead&&st%2===0&&Math.random()<M.lead*.55){const m=M.notes[Math.floor(Math.random()*M.notes.length)];tone(t,mtof(m),beat*5,.06,'triangle',1);
+      if(Math.random()<.25)tone(t,mtof(m-12),beat*6,.035,'sine',1)}
+    if(M.box&&st%2===0&&Math.random()<.8){const i=(st/2|0)%M.notes.length;tone(t,mtof(M.notes[i]),1.6,.05,'sine',1);if(st%8===0)tone(t,mtof(M.notes[i]-24),2.4,.04,'sine')}
+    if(st%32===0&&M.lead){tone(t,mtof(M.root+24+(Math.random()<.5?1:6)),beat*14,.02,'sine',1)}   // 가끔 불안한 반음 울림
+    BGM.next+=beat}}
+function setMood(m){BGM.mood=m;if(!BGM.ctx)return;const c=BGM.ctx,M=MOODS[m],t=c.currentTime,D=BGM.drone;
+  const r=mtof(M.root);D.o1.frequency.setTargetAtTime(r,t,.8);D.o2.frequency.setTargetAtTime(r*1.006,t,.8);D.o3.frequency.setTargetAtTime(r*1.5,t,.8);
+  D.dg.gain.setTargetAtTime(M.box?.05:.11,t,.8);BGM.wind.gain.setTargetAtTime(M.wind?.045:0,t,1.2);
+  BGM.out.gain.setTargetAtTime(BGM.on?.75:0,t,.6)}
+function bgmToggle(){BGM.on=!BGM.on;try{localStorage.setItem('gukbap.bgm',BGM.on?'on':'off')}catch(e){}
+  if(BGM.on&&!BGM.ctx)bgmInit();if(BGM.ctx)BGM.out.gain.setTargetAtTime(BGM.on?.75:0,BGM.ctx.currentTime,.3);if(BGM.on&&BGM.mood)setMood(BGM.mood);
+  document.querySelectorAll('.bgmBtn').forEach(b=>b.textContent=BGM.on?'🔊 음악':'🔇 음악')}
+function music(m){if(BGM.on)bgmInit();setMood(m)}
 /* ---------- 대화 ---------- */
 let talkQ=[],talkDone=null;
 function say(lines,done){talkQ=lines.slice();talkDone=done||null;nextLine()}
@@ -250,8 +302,8 @@ function look(title,text,zoom,done){
 }
 
 /* ---------- 회상 ---------- */
-function flashback(img,yr,lines,done,over){const f=$('flash');f.hidden=false;f.querySelector('.ov').innerHTML=over||'';const i=f.querySelector('img');i.src=IMG(img);i.style.animation='none';void i.offsetWidth;i.style.animation='';
-  f.querySelector('.yr').textContent=yr;say(lines,()=>{f.hidden=true;done&&done()})}
+function flashback(img,yr,lines,done,over){const f=$('flash');f.hidden=false;const prev=BGM.mood;music(img==='bg_end.jpg'?'end':'flash');f.querySelector('.ov').innerHTML=over||'';const i=f.querySelector('img');i.src=IMG(img);i.style.animation='none';void i.offsetWidth;i.style.animation='';
+  f.querySelector('.yr').textContent=yr;say(lines,()=>{f.hidden=true;if(img!=='bg_end.jpg')music(prev);done&&done()})}
 
 /* ---------- 장면 ---------- */
 // 좌표는 1024×572 원본 기준 [x0,y0,x1,y1]
@@ -264,7 +316,7 @@ function person(who,x,y,size,fn){const w=document.createElement('div');w.classNa
 function useOr(target,map,dflt){if(sel&&map[sel]){const k=sel;setSel(null);map[k]()}else if(sel){const k=sel;setSel(null);say([['bolt',`여기엔 ${ITEMS[k].n}을(를) 쓸 데가 없어 보여.`]])}else dflt()}
 
 function enter(room,intro){
-  S.room=room;save();setSel(null);
+  S.room=room;save();setSel(null);music(room);
   $('bg').src=IMG(ROOMS[room].bg);$('roomName').textContent=ROOMS[room].name;
   build();if(intro)intro();
 }
@@ -418,7 +470,7 @@ const SUS=[{k:'minho',n:'손자 민호'},{k:'choi',n:'국밥왕 최 상무'},{k:
 const EVS=['badge','video','oldphoto','screw','glove','receipt'];
 const MOT=[{k:'money',n:'돈 — 레시피를 회사에 넘겨 큰돈을 벌려고'},{k:'revenge',n:'복수 — 가게를 망하게 하려고'},{k:'father',n:'아버지의 한 — 빼앗겼다고 믿은 아버지 몫을 되찾으려고'}];
 function deduce(){
-  S.room='deduce';save();$('roomName').textContent='추리 · 범인은 누구인가';$('bg').src=IMG('bg_roof.jpg');$('hots').innerHTML='';
+  S.room='deduce';save();music('deduce');$('roomName').textContent='추리 · 범인은 누구인가';$('bg').src=IMG('bg_roof.jpg');$('hots').innerHTML='';
   say([['misuk','(옥상으로 올라와) 수호야, 장부를 찾았나!'],['suho','네, 할머니. 그런데 마지막 장이 없어요. 이제 가져간 사람을 짚어 낼 차례예요.']],stepSuspect);
 }
 function stepSuspect(){let p=null;
@@ -468,7 +520,7 @@ function roomClear(i,next){
   stamp(STORES[i]);S.stage=Math.max(S.stage,i+1);save();next();
 }
 function stamp(name,boss){try{const k='bjrun.stamps.'+SEASON,st=JSON.parse(localStorage.getItem(k))||{got:{},boss:{}};if(name)st.got[name]=1;if(boss)st.boss[boss]=1;localStorage.setItem(k,JSON.stringify(st))}catch(e){}}
-function finish(truth){
+function finish(truth){music(truth?'end':'title');
   clearInterval(clockT);const sec=Math.round(S.elapsed+S.hints*30);
   let cp='';
   if(W){const got=W.coupons(SITE_ID);if(truth&&S.hints===0){const r=W.issue(SITE_ID,MASTER);if(r)got.push(r.coupon)}
@@ -549,6 +601,7 @@ if(old&&old.inv){$('contBtn').hidden=false;$('contBtn').onclick=()=>begin(old)}
 $('startBtn').onclick=()=>{try{localStorage.removeItem(SAVE)}catch(e){}begin(fresh())};
 (()=>{let b=[];try{b=JSON.parse(localStorage.getItem(BEST))||[]}catch(e){}if(b[0])$('bestLine').textContent=`내 최고 기록 ${fmt(b[0].t)} ${b[0].truth?'· 진실 엔딩':''}`})();
 $('title').style.backgroundImage=`url(${IMG('bg_alley.jpg')})`;
+document.querySelectorAll('.bgmBtn').forEach(b=>{b.textContent=BGM.on?'🔊 음악':'🔇 음악';b.onclick=bgmToggle});
 $('fsBtn').onclick=()=>{const e=document.documentElement;(e.requestFullscreen||e.webkitRequestFullscreen||(()=>{})).call(e)};
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('modal').hidden)closeModal();else if(sel)setSel(null)}else if((e.key===' '||e.key==='Enter')&&!$('talk').hidden){e.preventDefault();nextLine()}});
 window.__G={get S(){return S},hint,enter,deduce};

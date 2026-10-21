@@ -148,7 +148,7 @@ window.SUHO = {
     },
     {
       id: 'gukbap', name: '국밥 수호런 (서면 돼지국밥골목)', place: '부전동 · 서면시장 돼지국밥골목', status: 'open', url: 'gukbap/',
-      color: '#b9722f', thumb: 'common/img/gukbap.webp', cta: '수사 시작하기',
+      color: '#b9722f', thumb: 'common/img/gukbap.webp', cta: '수사 시작하기', genre: '🔍 추리게임',
       pitch: '축제 날 새벽, 70년 된 육수 장부가 사라졌다! 주방 금고, 밤의 국밥골목, 옥상 장독대를 뒤져 범인과 증거, 동기를 짚어 내는 방탈출 추리. 동기까지 맞히면 피란 시절 두 사람이 함께 만든 국밥의 진실이 드러나요.',
       who: '국밥집 · 서면을 찾는 관광객 · 추리 게임 팬',
       season: { id: 's1-gukbap', name: '시즌 1 · 국밥골목 방탈출', ends: '' },
