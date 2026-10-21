@@ -13,8 +13,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
 <link rel="stylesheet" href="common/suho.css">
-<script src="common/sites.js"></script>
-<script src="common/wallet.js"></script>
+<script src="common/sites.js?v=20261022a"></script>
+<script src="common/wallet.js?v=20261022a"></script>
 <style>
 .hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;padding:12px 0 26px}
 .hero h1{font-size:clamp(40px,9vw,76px);color:var(--cream);text-shadow:0 4px 0 var(--yellow-deep),0 8px 0 rgba(0,0,0,.25);margin:8px 0 12px}
@@ -97,7 +97,7 @@ a.site:hover{transform:translateY(-3px)}
   const box=document.getElementById('sites');
   box.innerHTML=W.sites().map(s=>{
     const open=s.status==='open',st=open?W.stamps(s.id):null,n=open?W.coupons(s.id).length:0;
-    const inner=`<div class="pic">${s.thumb?`<img src="${esc(s.thumb)}" alt="" loading="lazy">`:`<div class="ph" style="--c:${s.color}"><b>${esc(s.place.split(' · ').pop())}</b></div>`}<span class="chip">${esc(s.place)}</span>${s.genre?`<span class="genre ${s.genre==='레이스'?'race':''}">${s.genre==='레이스'?'🏃 ':'🔍 '}${esc(s.genre)}</span>`:''}${open?'':'<span class="soonbadge">준비 중</span>'}</div>
+    const inner=`<div class="pic">${s.thumb?`<img src="${esc(s.thumb)}?v=20261022a" alt="" loading="lazy">`:`<div class="ph" style="--c:${s.color}"><b>${esc(s.place.split(' · ').pop())}</b></div>`}<span class="chip">${esc(s.place)}</span>${s.genre?(g=>`<span class="genre ${g==='레이스'?'race':''}">${g==='레이스'?'🏃':'🔍'} ${g}</span>`)(/레이스/.test(s.genre)?'레이스':'추리'):''}${open?'':'<span class="soonbadge">준비 중</span>'}</div>
       <div class="body"><h3><i style="--c:${s.color}"></i>${esc(s.name)}</h3><p class="pitch">${esc(s.pitch)}</p>
       <div class="row"><span class="who">${esc(s.who)}</span>${open?`<span class="prog">${st?`스탬프 ${st.done}/${st.total}`:''}${n?` · 쿠폰 ${n}장`:''}</span>`:''}</div>
       ${open?'<span class="btn" style="margin-top:6px">'+(s.cta||'지금 달리기')+' →</span>':''}</div>`;
