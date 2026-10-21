@@ -77,7 +77,7 @@ window.SUHO = {
       ],
     },
     {
-      id: 'shoe', name: '신발거리 수호런 (범천 좀비 레이스)', place: '부전동 · 범천동 수제화 장인 로드', status: 'open', url: 'shoe/',
+      id: 'shoe', name: '신발거리 수호런 (범천 좀비 레이스)', place: '부전동 · 범천동 수제화 장인 로드', status: 'open', url: 'shoe/', genre: '레이스',
       color: '#b9722f', thumb: 'common/img/shoe.webp',
       pitch: '좀비가 덮친 수제화 골목! 구두 장인 할아버지를 업고 6개 스테이지를 달려 공방까지 구출하라. 폭주족 좀비의 바나나를 피하고, 로큰롤 킹의 선물상자에서 이벤트 쿠폰을 노려요.',
       who: '수제화 공방·수선집 쿠폰 · 쿠폰북 추첨',
@@ -99,7 +99,7 @@ window.SUHO = {
       ],
     },
     {
-      id: 'baegyang', name: '산사 수호런 (백양산-삼광사)', place: '백양산 · 삼광사', status: 'open', url: 'sansa/',
+      id: 'baegyang', name: '산사 수호런 (백양산-삼광사)', place: '백양산 · 삼광사', status: 'open', url: 'sansa/', genre: '레이스',
       color: '#c46a8a', thumb: 'common/img/baegyang.webp',
       pitch: '백양산 산신령이 달아난다! 동자승·젊은승·늙은승·거북이·토끼·사슴과 함께 삼광사 마당과 구름 하늘길을 달려 산신령을 따라잡아요. 달리며 쿠폰 3장을 먹고, 산신령을 잡으면 마스터 쿠폰 1장 더!',
       who: '산책·등산 가족 · 삼광사 입구 식당·카페 · 쿠폰북 추첨',
@@ -119,7 +119,7 @@ window.SUHO = {
       ],
     },
     {
-      id: 'bujeon', name: '시장 수호런 (부전시장-부전도서관)', place: '부전시장 · 부전도서관', status: 'open', url: 'bujeon/',
+      id: 'bujeon', name: '시장 수호런 (부전시장-부전도서관)', place: '부전시장 · 부전도서관', status: 'open', url: 'bujeon/', genre: '레이스',
       color: '#e0702c', thumb: 'common/img/bujeon.webp',
       pitch: '악덕 건물주와 단속반이 몰려왔다! 부전시장 아주머니를 업고 농산물·수산물·먹자골목을 지나 부전도서관 앞 구조 헬기까지. 킥보드 빌런의 바나나를 피하고, 품바 엿장수의 선물상자에서 이벤트 쿠폰을 노려요.',
       who: '시장 상인 · 장보러 온 주민 · 쿠폰북 추첨',
@@ -142,7 +142,7 @@ window.SUHO = {
     },
     {
       id: 'gaegeum', name: '골목 수호런 (개금골목시장)', place: '개금동 · 개금골목시장', status: 'open', url: 'gaegeum/',
-      color: '#c8553d', thumb: 'common/img/gaegeum.webp', cta: '수사 시작하기', genre: '🔍 추리게임',
+      color: '#c8553d', thumb: 'common/img/gaegeum.webp', cta: '수사 시작하기', genre: '추리',
       pitch: '장터 잔치 날 11시 30분, "정오에 폭탄이 터진다"는 협박 편지! 30분 안에 상인회 사무실, 장날 골목, 지하 창고를 뒤져 시한폭탄을 해체하고, 편지를 쓴 사람과 폭탄을 놓은 사람을 각각 밝혀내는 방탈출 추리.',
       who: '시장 상인 · 장보러 온 주민 · 추리 게임 팬',
       season: { id: 's1-gaegeum', name: '시즌 1 · 골목시장 방탈출', ends: '' },
@@ -159,7 +159,7 @@ window.SUHO = {
     },
     {
       id: 'gukbap', name: '국밥 수호런 (서면 돼지국밥골목)', place: '부전동 · 서면시장 돼지국밥골목', status: 'open', url: 'gukbap/',
-      color: '#b9722f', thumb: 'common/img/gukbap.webp', cta: '수사 시작하기', genre: '🔍 추리게임',
+      color: '#b9722f', thumb: 'common/img/gukbap.webp', cta: '수사 시작하기', genre: '추리',
       pitch: '축제 날 새벽, 70년 된 육수 장부가 사라졌다! 주방 금고, 밤의 국밥골목, 옥상 장독대를 뒤져 범인과 증거, 동기를 짚어 내는 방탈출 추리. 동기까지 맞히면 피란 시절 두 사람이 함께 만든 국밥의 진실이 드러나요.',
       who: '국밥집 · 서면을 찾는 관광객 · 추리 게임 팬',
       season: { id: 's1-gukbap', name: '시즌 1 · 국밥골목 방탈출', ends: '' },
@@ -175,9 +175,9 @@ window.SUHO = {
       ],
     },
     {
-      id: 'gaya', name: '대학가 수호런 (가야동)', place: '가야동 · 동의대 앞 대학가', status: 'soon',
+      id: 'gaya', name: '대학가 수호런 (가야동)', place: '가야동 · 동의대 앞 대학가', status: 'soon', genre: '추리',
       color: '#3d5a80',
-      pitch: '밀면집과 카페, 자취방 골목이 이어지는 가야동 대학가를 달리는 스테이지를 준비 중이에요.',
+      pitch: '밀면집과 카페, 자취방 골목이 이어지는 동의대 앞 대학가에서 벌어지는 방탈출 추리를 준비 중이에요.',
       who: '대학생 · 대학가 가게',
     },
   ],
