@@ -7,6 +7,7 @@
 <title>골목 수호런 · 정오의 시한폭탄 (개금골목시장)</title>
 <script src="../common/sites.js"></script>
 <script src="../common/wallet.js"></script>
+<script src="../common/opening.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -599,14 +600,21 @@ function retryRoom(){{const snap=S.snap;const keep={hints:S.hints,tries:S.tries,
 /* ---------- 시작 ---------- */
 function begin(s){S=s;$('title').hidden=true;$('hud').hidden=false;document.body.classList.add('playing');renderInv();startTimer();
   if(S.room==='deduce'){enter('base');deduce();return}
-  if(S.room==='office'&&!S.f.intro){S.f.intro=1;enter('office');prologue();return}
+  if(S.room==='office'&&!S.f.intro){S.f.intro=1;stopTimer();opening(()=>{startTimer();enter('office');prologue()});return}
   enter(S.room,S.room==='market'?marketIntro:S.room==='base'?baseIntro:null)}
+const OPENING=[
+  {img:IMG('bg_market.jpg'),yr:'오전 11시 · 개금골목시장',mood:'market',text:'오늘은 장터 잔치 날. 1975년부터 이어진 개금골목시장에 삼백 명이 넘는 손님이 몰려든다.'},
+  {img:IMG('op_gg1.jpg'),mood:'office',text:'그때, 상인회 사무실 책상 위에 낡은 신문 글자를 오려 붙인 편지 한 장이 놓여 있었다.'},
+  {img:IMG('bg_office.jpg'),who:'순덕 회장',pitch:.9,mood:'office',text:'정오에 골목 어딘가에 숨긴 폭탄이 터진다고… 수호야, 빨리 와 다오!'},
+  {img:IMG('op_gg2.jpg'),mood:'market',text:'아무것도 모르는 사람들 사이로, 시계는 쉬지 않고 정오를 향해 간다. 수호와 볼트가 골목으로 뛰어든다.'},
+  {img:IMG('bg_base.jpg'),title:['SUHO RUN · MYSTERY','정오의 시한폭탄'],text:''},
+];
+function opening(done){$('hud').hidden=true;music('title');
+  if(!window.SuhoOpening){$('hud').hidden=false;done();return}
+  SuhoOpening.play($('wrap'),OPENING,{onSlide:(k,s)=>{if(s.mood)music(s.mood)},onDone:()=>{$('hud').hidden=false;done()}})}
 function prologue(){say([
-  ['bolt','수호! 개금골목시장 순덕 회장님 전화야. 목소리가 심상치 않아!'],
-  ['soon','수호야, 큰일 났다. 상인회 사무실 책상에 협박 편지가 와 있다. 정오에 골목에서 폭탄이 터진다고!'],
-  ['soon','오늘 장터 잔치라 300명은 모일 긴데… 경찰은 오는 중인데 골목이 좁아서 한참 걸린단다.'],
-  ['suho','지금 11시 30분. 30분 남았어요. 저희가 먼저 찾을게요!'],
-  ['bolt','시계가 줄어드는 게 보이지? 힌트를 쓰면 30초씩 줄어. 서두르자!']])}
+  ['suho','지금 11시 30분. 정오까지 30분이에요. 경찰보다 먼저 찾아야 해!'],
+  ['bolt','화면 위 시계가 줄어드는 게 보이지? 힌트를 쓰면 30초씩 줄어. 편지부터 보자!']])}
 const old=loadSave();
 if(old&&old.inv){$('contBtn').hidden=false;$('contBtn').onclick=()=>begin(old)}
 $('startBtn').onclick=()=>{try{localStorage.removeItem(SAVE)}catch(e){}begin(fresh())};

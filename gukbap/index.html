@@ -7,6 +7,7 @@
 <title>국밥 수호런 · 사라진 육수 장부 (서면 돼지국밥골목)</title>
 <script src="../common/sites.js"></script>
 <script src="../common/wallet.js"></script>
+<script src="../common/opening.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -587,15 +588,21 @@ $('hintBtn').onclick=()=>{if(!$('talk').hidden||!$('modal').hidden)return;hint()
 function tick(){S.elapsed+=1;const m=Math.min(300,Math.floor(S.elapsed/4));const h=4+Math.floor(m/60),mm=m%60;$('clock').textContent=`${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;if(S.elapsed%10===0)save()}
 function begin(s){S=s;$('title').hidden=true;$('hud').hidden=false;document.body.classList.add('playing');renderInv();clearInterval(clockT);clockT=setInterval(tick,1000);
   if(S.room==='deduce'){S.room='roof';enter('roof');deduce();return}
-  if(S.room==='kitchen'&&!S.f.intro){S.f.intro=1;enter('kitchen');prologue();return}
+  if(S.room==='kitchen'&&!S.f.intro){S.f.intro=1;opening(()=>{enter('kitchen');prologue()});return}
   enter(S.room,S.room==='alley'?alleyIntro:null)}
+const OPENING=[
+  {img:IMG('bg_alley.jpg'),yr:'새벽 3시 50분 · 서면 돼지국밥골목',mood:'alley',text:'모두가 잠든 서면 돼지국밥골목. 단 한 집, 가마솥 불만은 꺼지지 않는다.'},
+  {img:IMG('flash1.jpg'),yr:'1951년 · 피란 시절',mood:'flash',text:'피란 시절부터 70년. 그 국물의 비밀은 낡은 육수 장부 한 권에 적혀 내려왔다.'},
+  {img:IMG('op_gb1.jpg'),who:'미숙 할매',pitch:.85,mood:'kitchen',text:'수호야, 큰일 났다! 금고가 열려 있고, 우리 엄마 장부가 없어졌다!'},
+  {img:IMG('op_gb2.jpg'),mood:'kitchen',text:'아침 9시 축제 방송까지 다섯 시간. 수호와 볼트가 국밥골목으로 달려간다.'},
+  {img:IMG('bg_kitchen.jpg'),title:['SUHO RUN · MYSTERY','사라진 육수 장부'],text:''},
+];
+function opening(done){$('hud').hidden=true;music('title');
+  if(!window.SuhoOpening){done();return}
+  SuhoOpening.play($('wrap'),OPENING,{onSlide:(k,s)=>{if(s.mood)music(s.mood)},onDone:()=>{$('hud').hidden=false;done()}})}
 function prologue(){say([
-  ['bolt','수호! 새벽 3시 50분이야. 국밥골목 미숙 할매한테서 긴급 전화!'],
-  ['misuk','수호야… 우리 피란돼지국밥 육수 장부가 없어졌다. 우리 엄마가 1951년부터 적어 온 기다.'],
-  ['misuk','오늘 아침 9시에 축제 방송 촬영인데… 장부 없으면 가게 문 닫아야 한다 아이가.'],
-  ['suho','걱정 마세요, 할머니. 9시 전에 꼭 찾아 드릴게요.'],
+  ['suho','할머니 말로는 장부는 금고에 있었대. 주방부터 살펴보자.'],
   ['bolt','어젯밤 가게에 드나든 사람은 넷. 손자 민호, 국밥왕 최 상무, 유튜버 먹방킹 J, 단골 양 기사님.'],
-  ['suho','장부는 금고에 있었다고 하셨지. 주방부터 살펴보자.'],
   ['bolt','수상한 곳을 눌러 봐! 막히면 오른쪽 위 힌트 버튼.']])}
 const old=loadSave();
 if(old&&old.inv){$('contBtn').hidden=false;$('contBtn').onclick=()=>begin(old)}
