@@ -237,54 +237,55 @@ function sfx(k){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)(
   let at=t;for(const [f,d] of seq){const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.12,at);g.gain.exponentialRampToValueAtTime(.001,at+d);o.connect(g);g.connect(AC.destination);o.start(at);o.stop(at+d+.02);at+=d*.9}}catch(e){}}
 
 
-/* ---------- 배경음악: 조용하고 긴장감 있는 수사 음악 (웹오디오로 그 자리에서 연주) ---------- */
-const BGM={urg:0,on:true,mood:'',ctx:null,out:null,drone:null,timer:null,next:0,step:0};
-try{BGM.on=localStorage.getItem('gaegeum.bgm')!=='off'}catch(e){}
-const MOODS={   // 음계(D 단조 계열), 템포, 성부 비율
-  title:{tempo:66,notes:[62,65,69,72,70,69],root:38,pulse:0,tick:0,wind:0,lead:.55,box:0},
-  office:{tempo:60,notes:[62,65,67,69,70,72],root:38,pulse:0,tick:1,wind:0,lead:.45,box:0},
-  market:{tempo:72,notes:[62,63,66,67,69,70],root:38,pulse:.7,tick:0,wind:0,lead:.4,box:0},
-  base:{tempo:64,notes:[62,65,69,70,74,72],root:38,pulse:.3,tick:0,wind:1,lead:.45,box:0},
-  deduce:{tempo:84,notes:[62,63,66,69,70,73],root:38,pulse:1,tick:1,wind:0,lead:.5,box:0},
-  flash:{tempo:58,notes:[74,77,81,79,77,76,74,72],root:50,pulse:0,tick:0,wind:0,lead:0,box:1},
-  end:{tempo:70,notes:[74,76,78,81,83,81,78,76],root:50,pulse:0,tick:0,wind:0,lead:0,box:1},
+const BGM_KEY='gaegeum.bgm';
+const MOODS={   // 개금: 작게 튕기는 반복 음형 (E단조), 남은 시간이 줄면 살짝 빨라짐 · 회상은 오르골
+  title:{style:'ost',tempo:80,dens:.7,chords:[[52,55,59,64],[48,52,55,60],[45,48,52,57],[47,51,54,59]]},
+  office:{style:'ost',tempo:84,dens:.75,chords:[[52,55,59,64],[48,52,55,60],[45,48,52,57],[47,51,54,59]]},
+  market:{style:'ost',tempo:90,dens:.85,chords:[[52,55,59,64],[50,53,57,62],[48,52,55,60],[47,51,54,59]]},
+  base:{style:'ost',tempo:76,dens:.55,chords:[[52,55,59,64],[53,57,60,65],[52,55,59,64],[47,51,54,59]]},
+  deduce:{style:'ost',tempo:86,dens:.8,chords:[[45,48,52,57],[41,45,48,53],[43,47,50,55],[40,44,47,52]]},
+  flash:{style:'box',tempo:54,chords:[[48],[45],[41],[43]],line:[76,74,72,67,69,72,74,76,79,76,74,72,71,72,74,72]},
+  end:{style:'box',tempo:66,chords:[[48],[43],[45],[41]],line:[72,76,79,76,74,77,81,77,72,76,79,84,83,79,77,74]},
 };
+/* ---------- 배경음악: 조용하고 은은한 수사 음악 (웹오디오로 그 자리에서 연주, 낮게 웅웅대는 소리 없음) ---------- */
+const BGM={urg:0,on:true,mood:'',ctx:null,out:null,timer:null,next:0,step:0,bar:0};
+try{BGM.on=localStorage.getItem(BGM_KEY)!=='off'}catch(e){}
 const mtof=m=>440*Math.pow(2,(m-69)/12);
 function bgmInit(){if(BGM.ctx)return true;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();}catch(e){return false}
   const c=AC;BGM.ctx=c;BGM.out=c.createGain();BGM.out.gain.value=0;
-  const comp=c.createDynamicsCompressor();BGM.out.connect(comp);comp.connect(c.destination);
-  // 공간감: 짧은 메아리
-  const dl=c.createDelay(1);dl.delayTime.value=.42;const fb=c.createGain();fb.gain.value=.38;const wet=c.createGain();wet.gain.value=.35;const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2200;
-  dl.connect(lp);lp.connect(fb);fb.connect(dl);lp.connect(wet);wet.connect(BGM.out);BGM.echo=dl;
-  // 낮게 깔리는 드론 (두 음이 살짝 어긋나 일렁임)
-  const df=c.createBiquadFilter();df.type='lowpass';df.frequency.value=380;df.Q.value=4;const dg=c.createGain();dg.gain.value=.11;
-  const lfo=c.createOscillator(),lg=c.createGain();lfo.frequency.value=.07;lg.gain.value=160;lfo.connect(lg);lg.connect(df.frequency);lfo.start();
-  const o1=c.createOscillator(),o2=c.createOscillator(),o3=c.createOscillator();o1.type='sawtooth';o2.type='sawtooth';o3.type='sine';
-  [o1,o2,o3].forEach(o=>{o.connect(df);o.start()});df.connect(dg);dg.connect(BGM.out);BGM.drone={o1,o2,o3,dg,df};
-  // 바람(옥상) — 걸러 낸 잡음
-  const nb=c.createBuffer(1,c.sampleRate*2,c.sampleRate),d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
-  const ns=c.createBufferSource();ns.buffer=nb;ns.loop=true;const nf=c.createBiquadFilter();nf.type='bandpass';nf.frequency.value=500;nf.Q.value=.7;const ng=c.createGain();ng.gain.value=0;
-  const wl=c.createOscillator(),wg=c.createGain();wl.frequency.value=.11;wg.gain.value=300;wl.connect(wg);wg.connect(nf.frequency);wl.start();
-  ns.connect(nf);nf.connect(ng);ng.connect(BGM.out);ns.start();BGM.wind=ng;
-  BGM.next=c.currentTime+.2;BGM.timer=setInterval(bgmTick,90);return true}
-function tone(t,f,dur,vol,type,echo){const c=BGM.ctx,o=c.createOscillator(),g=c.createGain();o.type=type||'triangle';o.frequency.value=f;
-  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.012);g.gain.exponentialRampToValueAtTime(.0008,t+dur);
-  o.connect(g);g.connect(BGM.out);if(echo)g.connect(BGM.echo);o.start(t);o.stop(t+dur+.05)}
-function bgmTick(){const c=BGM.ctx;if(!c||!BGM.mood)return;const M=MOODS[BGM.mood];const beat=60/M.tempo/2;   // 8분음표 단위
-  while(BGM.next<c.currentTime+.35){const t=BGM.next,st=BGM.step++;
-    if((M.tick||BGM.urg>=2)&&st%2===0)tone(t,st%4===0?2600:2200,.03,.018,'square');                       // 시계 초침
-    {const pu=Math.max(M.pulse,BGM.urg?.8:0);if(pu&&st%(BGM.urg>=1?4:8)===0){tone(t,55,.32,.22*pu,'sine');tone(t+.16,52,.28,.15*pu,'sine')}} // 심장 박동처럼 낮게 두 번
-    if(M.lead&&st%2===0&&Math.random()<M.lead*.55){const m=M.notes[Math.floor(Math.random()*M.notes.length)];tone(t,mtof(m),beat*5,.06,'triangle',1);
-      if(Math.random()<.25)tone(t,mtof(m-12),beat*6,.035,'sine',1)}
-    if(M.box&&st%2===0&&Math.random()<.8){const i=(st/2|0)%M.notes.length;tone(t,mtof(M.notes[i]),1.6,.05,'sine',1);if(st%8===0)tone(t,mtof(M.notes[i]-24),2.4,.04,'sine')}
-    if(st%32===0&&M.lead){tone(t,mtof(M.root+24+(Math.random()<.5?1:6)),beat*14,.02,'sine',1)}   // 가끔 불안한 반음 울림
-    BGM.next+=beat}}
-function setMood(m){BGM.mood=m;if(!BGM.ctx)return;const c=BGM.ctx,M=MOODS[m],t=c.currentTime,D=BGM.drone;
-  const r=mtof(M.root);D.o1.frequency.setTargetAtTime(r,t,.8);D.o2.frequency.setTargetAtTime(r*1.006,t,.8);D.o3.frequency.setTargetAtTime(r*1.5,t,.8);
-  D.dg.gain.setTargetAtTime(M.box?.05:.11,t,.8);BGM.wind.gain.setTargetAtTime(M.wind?.045:0,t,1.2);
-  BGM.out.gain.setTargetAtTime(BGM.on?.75:0,t,.6)}
-function bgmToggle(){BGM.on=!BGM.on;try{localStorage.setItem('gaegeum.bgm',BGM.on?'on':'off')}catch(e){}
-  if(BGM.on&&!BGM.ctx)bgmInit();if(BGM.ctx)BGM.out.gain.setTargetAtTime(BGM.on?.75:0,BGM.ctx.currentTime,.3);if(BGM.on&&BGM.mood)setMood(BGM.mood);
+  const hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=180;   // 낮은 웅웅 소리는 걸러 냄
+  const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=5200;
+  BGM.out.connect(hp);hp.connect(lp);lp.connect(c.destination);
+  const dl=c.createDelay(1);dl.delayTime.value=.36;const fb=c.createGain();fb.gain.value=.32;const wet=c.createGain();wet.gain.value=.28;const dlp=c.createBiquadFilter();dlp.type='lowpass';dlp.frequency.value=2600;
+  dl.connect(dlp);dlp.connect(fb);fb.connect(dl);dlp.connect(wet);wet.connect(BGM.out);BGM.echo=dl;
+  BGM.next=c.currentTime+.2;BGM.timer=setInterval(bgmTick,80);return true}
+// 소리 빛깔: keys(부드러운 피아노), pluck(작게 튕기는 소리), bell(맑은 종), box(오르골)
+function tone(t,f,dur,vol,kind){const c=BGM.ctx,g=c.createGain();
+  const parts=kind==='bell'?[[1,1],[2.76,.18],[5.4,.06]]:kind==='box'?[[1,1],[4,.12]]:kind==='pluck'?[[1,1],[2,.25]]:[[1,1],[2,.22],[3,.06]];
+  const atk=kind==='keys'?.025:.005;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+atk);g.gain.exponentialRampToValueAtTime(.0005,t+dur);
+  for(const [m,a] of parts){const o=c.createOscillator(),og=c.createGain();o.type=kind==='pluck'?'triangle':'sine';o.frequency.value=f*m;og.gain.value=a;o.connect(og);og.connect(g);o.start(t);o.stop(t+dur+.05)}
+  g.connect(BGM.out);g.connect(BGM.echo)}
+function bgmTick(){const c=BGM.ctx;if(!c||!BGM.mood)return;const M=MOODS[BGM.mood];if(!M)return;
+  const tempo=M.tempo*(BGM.urg>=2?1.18:BGM.urg?1.08:1),e8=60/tempo/2;
+  while(BGM.next<c.currentTime+.3){const t=BGM.next,st=BGM.step++,pos=st%8;if(pos===0&&st>0)BGM.bar++;
+    const ch=M.chords[BGM.bar%M.chords.length];
+    if(M.style==='arp'){   // 국밥: 따뜻한 피아노 분산화음
+      if(pos===0)tone(t,mtof(ch[0]),e8*7,.045,'keys');
+      if(pos%2===0){const n=ch[1+((pos/2)%(ch.length-1))]+12;if(Math.random()<.85)tone(t,mtof(n),e8*3.2,.035,'keys')}
+      if(pos===6&&Math.random()<M.mel){const sc=M.scale;tone(t,mtof(sc[Math.floor(Math.random()*sc.length)]+24),e8*4,.022,'bell')}}
+    else if(M.style==='ost'){   // 개금: 작게 튕기는 반복 음형 (긴장되지만 조용하게)
+      const pat=[0,2,1,2,3,2,1,2];const n=ch[pat[pos]%ch.length]+12+(pat[pos]===3?12:0);
+      if(Math.random()<M.dens)tone(t,mtof(n),e8*1.6,pos%4===0?.04:.028,'pluck');
+      if(pos===0&&BGM.bar%2===0)tone(t,mtof(ch[0]),e8*6,.03,'keys');
+      if(BGM.urg>=2&&pos%2===0)tone(t,3000,.02,.012,'pluck');}
+    else if(M.style==='box'){   // 회상·엔딩: 오르골
+      if(pos%2===0){const n=M.line[(BGM.bar*4+pos/2)%M.line.length];tone(t,mtof(n),e8*5,.04,'box')}
+      if(pos===0)tone(t,mtof(ch[0]+12),e8*7,.025,'keys');}
+    BGM.next+=e8}}
+function setMood(m){if(BGM.mood!==m){BGM.mood=m;BGM.bar=0;BGM.step=0}if(!BGM.ctx)return;BGM.out.gain.setTargetAtTime(BGM.on?2.1:0,BGM.ctx.currentTime,.8)}
+function bgmToggle(){BGM.on=!BGM.on;try{localStorage.setItem(BGM_KEY,BGM.on?'on':'off')}catch(e){}
+  if(BGM.on&&!BGM.ctx)bgmInit();if(BGM.ctx)BGM.out.gain.setTargetAtTime(BGM.on?2.1:0,BGM.ctx.currentTime,.3);if(BGM.on&&BGM.mood)setMood(BGM.mood);
   document.querySelectorAll('.bgmBtn').forEach(b=>b.textContent=BGM.on?'🔊 음악':'🔇 음악')}
 function music(m){if(BGM.on)bgmInit();setMood(m)}
 /* ---------- 대화 ---------- */
