@@ -141,10 +141,21 @@ window.SUHO = {
       ],
     },
     {
-      id: 'gaegeum', name: '골목시장 수호런 (개금골목시장)', place: '개금동 · 개금골목시장', status: 'soon',
-      color: '#c8553d',
-      pitch: '좁고 긴 골목에 반찬·떡·어묵 가게가 늘어선 개금골목시장을 달리는 서부권 스테이지를 준비 중이에요.',
-      who: '시장 상인 · 장보러 온 주민',
+      id: 'gaegeum', name: '골목 수호런 (개금골목시장)', place: '개금동 · 개금골목시장', status: 'open', url: 'gaegeum/',
+      color: '#c8553d', thumb: 'common/img/gaegeum.webp', cta: '수사 시작하기', genre: '🔍 추리게임',
+      pitch: '장터 잔치 날 11시 30분, "정오에 폭탄이 터진다"는 협박 편지! 30분 안에 상인회 사무실, 장날 골목, 지하 창고를 뒤져 시한폭탄을 해체하고, 편지를 쓴 사람과 폭탄을 놓은 사람을 각각 밝혀내는 방탈출 추리.',
+      who: '시장 상인 · 장보러 온 주민 · 추리 게임 팬',
+      season: { id: 's1-gaegeum', name: '시즌 1 · 골목시장 방탈출', ends: '' },
+      lastStage: 4,
+      // 시연용 가상 가게 — 방을 하나 풀 때마다 한 곳씩 쿠폰, 진실 엔딩(힌트 없이)이면 상인회 마스터 쿠폰
+      stores: [
+        { name: '골목밀면', benefit: '곱빼기 무료', pin: '1111', color: '#3d5a80' },
+        { name: '개금손만두', benefit: '만두 2알 추가', pin: '2222', color: '#d9a22b' },
+        { name: '맛난순대', benefit: '간 서비스', pin: '3333', color: '#c8553d' },
+      ],
+      eventStores: [
+        { name: '개금골목 상인회', benefit: '장바구니 5천 원 할인', pin: '7777', color: '#8a5a2b' },
+      ],
     },
     {
       id: 'gukbap', name: '국밥 수호런 (서면 돼지국밥골목)', place: '부전동 · 서면시장 돼지국밥골목', status: 'open', url: 'gukbap/',
