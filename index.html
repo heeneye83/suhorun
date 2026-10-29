@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
 <link rel="stylesheet" href="common/suho.css">
-<script src="common/sites.js?v=20261022a"></script>
+<script src="common/sites.js?v=20261029fb"></script>
 <script src="common/wallet.js?v=20261022a"></script>
 <style>
 .hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;padding:12px 0 26px}
@@ -56,6 +56,15 @@ a.site:hover{transform:translateY(-3px)}
 .steps li b{display:block;font-family:var(--display);font-weight:400;font-size:17px;color:var(--cream);margin-bottom:4px}
 .steps li b::before{counter-increment:s;content:counter(s);display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;
   background:var(--yellow);color:#3a230f;font-size:13px;margin-right:8px;vertical-align:.1em}
+.feedback{display:flex;align-items:center;gap:18px;margin:26px 0 0;padding:18px 20px;
+  background:linear-gradient(90deg,rgba(255,220,102,.16),rgba(255,220,102,.04));border-color:rgba(255,220,102,.4)}
+.feedback .fb-bot{width:64px;flex:none;animation:hover 2.6s ease-in-out infinite}
+.feedback .fb-t{flex:1;min-width:0}
+.feedback h2{font-size:22px;color:var(--yellow);margin:0 0 4px}
+.feedback p{font-size:14px;color:var(--muted);word-break:keep-all;margin:0}
+.feedback .btn{flex:none;text-decoration:none}
+.feedback .btn.off{opacity:.55;cursor:default}
+@media (max-width:560px){.feedback{flex-wrap:wrap}.feedback .fb-bot{width:48px}.feedback .btn{width:100%}}
 @media (max-width:760px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:520px){.hero{grid-template-columns:1fr}.hero .cast{order:-1;width:150px;justify-self:end;margin:-6px 0 -40px}}
 </style>
@@ -89,6 +98,15 @@ a.site:hover{transform:translateY(-3px)}
     <li><b>캡슐 뽑기 · 쿠폰북</b>가끔 나오는 뽑기 기계에서 이벤트 가게 스페셜 쿠폰이 나와요. 스탬프 7개를 모으면 쿠폰북 추첨에 응모해요.</li>
   </ol>
 
+  <section class="feedback card" aria-labelledby="fb-h">
+    <img class="fb-bot" src="common/sprites/bot_happy.png" alt="" aria-hidden="true">
+    <div class="fb-t">
+      <h2 id="fb-h">해 보니 어땠나요?</h2>
+      <p>재밌었던 점, 어려웠던 점, 이상했던 점 무엇이든 좋아요. 1분이면 끝나고, 남겨 주신 이야기로 수호런을 고쳐 나갈게요.</p>
+    </div>
+    <a class="btn" id="fbbtn" href="#" target="_blank" rel="noopener">무료 피드백 남기기 →</a>
+  </section>
+
   <p class="foot">부산진구 협의용 시연본입니다. 진수호·볼트는 오리지널 캐릭터 시안이고, 게임 속 가게와 쿠폰 혜택은 시연을 위한 가상의 예시예요.
     시연 버전에서는 쿠폰과 응모 정보가 이 기기에만 저장됩니다. 쿠폰 혜택은 참여 가게와 협의해 정합니다. · <a href="admin/">운영자 화면</a></p>
 </main>
@@ -104,6 +122,9 @@ a.site:hover{transform:translateY(-3px)}
       ${open?'<span class="btn" style="margin-top:6px">'+(s.cta||'지금 달리기')+' →</span>':''}</div>`;
     return open?`<a class="site card" href="${esc(s.url)}" aria-label="${esc(s.name)} 시작하기">${inner}</a>`:`<div class="site card soon" aria-disabled="true">${inner}</div>`;
   }).join('');
+  const fb=document.getElementById('fbbtn'),fbUrl=(window.SUHO&&window.SUHO.feedbackUrl)||'';
+  if(fbUrl){fb.href=fbUrl}
+  else{fb.removeAttribute('target');fb.classList.add('off');fb.textContent='피드백 창 준비 중';fb.addEventListener('click',e=>e.preventDefault())}
   const u=W.unused();
   if(u){document.getElementById('wsub').textContent=`사용하지 않은 쿠폰 ${u}장이 있어요`;document.getElementById('wbtn').textContent=`쿠폰 ${u}장 보기`}
 })();
