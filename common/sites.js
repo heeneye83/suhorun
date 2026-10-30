@@ -177,7 +177,7 @@ window.SUHO = {
       ],
     },
     {
-      id: 'olympic', name: '수호 올림픽 (아케이드)', place: '서면 · 부전시장 · 시민공원', status: 'open', url: 'olympic/', genre: '아케이드',
+      id: 'olympic', name: '수호 올림픽 (아케이드)', place: '서면 · 부전시장 · 시민공원', status: 'soon', progress: 60, url: 'olympic/', genre: '아케이드',
       color: '#2f8fe0', thumb: 'common/img/olympic.webp', cta: '경기 시작하기',
       pitch: '좌우 연타로 겨루는 다섯 종목! 서면 100m 달리기, 부전시장 어묵 꼬치, 국밥골목 토렴, 시민공원 풍선 불기와 원반 던지기. 혼자서 볼트와, 휴대폰 하나로 둘이서도 대결해요.',
       who: '누구나 · 가족 · 행사 부스',
