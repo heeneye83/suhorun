@@ -4,7 +4,7 @@
 (function () {
   var url = (window.SUHO && window.SUHO.feedbackUrl) || '';
   if (!url) return;
-  var LABEL = '1분 익명 피드백 남기기';
+  var LABEL = '익명 피드백 남기기 (3분)';
 
   function isRetry(b) {
     return (b.id === 'go' || b.id === 'again') && /^\s*다시/.test(b.textContent || '');
